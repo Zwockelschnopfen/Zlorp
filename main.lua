@@ -1,5 +1,7 @@
 io.stdout:setvbuf("no")
 
+require "Lib.FancyPantsMath"
+
 GlobalGuard = require("Lib.GlobalGuard")
 Gamestate = require("Lib.Gamestate")
 local Baton = require("Lib.Baton")
@@ -9,7 +11,7 @@ Input = Baton.new {
         right = {'key:right', 'key:d', 'axis:leftx+', 'button:dpright'},
         up = {'key:up', 'key:w', 'axis:lefty-', 'button:dpup'},
         down = {'key:down', 'key:s', 'axis:lefty+', 'button:dpdown'},
-        action = {'key:x', 'button:a'},
+        action = {'key:x', 'button:a', 'key:return'},
     },
     pairs = {
         move = {'left', 'right', 'up', 'down'}

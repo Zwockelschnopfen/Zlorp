@@ -17,11 +17,9 @@ function DefaultState:leave()
 
 end
 
-function DefaultState:update(dt)
-    self.Input:update()
-    
-    local x, y = self.Input:get("move")
-    if self.Input:pressed("action") then
+function DefaultState:update(dt)    
+    local x, y = Input:get("move")
+    if Input:pressed("action") then
         print("Action!")
     end
 end

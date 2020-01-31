@@ -26,12 +26,14 @@ ShooteEmUpInstance = Concord.instance()
 
 GS = {}
 GS.default = require("Gamestates.default")
+GS.menu = require("Gamestates.Menu")
+GS.loader = require("Gamestates.Loader")
 
 GlobalGuard.enableGuard()
 
 function love.load()
-    
-    Gamestate.switch(GS.default)
+    GS.loader:load()
+    Gamestate.switch(GS.loader)
 end
 
 function love.keypressed( key, scancode, isrepeat )
@@ -42,7 +44,11 @@ function love.keypressed( key, scancode, isrepeat )
     Gamestate:keypressed(key, scancode, isrepeat)
 end
 
-function love.update(dt)            Gamestate:update(dt) end
+function love.update(dt)            
+    Input:update()
+    Gamestate:update(dt)
+end
+
 function love.draw()                Gamestate:draw() end
 function love.keyreleased(...)      Gamestate:keyreleased(...)end
 function love.mousemoved(...)       Gamestate:mousemoved(...) end

@@ -2,9 +2,27 @@ io.stdout:setvbuf("no")
 
 GlobalGuard = require("Lib.GlobalGuard")
 Gamestate = require("Lib.Gamestate")
-Baton = require("Lib.Baton")
+local Baton = require("Lib.Baton")
+Input = Baton.new {
+    controls = {
+        left = {'key:left', 'key:a', 'axis:leftx-', 'button:dpleft'},
+        right = {'key:right', 'key:d', 'axis:leftx+', 'button:dpright'},
+        up = {'key:up', 'key:w', 'axis:lefty-', 'button:dpup'},
+        down = {'key:down', 'key:s', 'axis:lefty+', 'button:dpdown'},
+        action = {'key:x', 'button:a'},
+    },
+    pairs = {
+        move = {'left', 'right', 'up', 'down'}
+    },
+    joystick = love.joystick.getJoysticks()[1],
+}
+
 Concord = require("Lib.Concord")
 Concord.init()
+
+HUDInstance = Concord.instance()
+RepairInstance = Concord.instance()
+ShooteEmUpInstance = Concord.instance()
 
 GS = {}
 GS.default = require("Gamestates.default")

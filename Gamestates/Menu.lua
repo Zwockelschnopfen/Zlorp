@@ -19,17 +19,19 @@ local main = {
   }
 }
 
-local resources
-local state
-
 function Menu:load()
-  resources = {
+  self.resources = {
     buttonFont = love.graphics.newFont("Assets/Fonts/earthorbiter.ttf", 77),
     titleFont = love.graphics.newFont("Assets/Fonts/earthorbiterhalf.ttf", 180),
     ship = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
     acceptSound = love.audio.newSource("Assets/Sounds/select.flac", "static"),
     navigateSound = love.audio.newSource("Assets/Sounds/cursor.flac", "static"),
+    credits = {},
   }
+  local creditsRaw = assert(love.filesystem.read("Assets/Credits.txt"))
+  for line in creditsRaw:gmatch("[^\n]+") do
+    table.insert(self.resources.credits, line)
+  end
 end
 
 function Menu:enter(previous, wasSwitched, ...)
@@ -38,9 +40,12 @@ function Menu:enter(previous, wasSwitched, ...)
   for i=2,#main do
     main[i].dx = 0
   end
-  state = {
-    current = "main",
-    fading = 0.0
+  self.state = {
+    current = "enter",
+    fading = 1.0,      -- [0..1] Versteckt das ganze Menü
+    mainHidden = 1.0,  -- [0..1] Versteckt das Hauptmenü nach links
+    titleHidden = 0.0, -- [0..1] Schiebt den Title nach oben
+    creditsLine = 0.0, -- [0..#
   }
 end
 
@@ -49,55 +54,83 @@ function Menu:leave()
 end
 
 function Menu:update(_, dt)
+  local state = self.state
+
+  if state.current == "enter" then
+    state.fading = state.fading - 2.0 * dt
+    if state.fading <= 0 then
+      state.fading = 0
+      state.current = "main"
+    end
+    return
+  end
 
   if state.current == "main" then
+    state.mainHidden = math.max(0.0, state.mainHidden - 3.0 * dt)
+
     if main.selected > 1 and Input:pressed "up" then
       main.selected = main.selected - 1
-      love.audio.play(resources.navigateSound)
+      love.audio.play(self.resources.navigateSound)
     end
     if main.selected < #main and Input:pressed "down" then
       main.selected = main.selected + 1 
-      love.audio.play(resources.navigateSound)
+      love.audio.play(self.resources.navigateSound)
     end
     if Input:pressed "action" then
       state.current = main[main.selected].target
-      love.audio.play(resources.acceptSound)
+      love.audio.play(self.resources.acceptSound)
     end
-  elseif state.current == "game" then
+    return
+  else
+    state.mainHidden = math.min(1.0, state.mainHidden + 3.0 * dt)
+  end
+
+  if state.current == "game" then
+    state.titleHidden = math.min(1.0, state.titleHidden + 3.0 * dt)
+
+
+    return
+  end
+  
+  if state.current == "help" then
     
-  elseif state.current == "help" then
+    return
+  end
+  
+  if state.current == "credits" then
     
-  elseif state.current == "credits" then
-    
-  elseif state.current == "exit" then
+    return
+  end
+  
+  if state.current == "exit" then
     state.fading = state.fading + 2.0 * dt
     if state.fading > 2.0 then
       love.event.quit()
     end
-  else
-    error("Invalid menu target: " .. tostring(state.current))
+    return
   end
 
+  error("Invalid menu target: " .. tostring(state.current))
 end
 
 function Menu:draw()
   local t = love.timer.getTime()
   local dt = love.timer.getDelta()
 
-  love.graphics.setFont(resources.titleFont)
+  love.graphics.setFont(self.resources.titleFont)
   love.graphics.setColor(1, 1, 1)
   love.graphics.printf(
     "Zlorp",
-    0, 50,
+    0, 50 - 300 * math.pow(self.state.titleHidden, 2.0),
     1920,
     "center"
   )
 
-  love.graphics.setFont(resources.buttonFont)
+  love.graphics.setFont(self.resources.buttonFont)
 
   for i=1,#main do
     local btn = main[i]
-    if main.selected == i then
+    if main.selected == i and self.state.current == "main" then
       love.graphics.setColor(1, 0, 0)
       btn.dx = math.min(1, btn.dx + 5 * dt)
     else
@@ -106,12 +139,17 @@ function Menu:draw()
     end
     love.graphics.print(
       btn.text, 
-      10 + math.smoothstep(btn.dx, 0, 1) * (40 + 5 * math.sin(3 * t + 2.2 * i)),
+      10 + math.smoothstep(btn.dx, 0, 1) * (40 + 5 * math.sin(3 * t + 2.2 * i)) - 350 * math.pow(self.state.mainHidden, 2.0),
       1080 + 80 * (i - #main - 1))
   end
 
-  love.graphics.setColor(0, 0, 0, math.smoothstep(state.fading, 0.0, 1.0))
-  love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+  if self.state.current == "enter" then
+    love.graphics.setColor(1, 1, 1, math.smoothstep(self.state.fading, 0.0, 1.0))
+    love.graphics.draw(GS.loader.resources.loadingScreen, 0, 0)
+  else
+    love.graphics.setColor(0, 0, 0, math.smoothstep(self.state.fading, 0.0, 1.0))
+    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+  end
 
 end
 

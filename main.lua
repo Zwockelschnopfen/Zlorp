@@ -34,6 +34,7 @@ GS.loader = require("Gamestates.Loader")
 GlobalGuard.enableGuard()
 
 function love.load()
+    love.mouse.setVisible(false)
     GS.loader:load()
     Gamestate.switch(GS.loader)
 end

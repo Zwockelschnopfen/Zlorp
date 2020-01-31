@@ -23,7 +23,7 @@ function DefaultState:enter(previous, wasSwitched, ...)
     self.Instance = Concord.instance()
     self.Instance:addSystem(CircleRender(), "draw")
     self.Instance:addEntity(Circle(200, 200, 50, "fill"))
-    self.Instance:addEntity(Circle(400, 400, 50, "fill"))
+    self.Instance:addEntity(Circle(400, 400, 50, "line"))
 end
 
 function DefaultState:leave()

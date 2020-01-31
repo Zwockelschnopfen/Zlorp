@@ -25,13 +25,25 @@ Concord.init()
 HUDInstance = Concord.instance()
 RepairInstance = Concord.instance()
 ShooteEmUpInstance = Concord.instance()
+BackgroundInstance = Concord.instance()
 
-GS = {}
-GS.default = require("Gamestates.default")
-GS.menu = require("Gamestates.Menu")
-GS.loader = require("Gamestates.Loader")
+GS = {
+    menu = require("Gamestates.Menu"),
+    loader = require("Gamestates.Loader"),
+}
 
 GlobalGuard.enableGuard()
+
+GS.loader:addCallback(function()
+    local Starfield = require "Code.Components.Starfield"
+    local Background = require "Code.Systems.Background"
+
+    local sfe = Concord.entity.new()
+    sfe:give(Starfield)
+
+    BackgroundInstance:addSystem(Background())
+    BackgroundInstance:addEntity(sfe)
+end) 
 
 function love.load()
     love.mouse.setVisible(false)
@@ -52,7 +64,11 @@ function love.update(dt)
     Gamestate:update(dt)
 end
 
-function love.draw()                Gamestate:draw() end
+function love.draw()
+    BackgroundInstance:emit("draw")
+    Gamestate:draw()
+end
+
 function love.keyreleased(...)      Gamestate:keyreleased(...)end
 function love.mousemoved(...)       Gamestate:mousemoved(...) end
 function love.mousepressed(...)     Gamestate:mousepressed(...) end

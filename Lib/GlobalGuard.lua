@@ -1,6 +1,4 @@
-local GlobalGuard = {
-  enabled = false
-}
+local GlobalGuard = {}
 
 local globals = { }
 local mt = { }
@@ -24,10 +22,6 @@ end
 function GlobalGuard.enableGuard()
   GlobalGuard.enabled = true
   setmetatable(_G, mt)
-end
-
-function GlobalGuard.disableGuard()
-  GlobalGuard.enabled = false
 end
 
 function GlobalGuard.declare(name, value)

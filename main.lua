@@ -1,13 +1,17 @@
 io.stdout:setvbuf("no")
 
+GlobalGuard = require("Lib.GlobalGuard")
+Gamestate = require("Lib.Gamestate")
+Baton = require("Lib.Baton")
+Concord = require("Lib.Concord")
+Concord.init()
+
+GS = {}
+GS.default = require("Gamestates.default")
+
+GlobalGuard.enableGuard()
+
 function love.load()
-    Gamestate = require("Lib.Gamestate")
-    Baton = require("Lib.Baton")
-    Concord = require("Lib.Concord")
-    Concord.init()
-    
-    GS = {}
-    GS.default = require("Gamestates.default")
     
     Gamestate.switch(GS.default)
 end

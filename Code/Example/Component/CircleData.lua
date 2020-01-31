@@ -1,7 +1,7 @@
 local CircleData = Concord.component(
-        function(e, mode, radius)
-            e.mode = mode
-            e.radius = radius
+        function(c, mode, radius)
+            c.mode = mode
+            c.radius = radius
         end
 )
 

@@ -16,10 +16,9 @@ function CircleDrawer:entityAdded(e)
 end
 
 function CircleDrawer:draw()
-    local pos, circleData
     for _, e in ipairs(self.pool.objects) do
-        p = e:get(Pos)
-        cd = e:get(CircleData)
+        local p = e:get(Pos)
+        local cd = e:get(CircleData)
         
         love.graphics.circle(cd.mode, p.x, p.y, cd.radius)
     end

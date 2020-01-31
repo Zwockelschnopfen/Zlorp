@@ -1,7 +1,7 @@
 local Pos = Concord.component(
-        function(e, x, y)
-            e.x = x
-            e.y = y
+        function(c, x, y)
+            c.x = x
+            c.y = y
         end
 )
 

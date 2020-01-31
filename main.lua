@@ -59,7 +59,7 @@ function love.keypressed( key, scancode, isrepeat )
     Gamestate:keypressed(key, scancode, isrepeat)
 end
 
-function love.update(dt)            
+function love.update(dt)
     Input:update()
     Gamestate:update(dt)
 end

@@ -45,7 +45,7 @@ function Menu:enter(previous, wasSwitched, ...)
     fading = 1.0,      -- [0..1] Versteckt das ganze Menü
     mainHidden = 1.0,  -- [0..1] Versteckt das Hauptmenü nach links
     titleHidden = 0.0, -- [0..1] Schiebt den Title nach oben
-    creditsLine = 0.0, -- [0..#
+    creditsLine = -10.5, -- [0..#] Schiebt die Credits um "x" Zeilen nach oben
   }
 end
 
@@ -99,6 +99,13 @@ function Menu:update(_, dt)
   
   if state.current == "credits" then
     
+    state.creditsLine = state.creditsLine + dt
+
+    if state.creditsLine > #self.resources.credits or Input:pressed "action" then
+      state.current = "main"
+      state.creditsLine = -10.5
+    end
+
     return
   end
   
@@ -142,6 +149,55 @@ function Menu:draw()
       10 + math.smoothstep(btn.dx, 0, 1) * (40 + 5 * math.sin(3 * t + 2.2 * i)) - 350 * math.pow(self.state.mainHidden, 2.0),
       1080 + 80 * (i - #main - 1))
   end
+
+  do
+    local x, y, w, h = 0, 264, 1920, 770
+
+    local lineHeight = 70.0
+    local fy = y - lineHeight * self.state.creditsLine
+
+    -- love.graphics.rectangle("line", x, y, w, h)
+
+    for i=1,#self.resources.credits do
+
+      local alphaTop = math.clamp(fy - y, 0.0, lineHeight) / lineHeight
+      local alphaBot = math.clamp(y - fy + h - lineHeight, 0.0, lineHeight) / lineHeight
+      local alpha = math.min(alphaTop, alphaBot)
+
+      if alpha > 0.0 then
+
+        love.graphics.setColor(1, 1, 1, alpha)
+
+        local line = self.resources.credits[i]
+
+        if line == "--" then
+          love.graphics.setLineWidth( 3.0 )
+          love.graphics.line(
+            x + w / 2 - 300,
+            fy + lineHeight / 2,
+            x + w / 2 + 300,
+            fy + lineHeight / 2
+          )
+        else
+          love.graphics.printf(
+            line,
+            x, fy,
+            w,
+            "center"
+          )
+        end
+      end
+
+      fy = fy + lineHeight
+
+      if fy > y + h then
+        break
+      end
+
+    end
+
+  end
+
 
   if self.state.current == "enter" then
     love.graphics.setColor(1, 1, 1, math.smoothstep(self.state.fading, 0.0, 1.0))

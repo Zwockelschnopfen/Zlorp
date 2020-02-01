@@ -26,6 +26,7 @@ function Repair:enter(previous, wasSwitched, ...)
   local level = STI("Assets/Levels/Test.lua", { "box2d" })
   level.layers["Walls"].visible = false
   level.layers["Ladders"].visible = false
+  level.layers["Objects"].visible = false
   
   self.world = Concord.entity.new()
   self.world:give(TMG, level)
@@ -89,20 +90,35 @@ function Repair:leave()
   RepairInstance:clear()
 end
 
+local HotSpots = {
+  cockpit = "Cockpit",
+  engines = "Engine Turbine",
+  shields = "Shield Generator",
+  weapons = "Weapons Systems",
+  junk = "Junk Pit",
+}
+
 function Repair:update(_, dt)
 
   local anyLadder = false
+  local hotspot
   local world = self.world[PhysicsWorld].world
   for _, body in pairs(world:getBodies()) do
     for _, fixture in pairs(body:getFixtures()) do
         if fixture:isSensor() then
             local ud = fixture:getUserData()
-            if ud then
-                anyLadder = anyLadder or ((ud.properties.type == "ladder") and (ud.collisionCount or 0) > 0)
+            if ud and (ud.collisionCount or 0) > 0 then
+                anyLadder = anyLadder or (ud.properties.type == "ladder")
+
+                if HotSpots[ud.properties.type] then
+                  hotspot = ud.properties.type
+                end
             end
         end
     end
   end
+
+  print("hotspot", hotspot)
 
   local forceX = 200
   local forceY = 200

@@ -12,6 +12,8 @@ local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
 local AnimUpdate     = require "Code.Systems.AnimUpdate"
 
+local PHYSICS_SCALING = 128
+
 local Trash = Concord.component(function(c)
   c.isHeld = true
 end)
@@ -65,7 +67,7 @@ end
 
 function Repair:load()
 	-- Set world meter size (in pixels)
-  love.physics.setMeter(70)
+  love.physics.setMeter(128)
 
   self.resources = {
     player = love.graphics.newImage("Assets/Sprites/Player.png"),
@@ -79,26 +81,23 @@ end
 
 function Repair:initGame()
 
-  local level = STI("Assets/Levels/Test.lua", { "box2d" })
+  local level = STI("Assets/Levels/Level1.lua", { "box2d" })
   level.layers["Walls"].visible = false
   level.layers["Ladders"].visible = false
   level.layers["Objects"].visible = false
   
   self.world = Concord.entity.new()
   self.world:give(TMG, level)
-  self.world:give(PhysicsWorld, 9.81 * 70)
+  self.world:give(PhysicsWorld, 9.81 * PHYSICS_SCALING)
 
   RepairInstance:addEntity(self.world)
   
 	-- Prepare collision objects
   level:box2d_init(self.world[PhysicsWorld].world)
 
-  local playerTall = 70 * 1.7
-  local playerFat =  70 * 0.7
-
   self.player = Concord.entity.new()
   self.player.walkDir = "left"
-  self.player:give(Transform, 10 * 70, 14 * 70, 0, 0.5, 0.5)
+  self.player:give(Transform, 10 * PHYSICS_SCALING, 14 * PHYSICS_SCALING)
   self.player:give(AnimationSM)
   self.player:give(
     Physics, 
@@ -110,15 +109,15 @@ function Repair:initGame()
     },
     { { type = "polygon", 
         verts = adjustCollider({
-            6.00,0.00,
-            43.00,0.00,
-            49.00,6.00,
-            49.00,113.00,
-            43.00,119.00,
-            6.00,119.00,
-            0.00,113.00,
-            0.00,6.00,
-        }, playerFat/2, playerTall/2)
+          88.00,80.00,
+          104.33,60.00,
+          139.00,60.00,
+          157.00,80.00,
+          157.00,219.12,
+          133.38,242.00,
+          106.00,242.00,
+          88.00,223.38,
+        }, 128, 128)
       }
     }
   )
@@ -198,7 +197,7 @@ function Repair:update(dt)
   local forceZ = 400
 
   if not anyLadder then
-    body:applyForce(0, 9.81 * 70)
+    body:applyForce(0, 9.81 * PHYSICS_SCALING)
   end
 
   if self.currentTrash then

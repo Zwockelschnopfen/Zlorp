@@ -85,9 +85,9 @@ function Gameplay:draw()
     end
 
     local tween = math.smoothstep(self.cameraTween, 0.0, 1.0)
-    Camera.x = math.lerp(0, shipPos.x-VirtualScreen.width/2, tween)
-    Camera.y = math.lerp(0, shipPos.y-VirtualScreen.height/2, tween)
-    Camera.zoom = math.lerp(1.0, 5.3, tween)
+    Camera.x = math.lerp(0, shipPos.x + 80 - VirtualScreen.width / 2, tween)
+    Camera.y = math.lerp(0, shipPos.y + 80 - VirtualScreen.height / 2, tween)
+    Camera.zoom = math.lerp(1.0, 3.3, tween)
   end
 
   love.graphics.origin()
@@ -111,8 +111,8 @@ function Gameplay:draw()
       -- fit "repair screen" into space trip
 
       love.graphics.translate(shipPos.x, shipPos.y)
-      love.graphics.translate(-150, -80)
-      love.graphics.scale(0.1)
+      love.graphics.translate(-140, -25)
+      love.graphics.scale(0.10)
 
       Repair:draw()
 

@@ -46,6 +46,7 @@ function Menu:enter(previous, wasSwitched, ...)
     mainHidden = 1.0,  -- [0..1] Versteckt das Hauptmenü nach links
     titleHidden = 0.0, -- [0..1] Schiebt den Title nach oben
     creditsLine = -10.5, -- [0..#] Schiebt die Credits um "x" Zeilen nach oben
+    creditsSpeed = 1.0,
   }
 end
 
@@ -98,8 +99,22 @@ function Menu:update(_, dt)
   end
   
   if state.current == "credits" then
-    
-    state.creditsLine = state.creditsLine + dt
+
+    local targetSpeed = 1.0
+    if Input:down "down" then
+      targetSpeed = -4
+    elseif Input:down "up" then
+      targetSpeed = 4
+    end
+
+    do
+      local delta = math.abs(targetSpeed - state.creditsSpeed)
+      local dir = math.sign(targetSpeed - state.creditsSpeed)
+
+      state.creditsSpeed = state.creditsSpeed + math.min(5.0 * dt, delta) * dir
+
+    end
+    state.creditsLine = state.creditsLine + state.creditsSpeed * dt
 
     if state.creditsLine > #self.resources.credits or Input:pressed "action" then
       state.current = "main"

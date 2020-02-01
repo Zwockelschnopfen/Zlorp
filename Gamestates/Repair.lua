@@ -10,7 +10,48 @@ local AnimationSM  = require "Code.Components.AnimStateMachine"
 local TMR            = require "Code.Systems.TileMapRenderer"
 local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
-local AnimUpdate  = require "Code.Systems.AnimUpdate"
+local AnimUpdate     = require "Code.Systems.AnimUpdate"
+
+local Trash = Concord.component(function(c)
+  c.isHeld = true
+end)
+
+local TrashCleaner = Concord.system({
+  Transform,
+  Physics,
+  Trash
+})
+
+function TrashCleaner:update(dt)
+  for _, e in ipairs(self.pool.objects) do
+      local trash = e:get(Trash)
+      local body = e:get(Physics).body
+      
+      if not trash.isHeld then
+
+        (function() 
+          for _, contact in ipairs(body:getContacts()) do
+            if contact:isTouching() then
+              local f0, f1 = contact:getFixtures()
+              
+              local b0, b1 = f0:getBody(), f1:getBody()
+              local fixture = (b0 == body) and f1 or f0
+  
+              if fixture:isSensor() then
+                local ud = fixture:getUserData()
+                
+                if ud.properties.type == "junkkill" then
+                  e:destroy()
+                  return
+                end
+              end
+            end
+          end
+        end)()
+        
+      end
+  end
+end
 
 local Repair = { }
 
@@ -45,30 +86,7 @@ function Repair:initGame()
   
   self.world = Concord.entity.new()
   self.world:give(TMG, level)
-  self.world:give(PhysicsWorld, 9.81 * 70, 
-    function(f0, f1, c)
-      -- beginContact
-      local u0, u1 = f0:getUserData(), f1:getUserData()
-      if u0 then
-        u0.collisionCount = (u0.collisionCount or 0) + 1
-      end
-      if u1 then
-        u1.collisionCount = (u1.collisionCount or 0) + 1
-      end
-      -- print("begin", f0, f1, c)
-    end,
-    function(f0, f1, c)
-      -- endContact
-      local u0, u1 = f0:getUserData(), f1:getUserData()
-      if u0 then
-          u0.collisionCount = u0.collisionCount - 1
-      end
-      if u1 then
-          u1.collisionCount = u1.collisionCount - 1
-      end
-      -- print("end", f0, f1, c)
-    end
-  )
+  self.world:give(PhysicsWorld, 9.81 * 70)
 
   RepairInstance:addEntity(self.world)
   
@@ -107,6 +125,9 @@ function Repair:initGame()
   self.player:give(Anim, "animation_sheet_filled", "idle")
   self.player:give(Gravity)
   RepairInstance:addEntity(self.player)
+
+  RepairInstance:addSystem(TrashCleaner(), "update")
+
 
   -- RepairInstance:addSystem(GravityUpdater())
   RepairInstance:addSystem(TMR(), "draw")
@@ -202,8 +223,9 @@ function Repair:update(dt)
     
       if Input:pressed "action" then
         body:setGravityScale(1)
-        self.currentTrash = nil
         self.player[AnimationSM]:setValue("hasJunk", false)
+        self.currentTrash[Trash].isHeld = false
+        self.currentTrash = nil
       else
         self.player[AnimationSM]:setValue("hasJunk", true)
       end
@@ -227,6 +249,7 @@ function Repair:update(dt)
           local trash = Concord.entity.new()
           trash:give(Transform, playerPos.x + 40, playerPos.y + 40)
           trash:give(Sprite, sprite)
+          trash:give(Trash)
           trash:give(
             Physics, 
             {

@@ -16,5 +16,5 @@ return function(img, x, y, r, v0, accel, vmax)
         :give(Transform, x, y, r, 1, 1)
         :give(Sprite, img)
         :give(Movement, move)
-    return update(ent, {dx=dx, dy=dy, v=v0, accel=accel, vmax=vmax})
+    return table.update(ent, {dx=dx, dy=dy, v=v0, accel=accel, vmax=vmax})
 end

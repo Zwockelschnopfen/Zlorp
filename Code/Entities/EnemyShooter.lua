@@ -27,5 +27,5 @@ return function(img, x0, y0, x1, y1, inTime, stayTime, outTime, interval, projec
         :give(Sprite, img)
         :give(Shooting, inTime, interval, inTime + stayTime, fire)
         :give(Movement, move)
-    return update(ent, {projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})
+    return table.update(ent, {projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})
 end

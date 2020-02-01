@@ -1,5 +1,6 @@
 local Sprite = require("Code.Components.Sprite")
 local Anim = require("Code.Components.Anim")
+local ASM = require("Code.Components.AnimStateMachine")
 
 local AnimUpdate = Concord.system({Anim})
 
@@ -20,11 +21,15 @@ end
 
 function AnimUpdate:draw()
     local dt = love.timer.getDelta()
-    
-    local sprite, anim
+    local sprite, anim, asm
     for _, e in ipairs(self.pool.objects) do
         sprite = e:get(Sprite)
         anim = e:get(Anim)
+        asm = e:get(ASM)
+        
+        if asm and asm.isDirty then
+            asm:update(anim)
+        end
 
         anim.t = anim.t + dt
         if anim.t >= anim.duration then
@@ -36,8 +41,6 @@ function AnimUpdate:draw()
         --love.graphics.rectangle("fill", 0, 0, 500, 500)
         --love.graphics.draw(sprite.img, animQuads[quadNum], 100, 100)
     end
-
-    
 end
 
 return AnimUpdate

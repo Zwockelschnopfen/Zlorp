@@ -15,7 +15,6 @@ local AnimComponent =  Concord.component(
                 for j = 1, config.numCol do
                     local x = config.px * (j - 1)
                     local y = config.py * (i - 1)
-                    print(x, y)
                     table.insert(
                             c.quads, 
                             love.graphics.newQuad(
@@ -50,10 +49,14 @@ function AnimComponent:setActiveAnim(newAnim)
     if not self.anims[newAnim] then
         error("Changing Animation to invalid value in " .. fileName .. ".lua. Values supplied is: " .. newAnim)
     end
+
+    if self.activeAnim == newAnim then
+        return
+    end
     
     self.t = 0
     self.activeAnim = newAnim
-    self.duration = c.anims[newAnim].duration
+    self.duration = self.anims[newAnim].duration
 end
 
 return AnimComponent

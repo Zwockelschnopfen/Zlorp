@@ -24,6 +24,8 @@ end
 function Repair:enter(previous, wasSwitched, ...)
 
   local level = STI("Assets/Levels/Test.lua", { "box2d" })
+  level.layers["Walls"].visible = false
+  level.layers["Ladders"].visible = false
   
   self.world = Concord.entity.new()
   self.world:give(TMG, level)
@@ -94,24 +96,30 @@ function Repair:update(_, dt)
     end
   end
 
+  local forceX = 200
+  local forceY = 200
+  local forceZ = 400
+
   local body = self.player[Physics].body
 
   if not anyLadder then
     body:applyForce(0, 9.81 * 70)
   end
   if Input:pressed "action" then
-    body:applyLinearImpulse(0, -250)
+    body:applyLinearImpulse(0, -forceZ)
   end
 
-  local forceX = 200
-  local forceY = 200
   local vx, vy = body:getLinearVelocity()
 
   if anyLadder then
     if Input:down "up" then
-      vy = -forceY
+      if vy > -forceY then
+        vy = -forceY
+      end
     elseif Input:down "down" then
-      vy = forceY
+      if vy <= forceY then
+        vy = forceY
+      end
     else
       vy = vy * 0.9
     end

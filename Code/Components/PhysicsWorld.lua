@@ -11,7 +11,7 @@ return Concord.component(
                     if u1 then
                         u1.collisionCount = (u1.collisionCount or 0) + 1
                     end
-                    print("begin", f0, f1, c)
+                    -- print("begin", f0, f1, c)
                 end,
                 function(f0,f1,c) -- endContact
                     local u0, u1 = f0:getUserData(), f1:getUserData()
@@ -21,7 +21,7 @@ return Concord.component(
                     if u1 then
                         u1.collisionCount = u1.collisionCount - 1
                     end
-                    print("end", f0, f1, c)
+                    -- print("end", f0, f1, c)
                 end
             )
         end

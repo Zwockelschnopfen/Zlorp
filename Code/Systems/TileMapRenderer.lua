@@ -13,9 +13,6 @@ function TMR:draw()
 
     love.graphics.setColor(1, 1, 1)
     graphics.map:draw(0, 0, 1, 1)
-    
-    love.graphics.setColor(1, 0, 0)
-	  graphics.map:box2d_draw()
 
   end
 

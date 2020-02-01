@@ -9,7 +9,7 @@ return {
   tilewidth = 70,
   tileheight = 70,
   nextlayerid = 4,
-  nextobjectid = 39,
+  nextobjectid = 40,
   properties = {
     ["collider"] = true
   },
@@ -557,6 +557,21 @@ return {
             { x = 210, y = -210 },
             { x = 0, y = -210 }
           },
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 39,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1820,
+          y = 140,
+          width = 70,
+          height = 210,
+          rotation = 0,
+          visible = true,
           properties = {
             ["collidable"] = true
           }

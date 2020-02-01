@@ -64,6 +64,11 @@ function PhysicsUpdate:update(dt)
 end
 
 function PhysicsUpdate:draw()
+
+    if not love.keyboard.isDown("f10") then
+        return 
+    end
+
     local we = self.world.objects[1]
     if we then
         local pw = we:get(World).world

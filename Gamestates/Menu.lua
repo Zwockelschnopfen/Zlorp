@@ -90,10 +90,6 @@ function Menu:update(_, dt)
     state.titleHidden = math.min(1.0, state.titleHidden + 3.0 * dt)
 
     if state.mainHidden >= 1.0 and state.titleHidden >= 1.0 then
-
-      Music.setTrack("game")
-      Music.setIntensity(1)
-
       return Gamestate.switch(GS.gameplay)
     end
 

@@ -26,6 +26,9 @@ function Gameplay:enter()
 
   Shmup:enter()
   self.mode = "shmup"
+  
+  Music.setTrack("game")
+  Music.setIntensity(1)
 
 end
 

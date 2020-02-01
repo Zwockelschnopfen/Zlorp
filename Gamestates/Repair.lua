@@ -79,6 +79,7 @@ function Repair:initGame()
   local playerFat =  70 * 0.7
 
   self.player = Concord.entity.new()
+  self.player.walkDir = "left"
   self.player:give(Transform, 10 * 70, 14 * 70, 0, 0.5, 0.5)
   self.player:give(AnimationSM)
   self.player:give(
@@ -147,18 +148,25 @@ function Repair:update(dt)
   local anyLadder = false
   local hotspot
   local world = self.world[PhysicsWorld].world
-  for _, body in pairs(world:getBodies()) do
-    for _, fixture in pairs(body:getFixtures()) do
-        if fixture:isSensor() then
-            local ud = fixture:getUserData()
-            if ud and (ud.collisionCount or 0) > 0 then
-                anyLadder = anyLadder or (ud.properties.type == "ladder")
 
-                if HotSpots[ud.properties.type] then
-                  hotspot = ud.properties.type
-                end
-            end
+
+  local body = self.player[Physics].body
+  for _, contact in ipairs(body:getContacts()) do
+    if contact:isTouching() then
+      local f0, f1 = contact:getFixtures()
+      
+      local b0, b1 = f0:getBody(), f1:getBody()
+      local fixture = (b0 == body) and f1 or f0
+
+      if fixture:isSensor() then
+        local ud = fixture:getUserData()
+        
+        anyLadder = anyLadder or (ud.properties.type == "ladder")
+
+        if HotSpots[ud.properties.type] then
+          hotspot = ud.properties.type
         end
+      end
     end
   end
 
@@ -167,8 +175,6 @@ function Repair:update(dt)
   local forceX = 200
   local forceY = 200
   local forceZ = 400
-
-  local body = self.player[Physics].body
 
   if not anyLadder then
     body:applyForce(0, 9.81 * 70)
@@ -181,7 +187,7 @@ function Repair:update(dt)
     
     local body = self.currentTrash[Physics].body
 
-    local tx = playerPos.x + 40
+    local tx = (self.player.walkDir == "left") and playerPos.x - 40 or  playerPos.x + 40
     local ty = playerPos.y - 10
 
     body:setGravityScale(0)
@@ -273,9 +279,11 @@ function Repair:update(dt)
   if Input:down "left" then
     body:setLinearVelocity(-forceX, vy)
     moving = true
+    self.player.walkDir = "left"
   elseif Input:down "right" then
     body:setLinearVelocity(forceX, vy)
     moving = true
+    self.player.walkDir = "right"
   else
     vx = vx * 0.9
     body:setLinearVelocity(vx, vy)

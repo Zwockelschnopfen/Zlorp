@@ -79,7 +79,7 @@ function Repair:initGame()
   local playerFat =  70 * 0.7
 
   self.player = Concord.entity.new()
-  self.player:give(Transform, 10 * 70, 14 * 70)
+  self.player:give(Transform, 10 * 70, 14 * 70, 0, 0.5, 0.5)
   self.player:give(AnimationSM)
   self.player:give(
     Physics, 

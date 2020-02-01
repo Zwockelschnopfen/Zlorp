@@ -9,7 +9,7 @@ return {
   tilewidth = 70,
   tileheight = 70,
   nextlayerid = 4,
-  nextobjectid = 38,
+  nextobjectid = 39,
   properties = {
     ["collider"] = true
   },
@@ -580,14 +580,15 @@ return {
           type = "",
           shape = "rectangle",
           x = 1680,
-          y = 490,
+          y = 350,
           width = 70,
-          height = 350,
+          height = 490,
           rotation = 0,
           visible = true,
           properties = {
             ["collidable"] = true,
-            ["sensor"] = true
+            ["sensor"] = true,
+            ["type"] = "ladder"
           }
         },
         {
@@ -603,7 +604,8 @@ return {
           visible = true,
           properties = {
             ["collidable"] = true,
-            ["sensor"] = true
+            ["sensor"] = true,
+            ["type"] = "ladder"
           }
         },
         {
@@ -619,7 +621,8 @@ return {
           visible = true,
           properties = {
             ["collidable"] = true,
-            ["sensor"] = true
+            ["sensor"] = true,
+            ["type"] = "ladder"
           }
         },
         {
@@ -635,7 +638,8 @@ return {
           visible = true,
           properties = {
             ["collidable"] = true,
-            ["sensor"] = true
+            ["sensor"] = true,
+            ["type"] = "ladder"
           }
         }
       }

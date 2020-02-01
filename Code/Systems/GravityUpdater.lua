@@ -1,6 +1,7 @@
 local Transform = require("Code.Components.Transform")
 local Physics = require("Code.Components.Physics")
 local Gravity = require("Code.Components.Gravity")
+local Physics      = require "Code.Components.Physics"
 
 local GravityUpdater = Concord.system({Physics, Transform, Gravity})
 
@@ -19,4 +20,4 @@ function GravityUpdater:update(dt)
     end
 end
 
-return PhysicsUpdate
+return GravityUpdater

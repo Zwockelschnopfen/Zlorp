@@ -21,12 +21,20 @@ function PhysicsUpdate:entityAdded(e)
     if physics then
         physics.body = love.physics.newBody(world, physics.bodyData.x, physics.bodyData.y, physics.bodyData.type)
         physics.body:setFixedRotation(physics.bodyData.fixedRotation or false)
+        physics.body:setGravityScale(physics.bodyData.gravityScale or 1.0)
         local newShape
         for _, shapeDat in ipairs(physics.shapeDataTable) do
             newShape = PhysicsUpdate:createShape(shapeDat)
-            love.physics.newFixture( physics.body, newShape, shapeDat.density)
+            local fix = love.physics.newFixture( physics.body, newShape, shapeDat.density)
+            fix:setFriction(0)
+            fix:setUserData({
+                collisionCount = 0,
+                properties = {
+                    type = "body",
+                },
+            })
         end
-    end 
+    end
 end
 
 function PhysicsUpdate:update(dt)
@@ -58,9 +66,29 @@ end
 function PhysicsUpdate:draw()
     local we = self.world.objects[1]
     if we then
-        pw = we:get(World)
-        for _, body in pairs(pw:getBodyList()) do
-            for _, fixture in pairs(body:getFixtureList()) do
+        local pw = we:get(World).world
+        for _, body in pairs(pw:getBodies()) do
+
+            for _, fixture in pairs(body:getFixtures()) do
+
+                if fixture:isSensor() then
+                    local ud = fixture:getUserData()
+                    if ud  then
+                        local ccnt = ud.collisionCount or 0
+                        if ccnt > 0 then
+                            love.graphics.setColor(0, 0, 1, 0.5)
+                        else
+                            if ud.properties.type == "ladder" then
+                                love.graphics.setColor(1, 1, 0, 0.5)
+                            else
+                                love.graphics.setColor(0, 1, 0, 0.5)
+                            end
+                        end
+                    end
+                else
+                    love.graphics.setColor(1, 0, 0, 0.5)
+                end
+
                 local shape = fixture:getShape()
 
                 if shape:typeOf("CircleShape") then

@@ -3,10 +3,12 @@ local PhysicsWorld = require "Code.Components.PhysicsWorld"
 local Physics      = require "Code.Components.Physics"
 local Sprite       = require "Code.Components.Sprite"
 local Transform    = require "Code.Components.Transform"
+local Gravity      = require "Code.Components.Gravity"
 
 local TMR            = require "Code.Systems.TileMapRenderer"
 local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
+local GravityUpdater = require "Code.Systems.GravityUpdater"
 
 local Repair = { }
 
@@ -23,14 +25,14 @@ function Repair:enter(previous, wasSwitched, ...)
 
   local level = STI("Assets/Levels/Test.lua", { "box2d" })
   
-  local repairShip = Concord.entity.new()
-  repairShip:give(TMG, level)
-  repairShip:give(PhysicsWorld)
+  self.world = Concord.entity.new()
+  self.world:give(TMG, level)
+  self.world:give(PhysicsWorld)
 
-  RepairInstance:addEntity(repairShip)
+  RepairInstance:addEntity(self.world)
   
 	-- Prepare collision objects
-  level:box2d_init(repairShip[PhysicsWorld].world)
+  level:box2d_init(self.world[PhysicsWorld].world)
 
   local playerTall = 70 * 1.7
   local playerFat =  70 *0.7
@@ -39,7 +41,13 @@ function Repair:enter(previous, wasSwitched, ...)
   self.player:give(Transform, 5 * 70, 7 * 70)
   self.player:give(
     Physics, 
-    { x = 5, y = 7, type = "dynamic", fixedRotation=true },
+    { 
+      x = 5, 
+      y = 7, 
+      type = "dynamic", 
+      fixedRotation = true,
+      gravityScale = 0,
+    },
     { { type = "polygon", 
         verts = { -- 70cm width, 170cm height
         -playerFat/2, -playerTall/2,
@@ -51,11 +59,12 @@ function Repair:enter(previous, wasSwitched, ...)
     }
   )
   self.player:give(Sprite, self.resources.player)
+  self.player:give(Gravity)
   RepairInstance:addEntity(self.player)
 
 
   
-  
+  -- RepairInstance:addSystem(GravityUpdater())
   RepairInstance:addSystem(TMR(), "draw")
   RepairInstance:addSystem(SpriteRenderer(), "draw")
   
@@ -72,18 +81,49 @@ end
 
 function Repair:update(_, dt)
 
-  local force = 75
-  if Input:pressed "up" then
-    self.player[Physics].body:applyLinearImpulse(0, -force)
+  local anyLadder = false
+  local world = self.world[PhysicsWorld].world
+  for _, body in pairs(world:getBodies()) do
+    for _, fixture in pairs(body:getFixtures()) do
+        if fixture:isSensor() then
+            local ud = fixture:getUserData()
+            if ud then
+                anyLadder = anyLadder or ((ud.properties.type == "ladder") and (ud.collisionCount or 0) > 0)
+            end
+        end
+    end
   end
-  if Input:pressed "down" then
-    self.player[Physics].body:applyLinearImpulse(0, force)
+
+  local body = self.player[Physics].body
+
+  if not anyLadder then
+    body:applyForce(0, 9.81 * 70)
   end
-  if Input:pressed "left" then
-    self.player[Physics].body:applyLinearImpulse(-force, 0)
+  if Input:pressed "action" then
+    body:applyLinearImpulse(0, -250)
   end
-  if Input:pressed "right" then
-    self.player[Physics].body:applyLinearImpulse(force, 0)
+
+  local forceX = 200
+  local forceY = 200
+  local vx, vy = body:getLinearVelocity()
+
+  if anyLadder then
+    if Input:down "up" then
+      vy = -forceY
+    elseif Input:down "down" then
+      vy = forceY
+    else
+      vy = vy * 0.9
+    end
+  end
+
+  if Input:down "left" then
+    body:setLinearVelocity(-forceX, vy)
+  elseif Input:down "right" then
+    body:setLinearVelocity(forceX, vy)
+  else
+    vx = vx * 0.9
+    body:setLinearVelocity(vx, vy)
   end
 
   RepairInstance:emit("update", dt)

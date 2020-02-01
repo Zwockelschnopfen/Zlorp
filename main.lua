@@ -68,7 +68,7 @@ GS.loader:addCallback(Music.load)
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    -- GS.loader.targetState = "repair" -- uncomment to make default behaviour
+    GS.loader.targetState = "repair" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 

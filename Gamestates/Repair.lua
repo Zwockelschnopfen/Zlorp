@@ -17,7 +17,12 @@ function Repair:load()
   love.physics.setMeter(70)
 
   self.resources = {
-    player = love.graphics.newImage("Assets/Sprites/Player.png")
+    player = love.graphics.newImage("Assets/Sprites/Player.png"),
+    trashgraphics = {
+       love.graphics.newImage("Assets/Sprites/Trash01.png"),
+       love.graphics.newImage("Assets/Sprites/Trash02.png"),
+       love.graphics.newImage("Assets/Sprites/Trash03.png"),
+    },
   }
 end
 
@@ -45,18 +50,14 @@ function Repair:enter(previous, wasSwitched, ...)
   self.player:give(
     Physics, 
     { 
-      x = 5, 
-      y = 7, 
-      type = "dynamic", 
+      x = 5,
+      y = 7,
+      type = "dynamic",
       fixedRotation = true,
       gravityScale = 0,
     },
     { { type = "polygon", 
-        verts = { -- 70cm width, 170cm height
-        --[[-playerFat/2, -playerTall/2,
-        -playerFat/2,  playerTall/2,
-         playerFat/2,  playerTall/2,
-         playerFat/2, -playerTall/2]]
+        verts = {
           6.00-playerFat/2,0.00-playerTall/2,
           43.00-playerFat/2,0.00-playerTall/2,
           49.00-playerFat/2,6.00-playerTall/2,
@@ -73,8 +74,6 @@ function Repair:enter(previous, wasSwitched, ...)
   self.player:give(Gravity)
   RepairInstance:addEntity(self.player)
 
-
-  
   -- RepairInstance:addSystem(GravityUpdater())
   RepairInstance:addSystem(TMR(), "draw")
   RepairInstance:addSystem(SpriteRenderer(), "draw")
@@ -97,6 +96,14 @@ local HotSpots = {
   weapons = "Weapons Systems",
   junk = "Junk Pit",
 }
+
+local function adjustCollider(verts, dx, dy)
+  for i=1,#verts,2 do
+    verts[i+0] = verts[i+0] - dx
+    verts[i+1] = verts[i+1] - dx
+  end
+  return verts
+end
 
 function Repair:update(_, dt)
 
@@ -132,6 +139,37 @@ function Repair:update(_, dt)
     if hotspot then
       if hotspot == "cockpit" then
         error("Please implement your code here!")
+      elseif hotspot == "junk" then
+        local playerPos = self.player[Transform]
+        
+        local sprite = self.resources.trashgraphics[1]
+        local tx, ty = sprite:getDimensions()
+
+        local trash = Concord.entity.new()
+        trash:give(Transform, playerPos.x, playerPos.y)
+        trash:give(Sprite, sprite)
+        trash:give(
+          Physics, 
+          { 
+            x = 5, 
+            y = 7, 
+            type = "dynamic",
+          },
+          { { type = "polygon", 
+              verts = adjustCollider({
+                1.74,7.61,
+                7.30,2.13,
+                20.09,2.78,
+                20.43,12.13,
+                17.74,20.96,
+                4.22,21.04,
+                3.17,12.87,
+                1.22,11.17,
+              }, tx/2, ty/2)
+            }
+          }
+        )
+        RepairInstance:addEntity(trash)
       end
     else
       body:applyLinearImpulse(0, -forceZ)

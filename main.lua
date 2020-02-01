@@ -2,9 +2,11 @@ io.stdout:setvbuf("no")
 
 require "Lib.FancyPantsMath"
 
+STI = require("Lib.sti")
 GlobalGuard = require("Lib.GlobalGuard")
 Gamestate = require("Lib.Gamestate")
 local Baton = require("Lib.Baton")
+
 Input = Baton.new {
     controls = {
         left = {'key:left', 'key:a', 'axis:leftx-', 'button:dpleft'},
@@ -27,9 +29,23 @@ RepairInstance = Concord.instance()
 ShooteEmUpInstance = Concord.instance()
 BackgroundInstance = Concord.instance()
 
+-- Virtual screen size
+VirtualScreen = {
+    width = 1920,
+    height = 1080,
+}
+
+Camera = {
+    x = 0,
+    y = 0,
+    shake = 0,
+    zoom = 1.0,
+}
+
 GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
+    repair = require("Gamestates.Repair"),
 }
 
 GlobalGuard.enableGuard()
@@ -48,6 +64,7 @@ end)
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
+    GS.loader.targetState = "repair" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 

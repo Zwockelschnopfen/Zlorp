@@ -1,5 +1,6 @@
 local Loader = {
-    callbacks = {}
+    callbacks = {},
+    targetState = "menu"
 }
 
 function Loader:addCallback(cb)
@@ -30,7 +31,7 @@ function Loader:update(dt)
             cb()
         end
 
-        return Gamestate.switch(GS.menu)
+        return Gamestate.switch(GS[self.targetState] or error("Unknown state: " .. tostring(self.targetState)))
     end
 end
 

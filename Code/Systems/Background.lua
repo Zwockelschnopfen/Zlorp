@@ -38,21 +38,20 @@ function Background:draw()
     local dt = love.timer.getDelta()
 
     self.backgroundShift = self.backgroundShift - 25 * dt
-    if self.backgroundShift <= -1920 then
-        self.backgroundShift = self.backgroundShift + 1920
+    if self.backgroundShift <= -VirtualScreen.width then
+        self.backgroundShift = self.backgroundShift + VirtualScreen.width
     end
 
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.draw(self.background, math.floor(self.backgroundShift), 0)
-    love.graphics.draw(self.background, math.floor(self.backgroundShift + 1920), 0)
+    love.graphics.draw(self.background, math.floor(self.backgroundShift + VirtualScreen.width), 0)
 
     love.graphics.setColor(1, 1, 1)
     for i=1,5 do
         self.psystems[i]:update(dt)
-        love.graphics.draw(self.psystems[i], 1920, 0)
+        love.graphics.draw(self.psystems[i], VirtualScreen.width, 0)
     end
-
 
 end
 

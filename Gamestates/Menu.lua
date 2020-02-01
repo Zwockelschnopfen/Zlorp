@@ -154,7 +154,7 @@ function Menu:draw()
   love.graphics.printf(
     "Zlorp",
     0, 50 - 300 * math.pow(self.state.titleHidden, 2.0),
-    1920,
+    VirtualScreen.width,
     "center"
   )
 
@@ -176,7 +176,7 @@ function Menu:draw()
   end
 
   do
-    local x, y, w, h = 0, 264, 1920, 770
+    local x, y, w, h = 0, 264, VirtualScreen.width, 770
 
     local lineHeight = 70.0
     local fy = y - lineHeight * self.state.creditsLine
@@ -229,7 +229,7 @@ function Menu:draw()
     love.graphics.draw(GS.loader.resources.loadingScreen, 0, 0)
   else
     love.graphics.setColor(0, 0, 0, math.smoothstep(self.state.fading, 0.0, 1.0))
-    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+    love.graphics.rectangle("fill", 0, 0, VirtualScreen.width, VirtualScreen.height)
   end
 
 end

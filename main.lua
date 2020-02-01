@@ -1,5 +1,19 @@
 io.stdout:setvbuf("no")
 
+function dump(table)  -- for quick debugging
+    for k, v in pairs(table) do
+        print(k, v)
+    end
+    return table
+end
+
+function update(table, updates)
+    for k, v in pairs(updates) do
+        table[k] = v
+    end
+    return table
+end
+
 require "Lib.FancyPantsMath"
 
 STI = require("Lib.sti")

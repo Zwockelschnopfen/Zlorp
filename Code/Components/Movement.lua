@@ -1,6 +1,5 @@
 return Concord.component(
-    function(c, behavior, params)
+    function(c, behavior)
         c.behavior = behavior
-        c.params = params
     end
 )

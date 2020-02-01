@@ -15,9 +15,8 @@ function Mover:update(dt)
         local w, h = e:get(Sprite).img:getDimensions()
         local r = math.max(w, h)
 
-        m.behavior(m.params, t, dt)
+        m.behavior(e, t, dt)
         if t.x < -r or t.x > 1920 + r or t.y < -r or t.y > 1080 + r then
-            print("weg")
             e:destroy()
         end
     end

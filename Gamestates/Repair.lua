@@ -42,7 +42,30 @@ function Repair:initGame()
   
   self.world = Concord.entity.new()
   self.world:give(TMG, level)
-  self.world:give(PhysicsWorld)
+  self.world:give(PhysicsWorld, 9.81 * 70, 
+    function(f0, f1, c)
+      -- beginContact
+      local u0, u1 = f0:getUserData(), f1:getUserData()
+      if u0 then
+          u0.collisionCount = (u0.collisionCount or 0) + 1
+      end
+      if u1 then
+          u1.collisionCount = (u1.collisionCount or 0) + 1
+      end
+      -- print("begin", f0, f1, c)
+    end,
+    function(f0, f1, c)
+      -- endContact
+      local u0, u1 = f0:getUserData(), f1:getUserData()
+      if u0 then
+          u0.collisionCount = u0.collisionCount - 1
+      end
+      if u1 then
+          u1.collisionCount = u1.collisionCount - 1
+      end
+      -- print("end", f0, f1, c)
+    end
+  )
 
   RepairInstance:addEntity(self.world)
   

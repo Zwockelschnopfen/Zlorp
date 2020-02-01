@@ -3,6 +3,7 @@ local Movement = require("Code.Components.Movement")
 local Shooting = require("Code.Components.Shooting")
 local Sprite = require("Code.Components.Sprite")
 local Projectile = require("Code.Entities.Projectile")
+local Physics = require("Code.Components.Physics")
 
 local function move(e, t, dt)
     e.time = e.time + dt

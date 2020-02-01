@@ -186,13 +186,21 @@ function Repair:update(dt)
 
     body:setGravityScale(0)
 
-    trashPos.x = math.lerp(trashPos.x, tx, 0.3)
-    trashPos.y = math.lerp(trashPos.y, ty, 0.3)
+    trashPos.x = math.lerp(trashPos.x, tx, 0.1)
+    trashPos.y = math.lerp(trashPos.y, ty, 0.1)
+
+    local dx, dy = trashPos.x-tx, trashPos.y-ty
+
+    if dx*dx+dy*dy< 400 then -- magic value sponsored by print
+      self.player[AnimationSM]:setValue("isPickingUp", false)
     
-    if Input:pressed "action" then
-      body:setGravityScale(1)
-      self.currentTrash = nil
-      self.player[AnimationSM]:setValue("hasJunk", false)
+      if Input:pressed "action" then
+        body:setGravityScale(1)
+        self.currentTrash = nil
+        self.player[AnimationSM]:setValue("hasJunk", false)
+      else
+        self.player[AnimationSM]:setValue("hasJunk", true)
+      end
     end
 
   else
@@ -234,7 +242,7 @@ function Repair:update(dt)
           )
           RepairInstance:addEntity(trash)
 
-          self.player[AnimationSM]:setValue("hasJunk", true)
+          self.player[AnimationSM]:setValue("isPickingUp", true)
           self.currentTrash = trash
         end
       else

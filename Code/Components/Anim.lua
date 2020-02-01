@@ -47,7 +47,7 @@ local AnimComponent =  Concord.component(
 
 function AnimComponent:setActiveAnim(newAnim)
     if not self.anims[newAnim] then
-        error("Changing Animation to invalid value in " .. fileName .. ".lua. Values supplied is: " .. newAnim)
+        error("Changing Animation to invalid value in " .. self.fileName .. ".lua. Values supplied is: " .. newAnim)
     end
 
     if self.activeAnim == newAnim then

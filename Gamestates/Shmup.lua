@@ -5,6 +5,8 @@ local ShotTrigger = require("Code.Systems.ShotTrigger")
 local Mover = require("Code.Systems.Mover")
 local Transform = require("Code.Components.Transform")
 local EnemyShooter = require("Code.Entities.EnemyShooter")
+local PhysicsUpdate = require("Code.Systems.PhysicsUpdate")
+local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 
 local Shmup = {
     SHIP_SPEED = { x=500, y=700 },
@@ -29,9 +31,12 @@ function Shmup:load()
 end
 
 function Shmup:initGame()
+    self.pu = PhysicsUpdate()
     ShmupInstance:addSystem(ShotTrigger(), "update")
     ShmupInstance:addSystem(Mover(), "update")
+    ShmupInstance:addSystem(self.pu, "update")
     ShmupInstance:addSystem(SpriteRenderer(), "draw")
+    ShmupInstance:addEntity(PhysicsWorldHaver(0))
     self.ship = PlayerShip(200, self.PLAYFIELD_SIZE.y / 2)
     self.laserTimeout = 0
     self.rocketTimeout = 0
@@ -111,6 +116,7 @@ end
 function Shmup:draw()
     ShmupInstance:emit("draw")
     love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 10)
+    self.pu:draw()
 end
 
 return Shmup

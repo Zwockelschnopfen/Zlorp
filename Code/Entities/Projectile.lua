@@ -1,6 +1,7 @@
 local Transform = require("Code.Components.Transform")
 local Movement = require("Code.Components.Movement")
 local Sprite = require("Code.Components.Sprite")
+local Physics = require("Code.Components.Physics")
 
 local function move(e, t, dt)
     e.v = math.clamp(e.v + e.accel * dt, -e.vmax, e.vmax)

@@ -9,7 +9,7 @@ return {
   tilewidth = 70,
   tileheight = 70,
   nextlayerid = 5,
-  nextobjectid = 49,
+  nextobjectid = 53,
   properties = {
     ["collider"] = true
   },
@@ -695,6 +695,23 @@ return {
             ["collidable"] = true,
             ["sensor"] = true,
             ["type"] = "engines"
+          }
+        },
+        {
+          id = 50,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 887,
+          y = 1161,
+          width = 827,
+          height = 195,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true,
+            ["sensor"] = true,
+            ["type"] = "junkkill"
           }
         }
       }

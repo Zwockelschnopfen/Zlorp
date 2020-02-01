@@ -134,6 +134,8 @@ function Repair:update(dt)
     end
   end
 
+  self.hotspot = hotspot
+
   local forceX = 200
   local forceY = 200
   local forceZ = 400
@@ -240,6 +242,8 @@ end
 
 function Repair:draw()
   RepairInstance:emit("draw")
+
+  love.graphics.print("Current Hotspot: " .. tostring(self.hotspot), 10, 10)
 end
 
 return Repair

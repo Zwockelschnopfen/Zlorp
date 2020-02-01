@@ -41,7 +41,7 @@ GS.loader:addCallback(function()
     local sfe = Concord.entity.new()
     sfe:give(Starfield)
 
-    BackgroundInstance:addSystem(Background())
+    BackgroundInstance:addSystem(Background(), "draw")
     BackgroundInstance:addEntity(sfe)
 end) 
 

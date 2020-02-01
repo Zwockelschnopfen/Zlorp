@@ -3,8 +3,9 @@ local Transform = require("Code.Components.Transform")
 local Shmup = require "Gamestates.Shmup"
 local Repair = require "Gamestates.Repair"
 
-local Gameplay = {}
-
+local Gameplay = {
+  cameraTween = 0.0
+}
 
 local Camera = {
   x = 0,
@@ -73,20 +74,23 @@ function Gameplay:update(_, dt)
 end
 
 function Gameplay:draw()
+  local dt = love.timer.getDelta()
   local shipPos = Shmup.ship[Transform]
-  local sx, sy, z
-  
-  if self.mode == "shmup" then
-    sx, sy = 0, 0
-    z = 1.0
-  else
-    sx, sy = shipPos.x-VirtualScreen.width/2, shipPos.y-VirtualScreen.height/2
-    z = 3.0
-  end
 
-  Camera.x = math.lerp(Camera.x, sx, 0.1)
-  Camera.y = math.lerp(Camera.y, sy, 0.1)
-  Camera.zoom = math.lerp(Camera.zoom, z, 0.1)
+  do
+    if self.mode == "shmup" then
+      self.cameraTween = math.min(1.0, self.cameraTween - dt)
+
+    else
+      self.cameraTween = math.max(0.0, self.cameraTween + dt)
+
+    end
+
+    local tween = math.smoothstep(self.cameraTween, 0.0, 1.0)
+    Camera.x = math.lerp(0, shipPos.x-VirtualScreen.width/2, tween)
+    Camera.y = math.lerp(0, shipPos.y-VirtualScreen.height/2, tween)
+    Camera.zoom = math.lerp(1.0, 5.3, tween)
+  end
 
   love.graphics.origin()
 
@@ -109,6 +113,7 @@ function Gameplay:draw()
       -- fit "repair screen" into space trip
 
       love.graphics.translate(shipPos.x, shipPos.y)
+      love.graphics.translate(-150, -80)
       love.graphics.scale(0.1)
 
       Repair:draw()

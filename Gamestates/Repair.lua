@@ -11,6 +11,14 @@ local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
 
 local Repair = { }
 
+local function adjustCollider(verts, dx, dy)
+  for i=1,#verts,2 do
+    verts[i+0] = verts[i+0] - dx
+    verts[i+1] = verts[i+1] - dy
+  end
+  return verts
+end
+
 function Repair:load()
 	-- Set world meter size (in pixels)
   love.physics.setMeter(70)
@@ -42,30 +50,29 @@ function Repair:enter(previous, wasSwitched, ...)
   level:box2d_init(self.world[PhysicsWorld].world)
 
   local playerTall = 70 * 1.7
-  local playerFat =  70 *0.7
+  local playerFat =  70 * 0.7
 
   self.player = Concord.entity.new()
   self.player:give(Transform, 5 * 70, 7 * 70)
   self.player:give(
     Physics, 
     { 
-      x = 5,
-      y = 7,
       type = "dynamic",
       fixedRotation = true,
       gravityScale = 0,
+      friction = 0,
     },
     { { type = "polygon", 
-        verts = {
-          6.00-playerFat/2,0.00-playerTall/2,
-          43.00-playerFat/2,0.00-playerTall/2,
-          49.00-playerFat/2,6.00-playerTall/2,
-          49.00-playerFat/2,113.00-playerTall/2,
-          43.00-playerFat/2,119.00-playerTall/2,
-          6.00-playerFat/2,119.00-playerTall/2,
-          0.00-playerFat/2,113.00-playerTall/2,
-          0.00-playerFat/2,6.00-playerTall/2,
-        }
+        verts = adjustCollider({
+            6.00,0.00,
+            43.00,0.00,
+            49.00,6.00,
+            49.00,113.00,
+            43.00,119.00,
+            6.00,119.00,
+            0.00,113.00,
+            0.00,6.00,
+        }, playerFat/2, playerTall/2)
       }
     }
   )
@@ -82,6 +89,8 @@ function Repair:enter(previous, wasSwitched, ...)
   RepairInstance:addSystem(physA, "update" )
   RepairInstance:addSystem(physA, "draw" )
 
+  self.currentTrash = nil
+
 end
 
 function Repair:leave()
@@ -95,14 +104,6 @@ local HotSpots = {
   weapons = "Weapons Systems",
   junk = "Junk Pit",
 }
-
-local function adjustCollider(verts, dx, dy)
-  for i=1,#verts,2 do
-    verts[i+0] = verts[i+0] - dx
-    verts[i+1] = verts[i+1] - dx
-  end
-  return verts
-end
 
 function Repair:update(_, dt)
 
@@ -133,45 +134,66 @@ function Repair:update(_, dt)
   if not anyLadder then
     body:applyForce(0, 9.81 * 70)
   end
-  if Input:pressed "action" then
 
-    if hotspot then
-      if hotspot == "cockpit" then
-        error("Please implement your code here!")
-      elseif hotspot == "junk" then
-        local playerPos = self.player[Transform]
-        
-        local sprite = self.resources.trashgraphics[1]
-        local tx, ty = sprite:getDimensions()
+  if self.currentTrash then
+    -- wir halten MÜLL!
+    local playerPos = self.player[Transform]
+    local trashPos = self.currentTrash[Transform]
+    
+    local body = self.currentTrash[Physics].body
 
-        local trash = Concord.entity.new()
-        trash:give(Transform, playerPos.x, playerPos.y)
-        trash:give(Sprite, sprite)
-        trash:give(
-          Physics, 
-          { 
-            x = 5, 
-            y = 7, 
-            type = "dynamic",
-          },
-          { { type = "polygon", 
-              verts = adjustCollider({
-                1.74,7.61,
-                7.30,2.13,
-                20.09,2.78,
-                20.43,12.13,
-                17.74,20.96,
-                4.22,21.04,
-                3.17,12.87,
-                1.22,11.17,
-              }, tx/2, ty/2)
+    local tx = playerPos.x + 40
+    local ty = playerPos.y - 10
+
+    body:applyForce(
+      138.12 * (tx - trashPos.x),
+      138.12 * (ty - trashPos.y)
+    )
+
+
+  else
+    if Input:pressed "action" then
+
+      if hotspot then
+        if hotspot == "cockpit" then
+          error("Please implement your code here!")
+        elseif hotspot == "junk" then
+          local playerPos = self.player[Transform]
+          
+          local idx = math.random(#self.resources.trashgraphics)
+
+          local sprite = self.resources.trashgraphics[idx]
+          local tx, ty = sprite:getDimensions()
+
+          local trash = Concord.entity.new()
+          trash:give(Transform, playerPos.x + 40, playerPos.y + 40)
+          trash:give(Sprite, sprite)
+          trash:give(
+            Physics, 
+            {
+              type = "dynamic",
+            },
+            { { type = "polygon", 
+                verts = adjustCollider({
+                  1.74,7.61,
+                  7.30,2.13,
+                  20.09,2.78,
+                  20.43,12.13,
+                  17.74,20.96,
+                  4.22,21.04,
+                  3.17,12.87,
+                  1.22,11.17,
+                }, tx/2, ty/2)
+              }
             }
-          }
-        )
-        RepairInstance:addEntity(trash)
+          )
+          RepairInstance:addEntity(trash)
+
+          self.currentTrash = trash
+        end
+      else
+        body:applyLinearImpulse(0, -forceZ)
       end
-    else
-      body:applyLinearImpulse(0, -forceZ)
     end
   end
 

@@ -19,6 +19,13 @@ function PhysicsUpdate:entityAdded(e)
     local physics = e:get(Physics)
 
     if physics then
+
+        local trans = e[Transform]
+        if trans then
+            physics.bodyData.x = physics.bodyData.x or (trans.x / love.physics.getMeter())
+            physics.bodyData.y = physics.bodyData.y or (trans.y / love.physics.getMeter())
+        end
+
         physics.body = love.physics.newBody(world, physics.bodyData.x, physics.bodyData.y, physics.bodyData.type)
         physics.body:setFixedRotation(physics.bodyData.fixedRotation or false)
         physics.body:setGravityScale(physics.bodyData.gravityScale or 1.0)
@@ -26,7 +33,9 @@ function PhysicsUpdate:entityAdded(e)
         for _, shapeDat in ipairs(physics.shapeDataTable) do
             newShape = PhysicsUpdate:createShape(shapeDat)
             local fix = love.physics.newFixture( physics.body, newShape, shapeDat.density)
-            fix:setFriction(0)
+            if physics.bodyData.friction then
+                fix:setFriction(physics.bodyData.friction)
+            end
             fix:setUserData({
                 collisionCount = 0,
                 properties = {

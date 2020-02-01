@@ -53,7 +53,7 @@ function Repair:initGame()
   local playerFat =  70 * 0.7
 
   self.player = Concord.entity.new()
-  self.player:give(Transform, 5 * 70, 7 * 70)
+  self.player:give(Transform, 10 * 70, 14 * 70)
   self.player:give(
     Physics, 
     { 
@@ -88,8 +88,6 @@ function Repair:initGame()
   local physA = PhysicsUpdate()
   RepairInstance:addSystem(physA, "update" )
   RepairInstance:addSystem(physA, "draw" )
-
-
 end
 
 function Repair:exitGame()
@@ -156,11 +154,15 @@ function Repair:update(dt)
     local tx = playerPos.x + 40
     local ty = playerPos.y - 10
 
-    body:applyForce(
-      138.12 * (tx - trashPos.x),
-      138.12 * (ty - trashPos.y)
-    )
+    body:setGravityScale(0)
 
+    trashPos.x = math.lerp(trashPos.x, tx, 0.3)
+    trashPos.y = math.lerp(trashPos.y, ty, 0.3)
+    
+    if Input:pressed "action" then
+      body:setGravityScale(1)
+      self.currentTrash = nil
+    end
 
   else
     if Input:pressed "action" then

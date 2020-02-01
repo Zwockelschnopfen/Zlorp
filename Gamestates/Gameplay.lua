@@ -77,13 +77,11 @@ function Gameplay:draw()
   local dt = love.timer.getDelta()
   local shipPos = Shmup.ship[Transform]
 
-  do
+  do -- camera tweening between zoomed in/out
     if self.mode == "shmup" then
       self.cameraTween = math.min(1.0, self.cameraTween - dt)
-
     else
       self.cameraTween = math.max(0.0, self.cameraTween + dt)
-
     end
 
     local tween = math.smoothstep(self.cameraTween, 0.0, 1.0)

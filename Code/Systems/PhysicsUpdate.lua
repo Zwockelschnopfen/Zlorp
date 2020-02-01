@@ -19,12 +19,12 @@ function PhysicsUpdate:entityAdded(e)
     local physics = e:get(Physics)
 
     if physics then
-
-        e.body = love.physics.newBody(world, physics.bodyData.x, physics.bodyData.y, physics.bodyData.type)
+        physics.body = love.physics.newBody(world, physics.bodyData.x, physics.bodyData.y, physics.bodyData.type)
+        physics.body:setFixedRotation(physics.bodyData.fixedRotation or false)
         local newShape
         for _, shapeDat in ipairs(physics.shapeDataTable) do
             newShape = PhysicsUpdate:createShape(shapeDat)
-            love.physics.newFixture( e.body, newShape, shapeDat.density)
+            love.physics.newFixture( physics.body, newShape, shapeDat.density)
         end
     end 
 end
@@ -41,7 +41,8 @@ function PhysicsUpdate:update(dt)
             physics.body:setY(transform.y)
         end
         
-        we.world:update(dt)
+        local world = we[World]
+        world.world:update(dt)
 
         for _, e in ipairs(self.pool.objects) do
             transform = e:get(Transform)
@@ -49,15 +50,18 @@ function PhysicsUpdate:update(dt)
 
             transform.x = physics.body:getX()
             transform.y = physics.body:getY()
+            transform.r = physics.body:getAngle()
         end
     end
 end
 
 function PhysicsUpdate:draw()
     local transform
-    for _, e in iparirs(self.pool.objects) do
+    for _, e in ipairs(self.pool.objects) do
         transform = e:get(Transform)
-        love.graphics.circle("fill", transform.x, transform.y)
+        if transform then
+            love.graphics.circle("fill", transform.x, transform.y, 5)
+        end
     end 
 end
 

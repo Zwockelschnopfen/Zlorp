@@ -1,4 +1,5 @@
 local TMG = require "Code.Components.TileMapGraphics"
+local PhysicsWorld = require "Code.Components.PhysicsWorld"
 local TMR = require "Code.Systems.TileMapRenderer"
 
 local Repair = {
@@ -7,23 +8,21 @@ local Repair = {
 
 function Repair:load()
 	-- Set world meter size (in pixels)
-  love.physics.setMeter(32)
-  
-  self.level = STI("Assets/Levels/Prototype.lua", { "box2d" })
-
-	-- Prepare physics world with horizontal and vertical gravity
-	local world = love.physics.newWorld(0, 0)
-
-	-- Prepare collision objects
-  self.level:box2d_init(world)
-  
+  love.physics.setMeter(70)
 end
 
 function Repair:enter(previous, wasSwitched, ...)
+  
+  local level = STI("Assets/Levels/Test.lua", { "box2d" })
+  
   local repairShip = Concord.entity.new()
-  repairShip:give(TMG, self.level)
+  repairShip:give(TMG, level)
+  repairShip:give(PhysicsWorld)
 
   RepairInstance:addEntity(repairShip)
+  
+	-- Prepare collision objects
+  level:box2d_init(repairShip[PhysicsWorld].world)
 
   RepairInstance:addSystem(TMR(), "draw")
 end

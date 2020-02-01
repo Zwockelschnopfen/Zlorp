@@ -5,6 +5,7 @@ require "Lib.FancyPantsMath"
 STI = require("Lib.sti")
 GlobalGuard = require("Lib.GlobalGuard")
 Gamestate = require("Lib.Gamestate")
+Music = require "Code.Music"
 local Baton = require("Lib.Baton")
 
 Input = Baton.new {
@@ -62,10 +63,12 @@ GS.loader:addCallback(function()
     BackgroundInstance:addEntity(sfe)
 end)
 
+GS.loader:addCallback(Music.load)
+
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    GS.loader.targetState = "repair" -- uncomment to make default behaviour
+    -- GS.loader.targetState = "repair" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 
@@ -78,6 +81,8 @@ function love.keypressed( key, scancode, isrepeat )
 end
 
 function love.update(dt)
+
+    Music.update(dt)
 
     Input:update()
     Gamestate:update(dt)
@@ -104,7 +109,6 @@ function love.draw()
     Gamestate:draw()
     
     love.graphics.pop()
-
 end
 
 function love.keyreleased(...)      Gamestate:keyreleased(...)end

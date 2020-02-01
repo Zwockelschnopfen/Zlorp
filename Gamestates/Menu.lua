@@ -90,6 +90,10 @@ function Menu:update(_, dt)
     state.titleHidden = math.min(1.0, state.titleHidden + 3.0 * dt)
 
     if state.mainHidden >= 1.0 and state.titleHidden >= 1.0 then
+
+      Music.setTrack("game")
+      Music.setIntensity(1)
+
       return Gamestate.switch(GS.repair)
     end
 
@@ -135,6 +139,7 @@ function Menu:update(_, dt)
   end
   
   if state.current == "exit" then
+    Music.setTrack("none")
     state.fading = state.fading + 2.0 * dt
     if state.fading > 2.0 then
       love.event.quit()

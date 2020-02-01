@@ -1,4 +1,6 @@
-
+function math.rad(deg)
+  return deg * 2 * math.pi / 360
+end
 
 function math.clamp(val, min, max)
   if val < min then

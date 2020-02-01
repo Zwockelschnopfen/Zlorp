@@ -5,6 +5,7 @@ require "Lib.FancyPantsMath"
 STI = require("Lib.sti")
 GlobalGuard = require("Lib.GlobalGuard")
 Gamestate = require("Lib.Gamestate")
+Music = require "Code.Music"
 local Baton = require("Lib.Baton")
 
 Input = Baton.new {
@@ -36,10 +37,10 @@ VirtualScreen = {
 }
 
 Camera = {
-    x = 0,
+    x = 600,
     y = 0,
     rotation = 0,
-    zoom = 1.0,
+    zoom = 0.5,
 }
 
 GS = {
@@ -62,10 +63,12 @@ GS.loader:addCallback(function()
     BackgroundInstance:addEntity(sfe)
 end)
 
+GS.loader:addCallback(Music.load)
+
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    GS.loader.targetState = "repair" -- uncomment to make default behaviour
+    -- GS.loader.targetState = "repair" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 
@@ -79,22 +82,7 @@ end
 
 function love.update(dt)
 
-    Camera.x = love.mouse.getX() - love.graphics.getWidth()/2
-    Camera.y = love.mouse.getY() - love.graphics.getHeight()/2
-
-    local zoom = 1.0
-    if love.keyboard.isDown "e" then
-        zoom = 2.0
-    elseif love.keyboard.isDown "q" then
-        zoom = 0.5
-    end
-    Camera.zoom = math.lerp(Camera.zoom, zoom, 0.1)
-    
-    if love.keyboard.isDown "1" then
-        Camera.rotation = Camera.rotation - dt
-    elseif love.keyboard.isDown "3" then
-        Camera.rotation = Camera.rotation + dt
-    end
+    Music.update(dt)
 
     Input:update()
     Gamestate:update(dt)
@@ -116,12 +104,11 @@ function love.draw()
     love.graphics.rotate(Camera.rotation)
     love.graphics.translate(-VirtualScreen.width/2, -VirtualScreen.height/2)
 
-    love.graphics.translate(Camera.x, Camera.y)
+    love.graphics.translate(-Camera.x, -Camera.y)
     
     Gamestate:draw()
     
     love.graphics.pop()
-
 end
 
 function love.keyreleased(...)      Gamestate:keyreleased(...)end

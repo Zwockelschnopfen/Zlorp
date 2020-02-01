@@ -89,12 +89,20 @@ function Menu:update(_, dt)
   if state.current == "game" then
     state.titleHidden = math.min(1.0, state.titleHidden + 3.0 * dt)
 
+    if state.mainHidden >= 1.0 and state.titleHidden >= 1.0 then
+      return Gamestate.switch(GS.menu)
+    end
 
     return
   end
   
   if state.current == "help" then
     
+    if Input:pressed "action" then
+      state.current = "main"
+      love.audio.play(self.resources.acceptSound)
+    end
+
     return
   end
   
@@ -111,12 +119,14 @@ function Menu:update(_, dt)
       local delta = math.abs(targetSpeed - state.creditsSpeed)
       local dir = math.sign(targetSpeed - state.creditsSpeed)
 
-      state.creditsSpeed = state.creditsSpeed + math.min(5.0 * dt, delta) * dir
-
+      state.creditsSpeed = state.creditsSpeed + math.min(10.0 * dt, delta) * dir
     end
     state.creditsLine = state.creditsLine + state.creditsSpeed * dt
 
     if state.creditsLine > #self.resources.credits or Input:pressed "action" then
+      if Input:pressed "action" then
+        love.audio.play(self.resources.acceptSound)
+      end
       state.current = "main"
       state.creditsLine = -10.5
     end

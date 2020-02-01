@@ -118,8 +118,6 @@ function Repair:update(_, dt)
     end
   end
 
-  print("hotspot", hotspot)
-
   local forceX = 200
   local forceY = 200
   local forceZ = 400
@@ -130,7 +128,14 @@ function Repair:update(_, dt)
     body:applyForce(0, 9.81 * 70)
   end
   if Input:pressed "action" then
-    body:applyLinearImpulse(0, -forceZ)
+
+    if hotspot then
+      if hotspot == "cockpit" then
+        error("Please implement your code here!")
+      end
+    else
+      body:applyLinearImpulse(0, -forceZ)
+    end
   end
 
   local vx, vy = body:getLinearVelocity()

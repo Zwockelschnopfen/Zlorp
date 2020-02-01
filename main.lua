@@ -26,7 +26,7 @@ Concord.init()
 
 HUDInstance = Concord.instance()
 RepairInstance = Concord.instance()
-ShooteEmUpInstance = Concord.instance()
+ShmupInstance = Concord.instance()
 BackgroundInstance = Concord.instance()
 
 -- Virtual screen size
@@ -46,6 +46,7 @@ GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
     repair = require("Gamestates.Repair"),
+    shmup = require("Gamestates.Shmup")
 }
 
 GlobalGuard.enableGuard()

@@ -36,7 +36,7 @@ function PhysicsUpdate:entityAdded(e)
             if physics.bodyData.friction then
                 fix:setFriction(physics.bodyData.friction)
             end
-            fix:setUserData({
+            fix:setUserData(physics.bodyData.userData or {
                 collisionCount = 0,
                 properties = {
                     type = "body",

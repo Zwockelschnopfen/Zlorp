@@ -11,11 +11,12 @@ function SpriteRenderer:draw()
     for _, e in ipairs(self.pool.objects) do
         local t = e:get(Transform)
         local s = e:get(Sprite)
+        local w, h = s.img:getDimensions()
 
         if s.quad then
-            love.graphics.draw(s.img, s.quad, t.x, t.y, t.r, t.sx, t.sy)
+            love.graphics.draw(s.img, s.quad, t.x, t.y, t.r, t.sx, t.sy, w/2, h/2)
         else
-            love.graphics.draw(s.img, t.x, t.y, t.r, t.sx, t.sy)
+            love.graphics.draw(s.img, t.x, t.y, t.r, t.sx, t.sy, w/2, h/2)
         end
     end
 end

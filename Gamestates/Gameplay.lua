@@ -109,17 +109,20 @@ function Gameplay:draw()
     
     Shmup:draw()
 
-    love.graphics.push()
+    if self.cameraTween > 0.5 then
 
-      -- fit "repair screen" into space trip
+      love.graphics.push()
 
-      love.graphics.translate(shipPos.x, shipPos.y)
-      love.graphics.translate(-140, -25)
-      love.graphics.scale(0.10)
+        -- fit "repair screen" into space trip
 
-      Repair:draw()
+        love.graphics.translate(shipPos.x, shipPos.y)
+        love.graphics.translate(-140, -25)
+        love.graphics.scale(0.10)
 
-    love.graphics.pop()
+        Repair:draw()
+
+      love.graphics.pop()
+    end
 
   love.graphics.pop()
 

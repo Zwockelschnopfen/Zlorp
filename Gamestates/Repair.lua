@@ -16,6 +16,7 @@ local PHYSICS_SCALING = 128
 
 local Trash = Concord.component(function(c)
   c.isHeld = true
+  c.isCaptured = false
 end)
 
 local TrashCleaner = Concord.system({
@@ -73,8 +74,6 @@ function Repair:load()
     player = love.graphics.newImage("Assets/Sprites/Player.png"),
     trashgraphics = {
        love.graphics.newImage("Assets/Sprites/Trash01.png"),
-       love.graphics.newImage("Assets/Sprites/Trash02.png"),
-       love.graphics.newImage("Assets/Sprites/Trash03.png"),
     },
   }
 end
@@ -192,9 +191,9 @@ function Repair:update(dt)
 
   self.hotspot = hotspot
 
-  local forceX = 200
-  local forceY = 200
-  local forceZ = 400
+  local forceX = 400
+  local forceY = 400
+  local forceZ = 800
 
   if not anyLadder then
     body:applyForce(0, 9.81 * PHYSICS_SCALING)
@@ -207,17 +206,21 @@ function Repair:update(dt)
     
     local body = self.currentTrash[Physics].body
 
-    local tx = (self.player.walkDir == "left") and playerPos.x - 40 or  playerPos.x + 40
-    local ty = playerPos.y - 10
+    local tx = playerPos.x + ((self.player.walkDir == "left") and (-20) or -5)
+    local ty = playerPos.y - 33
 
     body:setGravityScale(0)
 
     trashPos.x = math.lerp(trashPos.x, tx, 0.1)
     trashPos.y = math.lerp(trashPos.y, ty, 0.1)
 
-    local dx, dy = trashPos.x-tx, trashPos.y-ty
+    local dx, dy = trashPos.x - tx, trashPos.y - ty
 
-    if dx*dx+dy*dy< 400 then -- magic value sponsored by print
+    if (dx*dx+dy*dy < 5000) or self.currentTrash[Trash].isCaptured then -- magic value sponsored by print
+      if not self.currentTrash[Trash].isCaptured then
+        self.currentTrash[Trash].isCaptured = true 
+        self.player[AnimationSM]:setValue("hasJunk", true)
+      end
       self.player[AnimationSM]:setValue("isPickingUp", false)
     
       if Input:pressed "action" then
@@ -225,9 +228,9 @@ function Repair:update(dt)
         self.player[AnimationSM]:setValue("hasJunk", false)
         self.currentTrash[Trash].isHeld = false
         self.currentTrash = nil
-      else
-        self.player[AnimationSM]:setValue("hasJunk", true)
       end
+    else
+      print(dx*dx+dy*dy)
     end
 
   else
@@ -256,14 +259,12 @@ function Repair:update(dt)
             },
             { { type = "polygon", 
                 verts = adjustCollider({
-                  1.74,7.61,
-                  7.30,2.13,
-                  20.09,2.78,
-                  20.43,12.13,
-                  17.74,20.96,
-                  4.22,21.04,
-                  3.17,12.87,
-                  1.22,11.17,
+                  1.48,9.13,
+                  15.65,1.22,
+                  30.09,9.09,
+                  30.35,28.22,
+                  14.74,34.78,
+                  1.48,27.00,
                 }, tx/2, ty/2)
               }
             }

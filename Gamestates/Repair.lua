@@ -2,12 +2,15 @@ local TMG          = require "Code.Components.TileMapGraphics"
 local PhysicsWorld = require "Code.Components.PhysicsWorld"
 local Physics      = require "Code.Components.Physics"
 local Sprite       = require "Code.Components.Sprite"
+local Anim         = require "Code.Components.Anim"
 local Transform    = require "Code.Components.Transform"
 local Gravity      = require "Code.Components.Gravity"
+local AnimationSM  = require "Code.Components.AnimStateMachine"
 
 local TMR            = require "Code.Systems.TileMapRenderer"
 local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
+local AnimUpdate  = require "Code.Systems.AnimUpdate"
 
 local Repair = { }
 
@@ -47,10 +50,10 @@ function Repair:initGame()
       -- beginContact
       local u0, u1 = f0:getUserData(), f1:getUserData()
       if u0 then
-          u0.collisionCount = (u0.collisionCount or 0) + 1
+        u0.collisionCount = (u0.collisionCount or 0) + 1
       end
       if u1 then
-          u1.collisionCount = (u1.collisionCount or 0) + 1
+        u1.collisionCount = (u1.collisionCount or 0) + 1
       end
       -- print("begin", f0, f1, c)
     end,
@@ -77,6 +80,7 @@ function Repair:initGame()
 
   self.player = Concord.entity.new()
   self.player:give(Transform, 10 * 70, 14 * 70)
+  self.player:give(AnimationSM)
   self.player:give(
     Physics, 
     { 
@@ -99,12 +103,13 @@ function Repair:initGame()
       }
     }
   )
-  self.player:give(Sprite, self.resources.player)
+  self.player:give(Anim, "animation_sheet_filled", "idle")
   self.player:give(Gravity)
   RepairInstance:addEntity(self.player)
 
   -- RepairInstance:addSystem(GravityUpdater())
   RepairInstance:addSystem(TMR(), "draw")
+  RepairInstance:addSystem(AnimUpdate(), "draw")
   RepairInstance:addSystem(SpriteRenderer(), "draw")
   
   -- MUST BE LAST:
@@ -187,6 +192,7 @@ function Repair:update(dt)
     if Input:pressed "action" then
       body:setGravityScale(1)
       self.currentTrash = nil
+      self.player[AnimationSM]:setValue("hasJunk", false)
     end
 
   else
@@ -228,6 +234,7 @@ function Repair:update(dt)
           )
           RepairInstance:addEntity(trash)
 
+          self.player[AnimationSM]:setValue("hasJunk", true)
           self.currentTrash = trash
         end
       else
@@ -238,7 +245,9 @@ function Repair:update(dt)
 
   local vx, vy = body:getLinearVelocity()
 
+  local isClimbing = false
   if anyLadder then
+    isClimbing = true
     if Input:down "up" then
       if vy > -forceY then
         vy = -forceY
@@ -252,14 +261,21 @@ function Repair:update(dt)
     end
   end
 
+  local moving
   if Input:down "left" then
     body:setLinearVelocity(-forceX, vy)
+    moving = true
   elseif Input:down "right" then
     body:setLinearVelocity(forceX, vy)
+    moving = true
   else
     vx = vx * 0.9
     body:setLinearVelocity(vx, vy)
+    moving = false
   end
+
+  self.player[AnimationSM]:setValue("isClimbing", isClimbing)
+  self.player[AnimationSM]:setValue("isMoving", moving)
 
 end
 

@@ -33,7 +33,7 @@ function Repair:load()
   }
 end
 
-function Repair:enter(previous, wasSwitched, ...)
+function Repair:initGame()
 
   local level = STI("Assets/Levels/Test.lua", { "box2d" })
   level.layers["Walls"].visible = false
@@ -89,12 +89,19 @@ function Repair:enter(previous, wasSwitched, ...)
   RepairInstance:addSystem(physA, "update" )
   RepairInstance:addSystem(physA, "draw" )
 
-  self.currentTrash = nil
 
 end
 
-function Repair:leave()
+function Repair:exitGame()
   RepairInstance:clear()
+end
+
+function Repair:enter(previous, wasSwitched, ...)
+  self.currentTrash = nil
+end
+
+function Repair:leave()
+
 end
 
 local HotSpots = {
@@ -105,7 +112,11 @@ local HotSpots = {
   junk = "Junk Pit",
 }
 
-function Repair:update(_, dt)
+function Repair:globalUpdate(dt)
+  RepairInstance:emit("update", dt)
+end
+
+function Repair:update(dt)
 
   local anyLadder = false
   local hotspot
@@ -222,7 +233,6 @@ function Repair:update(_, dt)
     body:setLinearVelocity(vx, vy)
   end
 
-  RepairInstance:emit("update", dt)
 end
 
 function Repair:draw()

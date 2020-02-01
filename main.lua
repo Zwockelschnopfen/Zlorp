@@ -60,8 +60,7 @@ Camera = {
 GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
-    repair = require("Gamestates.Repair"),
-    shmup = require("Gamestates.Shmup")
+    gameplay = require("Gamestates.Gameplay"),
 }
 
 GlobalGuard.enableGuard()
@@ -82,7 +81,7 @@ GS.loader:addCallback(Music.load)
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    GS.loader.targetState = "repair" -- uncomment to make default behaviour
+    GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 

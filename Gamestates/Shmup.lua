@@ -23,12 +23,12 @@ local Shmup = {
 
 function Shmup:load()
     self.resources = {
-        rocket = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
-        laser  = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
+        rocket = love.graphics.newImage("Assets/Sprites/Rocket.png"),
+        laser  = love.graphics.newImage("Assets/Sprites/Laser.png"),
     }
 end
 
-function Shmup:enter(previous, wasSwitched, ...)
+function Shmup:initGame()
     ShmupInstance:addSystem(ShotTrigger(), "update")
     ShmupInstance:addSystem(Mover(), "update")
     ShmupInstance:addSystem(SpriteRenderer(), "draw")
@@ -37,6 +37,19 @@ function Shmup:enter(previous, wasSwitched, ...)
     self.rocketTimeout = 0
     self.rocketSpawnPoint = 0
     ShmupInstance:addEntity(self.ship)
+end
+  
+function Shmup:exitGame()
+    ShmupInstance:clear()
+end
+
+function Shmup:enter(previous, wasSwitched, ...)
+
+    self:initWaves()
+
+    Camera.x = 0.5 * VirtualScreen.width
+    Camera.y = 0.5 * VirtualScreen.height
+
 end
 
 function Shmup:leave()
@@ -65,8 +78,13 @@ function Shmup:updateWaves(dt)
     end
 end
 
-function Shmup:update(_, dt)
+function Shmup:globalUpdate(dt)
     self:updateWaves(dt)
+    
+    ShmupInstance:emit("update", dt)
+end
+
+function Shmup:update(dt)
 
     local x, y = Input:get("move")
     local t = self.ship:get(Transform)
@@ -90,9 +108,7 @@ function Shmup:update(_, dt)
             ShmupInstance:addEntity(Projectile(self.resources.laser, t.x, t.y, 0, self.LASER_SPEED, 0, self.LASER_SPEED))
             self.laserTimeout = self.LASER_RATE
         end
-        self:initWaves()
     end
-    ShmupInstance:emit("update", dt)
 end
 
 function Shmup:draw()

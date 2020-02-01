@@ -54,11 +54,24 @@ function PhysicsUpdate:update(dt)
 end
 
 function PhysicsUpdate:draw()
-    local transform
-    for _, e in iparirs(self.pool.objects) do
-        transform = e:get(Transform)
-        love.graphics.circle("fill", transform.x, transform.y)
-    end 
+    local we = self.world.objects[1]
+    if we then
+        pw = we:get(World)
+        for _, body in pairs(pw:getBodyList()) do
+            for _, fixture in pairs(body:getFixtureList()) do
+                local shape = fixture:getShape()
+
+                if shape:typeOf("CircleShape") then
+                    local cx, cy = body:getWorldPoints(shape:getPoint())
+                    love.graphics.circle("fill", cx, cy, shape:getRadius())
+                elseif shape:typeOf("PolygonShape") then
+                    love.graphics.polygon("fill", body:getWorldPoints(shape:getPoints()))
+                else
+                    love.graphics.line(body:getWorldPoints(shape:getPoints()))
+                end
+            end
+        end
+    end
 end
 
 

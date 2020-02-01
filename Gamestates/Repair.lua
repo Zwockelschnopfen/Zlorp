@@ -8,7 +8,6 @@ local Gravity      = require "Code.Components.Gravity"
 local TMR            = require "Code.Systems.TileMapRenderer"
 local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
-local GravityUpdater = require "Code.Systems.GravityUpdater"
 
 local Repair = { }
 

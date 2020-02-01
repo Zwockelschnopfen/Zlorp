@@ -1,0 +1,45 @@
+Shmup
+-----
+
+Raumschiff 
+
+Asteroid - Spieler muss ausweichen
+Kamikaze - fliegt mit Pfad auf Spieler (started richtung spieler, dreht sich langsam richtung spieler)
+HitNRun  - fliegt rein, schießt paar mal, fliegt wieder raus
+
+LaserShot - kurze Linie, fliegt schnell geradeaus
+BallShot  - leuchtender Ball, fliegt langsam in eine Richtung, evtl. mit leichtem Winkel
+RocketShot- kleine Rakete, fliegt schnell geradeaus
+
+
+
+Repair
+------
+
+Raumschiff
+
+Player Character
+Pilotensitz
+Weapons console
+Shield console
+Engines console
+Pile o Junk
+
+
+HUD
+---
+
+
+
+COMPONENTS:
+-----------
+Transform
+Sprite
+Anim
+Particle
+Physics
+EnemyMovement
+EnemyShooting
+Enemy (Name, Damage, etc)
+
+

@@ -24,3 +24,7 @@ function math.sign(val)
     return 0
   end
 end
+
+function math.lerp(l, r, f)
+  return l * (1-f) + f * r
+end

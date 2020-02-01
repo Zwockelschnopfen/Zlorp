@@ -90,7 +90,7 @@ function Menu:update(_, dt)
     state.titleHidden = math.min(1.0, state.titleHidden + 3.0 * dt)
 
     if state.mainHidden >= 1.0 and state.titleHidden >= 1.0 then
-      return Gamestate.switch(GS.menu)
+      return Gamestate.switch(GS.repair)
     end
 
     return
@@ -146,6 +146,9 @@ function Menu:update(_, dt)
 end
 
 function Menu:draw()
+  love.graphics.push()
+  love.graphics.origin()
+
   local t = love.timer.getTime()
   local dt = love.timer.getDelta()
 
@@ -232,6 +235,7 @@ function Menu:draw()
     love.graphics.rectangle("fill", 0, 0, VirtualScreen.width, VirtualScreen.height)
   end
 
+  love.graphics.pop()
 end
 
 return Menu

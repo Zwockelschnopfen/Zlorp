@@ -52,10 +52,18 @@ function Repair:enter(previous, wasSwitched, ...)
     },
     { { type = "polygon", 
         verts = { -- 70cm width, 170cm height
-        -playerFat/2, -playerTall/2,
+        --[[-playerFat/2, -playerTall/2,
         -playerFat/2,  playerTall/2,
          playerFat/2,  playerTall/2,
-         playerFat/2, -playerTall/2
+         playerFat/2, -playerTall/2]]
+          6.00-playerFat/2,0.00-playerTall/2,
+          43.00-playerFat/2,0.00-playerTall/2,
+          49.00-playerFat/2,6.00-playerTall/2,
+          49.00-playerFat/2,113.00-playerTall/2,
+          43.00-playerFat/2,119.00-playerTall/2,
+          6.00-playerFat/2,119.00-playerTall/2,
+          0.00-playerFat/2,113.00-playerTall/2,
+          0.00-playerFat/2,6.00-playerTall/2,
         }
       }
     }

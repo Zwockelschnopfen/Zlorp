@@ -50,13 +50,6 @@ VirtualScreen = {
     height = 1080,
 }
 
-Camera = {
-    x = 600,
-    y = 0,
-    rotation = 0,
-    zoom = 0.5,
-}
-
 GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
@@ -81,7 +74,7 @@ GS.loader:addCallback(Music.load)
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    -- GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
+    GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 
@@ -104,24 +97,8 @@ end
 function love.draw()
     love.graphics.origin()
     BackgroundInstance:emit("draw")
-
-    love.graphics.origin()
-
-    love.graphics.push()
-
-    love.graphics.translate(VirtualScreen.width/2, VirtualScreen.height/2)
-    love.graphics.scale(Camera.zoom)
-    love.graphics.translate(-VirtualScreen.width/2, -VirtualScreen.height/2)
-
-    love.graphics.translate(VirtualScreen.width/2, VirtualScreen.height/2)
-    love.graphics.rotate(Camera.rotation)
-    love.graphics.translate(-VirtualScreen.width/2, -VirtualScreen.height/2)
-
-    love.graphics.translate(-Camera.x, -Camera.y)
     
     Gamestate:draw()
-    
-    love.graphics.pop()
 end
 
 function love.keyreleased(...)      Gamestate:keyreleased(...)end

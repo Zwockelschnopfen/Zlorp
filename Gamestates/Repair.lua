@@ -167,7 +167,8 @@ function Repair:update(dt)
 
       if hotspot then
         if hotspot == "cockpit" then
-          error("Please implement your code here!")
+          local Gameplay = require "Gamestates.Gameplay"
+          Gameplay:goToShmup()
         elseif hotspot == "junk" then
           local playerPos = self.player[Transform]
           

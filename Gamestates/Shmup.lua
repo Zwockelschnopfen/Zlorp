@@ -47,9 +47,6 @@ function Shmup:enter(previous, wasSwitched, ...)
 
     self:initWaves()
 
-    Camera.x = 0.5 * VirtualScreen.width
-    Camera.y = 0.5 * VirtualScreen.height
-
 end
 
 function Shmup:leave()

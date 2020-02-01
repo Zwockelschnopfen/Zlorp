@@ -94,7 +94,7 @@ function Menu:update(_, dt)
       Music.setTrack("game")
       Music.setIntensity(1)
 
-      return Gamestate.switch(GS.repair)
+      return Gamestate.switch(GS.gameplay)
     end
 
     return

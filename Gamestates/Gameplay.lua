@@ -14,6 +14,9 @@ function Gameplay:enter()
   Repair:initGame()
   Shmup:initGame()
 
+  Shmup:enter()
+  self.mode = "shmup"
+
 end
 
 function Gameplay:leave()
@@ -23,12 +26,30 @@ function Gameplay:leave()
 
 end
 
+function Gameplay:goToShmup()
+  if self.mode == "shmup" then
+    return
+  end
+  Repair:leave()
+  Shmup:enter()
+  self.mode = "repair"
+end
+
+function Gameplay:goToRepair()
+  if self.mode == "repair" then
+    return
+  end
+  Shmup:leave()
+  Repair:enter()
+  self.mode = "repair"
+end
+
 function Gameplay:update(_, dt)
 
   if love.keyboard.isDown("f1") then
-    self.mode = "shmup"
+    self:goToShmup()
   elseif love.keyboard.isDown("f2") then
-    self.mode = "repair"
+    self:goToRepair()
   end
 
   if self.mode == "shmup" then
@@ -45,6 +66,7 @@ end
 function Gameplay:draw()
   
   Shmup:draw()
+
 
   Repair:draw()
 

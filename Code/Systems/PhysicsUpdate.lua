@@ -42,6 +42,7 @@ function PhysicsUpdate:entityAdded(e)
                     type = "body",
                 },
             })
+            fix:setSensor(physics.bodyData.sensor or false)
         end
     end
 end

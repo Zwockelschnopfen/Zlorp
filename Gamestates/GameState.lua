@@ -5,9 +5,9 @@ local GameState = {
 function GameState:reset()
   self.health = {
     overall = 100,
-    engines = 10,
+    engines = 40,
     shields = 50,
-    weapons = 100
+    weapons = 20
   }
   self.mode = "shmup"
   self.timeRemaining = 0

@@ -129,12 +129,12 @@ function Shmup:update(dt)
     if Input:down("action") then
         if self.rocketTimeout == 0 then
             local spawn = self.ROCKET_SPAWNS[1+self.rocketSpawnPoint]
-            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.rocket, t.x + spawn.x, t.y + spawn.y, 0, -300, 3500, 10000, "good"))
+            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.rocket, t.x + spawn.x, t.y + spawn.y, 0, 0.1, -300, 3500, 10000, "good"))
             self.rocketSpawnPoint = (self.rocketSpawnPoint + 1) % #self.ROCKET_SPAWNS
             self.rocketTimeout = self.ROCKET_RATE
         end
         if self.laserTimeout == 0 then
-            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x, t.y, 0, self.LASER_SPEED, 0, self.LASER_SPEED, "good"))
+            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x, t.y, 0, 0.3, self.LASER_SPEED, 0, self.LASER_SPEED, "good"))
             self.laserTimeout = self.LASER_RATE
         end
     end

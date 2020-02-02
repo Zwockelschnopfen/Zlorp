@@ -18,9 +18,10 @@ local function move(e, t, dt)
 end
 
 local function fire(e, t)
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 0.1, 2500, 0, 2500, 0, "bad"))
+    ShmupInstance.sounds.plasmaShot:play()
+    -- ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 0.1, 2500, 0, 2500, 0, "bad"))
     ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(180), 0.1, 2500, 0, 2500, 0, "bad"))
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 0.1, 2500, 0, 2500, 0, "bad"))
+    -- ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 0.1, 2500, 0, 2500, 0, "bad"))
 end
 
 return function(img, x0, y0, x1, y1, inTime, stayTime, outTime, interval, projectile)

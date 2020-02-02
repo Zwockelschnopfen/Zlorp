@@ -148,8 +148,8 @@ function Music.update(dt)
     Music.volume.menu = math.max(0.0, Music.volume.menu - dt)
   end
 
-  Music.tracks.menu:setVolume(Music.volume.menu)
-  Music.gameTrackPlayer:setVolume(Music.volume.game)
+  Music.tracks.menu:setVolume(0.5 * Music.volume.menu)
+  Music.gameTrackPlayer:setVolume(0.5 * Music.volume.game)
 
 end
 

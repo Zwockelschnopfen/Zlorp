@@ -10,6 +10,7 @@ local Hittable = require("Code.Components.Hittable")
 local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 local GameState = require("Gamestates.GameState")
+local SoundFX        = require "Code.SoundFX"
 
 
 local Shmup = {
@@ -37,6 +38,12 @@ function Shmup:load()
         laser     = love.graphics.newImage("Assets/Sprites/Laser.png"),
         croissant = love.graphics.newImage("Assets/Sprites/croissant1.png"),
         ship      = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
+    }
+    ShmupInstance.sounds = {
+        laser = SoundFX("Assets/Sounds/laser", 4),
+        rocket = SoundFX("Assets/Sounds/rocket", 1),
+        explosion = SoundFX("Assets/Sounds/explosion", 1),
+        plasmaShot = SoundFX("Assets/Sounds/plasma", 1),
     }
 end
 
@@ -92,6 +99,8 @@ function Shmup:initGame()
             local h1h = h1.health
             h0.hit = true
             h1.hit = true
+            
+            ShmupInstance.sounds.explosion:play()
 
             if e0 == self.ship then
                 if self.shipHit then self.shipHit(h1.health) end
@@ -192,6 +201,7 @@ function Shmup:update(dt)
         if self.rocketTimeout == 0 and GameState.health.weapons > 10 then
             local spawn = self.ROCKET_SPAWNS[1+self.rocketSpawnPoint]
             local accel = GameState.health.weapons * 3500 / 100
+            ShmupInstance.sounds.rocket:play()
             ShmupInstance:addEntity(Projectile(ShmupInstance.resources.rocket, t.x + spawn.x, t.y + spawn.y, 0, 0.1, -300, accel, 10000, 600 * math.max(50 - GameState.health.weapons, 0) / 50, "good"))
             self.rocketSpawnPoint = (self.rocketSpawnPoint + 1) % #self.ROCKET_SPAWNS
             self.rocketTimeout = 1 / (self.ROCKET_RATE_FULL - (self.ROCKET_RATE_FULL - self.ROCKET_RATE_EMPTY) * (100 - GameState.health.weapons) / 100)
@@ -199,6 +209,7 @@ function Shmup:update(dt)
         if self.laserTimeout == 0 and GameState.health.weapons > 0 then
             local laserWobble = 15 * (100 - GameState.health.weapons)/100
             local laserDir = math.rad(math.sin(self.time * 2) * laserWobble + math.random(-1, 1) * laserWobble / 2) 
+            ShmupInstance.sounds.laser:play()
             ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x + 220*0.3, t.y - 80*0.3, laserDir, 0.3, self.LASER_SPEED, 0, self.LASER_SPEED, 0, "good"))
             self.laserTimeout = 1 / (self.LASER_RATE_FULL - (self.LASER_RATE_FULL - self.LASER_RATE_EMPTY) * (100 - GameState.health.weapons) / 100)
         end

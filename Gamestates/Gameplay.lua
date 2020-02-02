@@ -24,6 +24,11 @@ function Gameplay:load()
   Repair:load()
   Shmup:load()
   HUD:load()
+
+  self.sounds = {
+    zoomIn = love.audio.newSource("Assets/Sounds/zoom_in.flac", "static"),
+    zoomOut = love.audio.newSource("Assets/Sounds/zoom_out.flac", "static"),
+  }
 end
 
 function Gameplay:enter()
@@ -86,9 +91,11 @@ function Gameplay:update(_, dt)
     if GameState.mode == "shmup" then
       Repair:leave()
       Shmup:enter()
+      love.audio.play(self.sounds.zoomOut)
     else
       Shmup:leave()
       Repair:enter()
+      love.audio.play(self.sounds.zoomIn)
     end
 
     self.currentMode = GameState.mode
@@ -110,15 +117,16 @@ function Gameplay:draw()
 
   do -- camera tweening between zoomed in/out
     if self.currentMode == "shmup" then
-      self.cameraTween = math.min(1.0, self.cameraTween - dt)
+      self.cameraTween = math.max(0.0, self.cameraTween - dt)
     else
-      self.cameraTween = math.max(0.0, self.cameraTween + dt)
+      self.cameraTween = math.min(1.0, self.cameraTween + dt)
     end
 
-    local tween = math.smoothstep(self.cameraTween, 0.0, 1.0)
+
+    local tween = math.smoothstep(self.cameraTween)
     Camera.x = math.lerp(0, shipPos.x + 28 - VirtualScreen.width / 2, tween)
     Camera.y = math.lerp(0, shipPos.y + 29 - VirtualScreen.height / 2, tween)
-    Camera.zoom = math.lerp(1.0, 12.5, tween)
+    Camera.zoom = math.lerp(1.0, 12.5, math.smoothstep(math.pow(self.cameraTween, 4)))
   end
 
   love.graphics.origin()

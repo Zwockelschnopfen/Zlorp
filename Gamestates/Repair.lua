@@ -13,6 +13,7 @@ local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
 local AnimUpdate     = require "Code.Systems.AnimUpdate"
 
 local GameState      = require "Gamestates.GameState"
+local SoundFX        = require "Code.SoundFX"
 
 local PHYSICS_SCALING = 128
 local SEARCH_TIME = 2.5
@@ -80,6 +81,16 @@ function Repair:load()
     trashgraphics = {
        love.graphics.newImage("Assets/Sprites/Trash01.png"),
     },
+  }
+  self.sounds = {
+    junkGrab = SoundFX("Assets/Sounds/junk_grab", 4),
+    junkPickup = SoundFX("Assets/Sounds/junk_pickup", 1),
+    junkDrop = SoundFX("Assets/Sounds/junk_drop", 4),
+    enterCockpit = SoundFX("Assets/Sounds/cockpit_enter", 1),
+    ladder = SoundFX("Assets/Sounds/ladder", 6, true),
+    repair = SoundFX("Assets/Sounds/repair", 1),
+    repairDone = SoundFX("Assets/Sounds/repair_done", 1),
+    ladder = SoundFX("Assets/Sounds/ladder", 6, true),
   }
 end
 
@@ -189,6 +200,8 @@ function Repair:playerUpdate(dt)
         self.player[AnimationSM]:setValue("isRepairing", false)
         self.player[AnimationSM]:setValue("hasJunk", false)
         self.isRepairing = nil
+
+        self.sounds.repairDone:play()
       end
       inputEnabled = false
     else
@@ -241,6 +254,7 @@ function Repair:playerUpdate(dt)
           )
           RepairInstance:addEntity(trash)
           self.currentTrash = trash
+          self.sounds.junkPickup:play()
         end
       end
       inputEnabled = false
@@ -318,12 +332,13 @@ function Repair:playerUpdate(dt)
           self.player[AnimationSM]:setValue("isRepairing", true)
           self.isRepairing = 0
           self.repairTarget = self.hotspot
-          
+          self.sounds.repair:play()
           self.currentTrash:destroy()
         else
           body:setGravityScale(1)
           self.player[AnimationSM]:setValue("hasJunk", false)
           self.currentTrash[Trash].isHeld = false
+          self.sounds.junkDrop:play()
         end
         self.currentTrash = nil
       end
@@ -335,14 +350,17 @@ function Repair:playerUpdate(dt)
     if inputEnabled and Input:pressed "action" then
       if hotspot == "cockpit" then
         if not self.player.cockpitLocked then
+          self.sounds.enterCockpit:play()
           GameState:goToShmup()
         end
         self.player.cockpitLocked = true
       elseif hotspot == "junk" then
         self.player[AnimationSM]:setValue("isPickingUp", true)
         self.isSearching = 0.0
+        self.sounds.junkGrab:play()
       elseif localJunk then
         self.currentTrash = localJunk
+        self.sounds.junkPickup:play()
       else
         body:applyLinearImpulse(0, -forceZ)
       end

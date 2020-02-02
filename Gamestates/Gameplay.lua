@@ -128,10 +128,15 @@ function Gameplay:draw()
         
         Repair:draw()
         
+        love.graphics.push()
+        love.graphics.origin()
+
         love.graphics.setCanvas()
-        love.graphics.setColor(1, 1, 1, self.cameraTween)
+        love.graphics.setColor(1, 1, 1, math.smoothstep(self.cameraTween))
         love.graphics.draw(canvas)
+        love.graphics.pop()
         
+
       love.graphics.pop()
     end
 

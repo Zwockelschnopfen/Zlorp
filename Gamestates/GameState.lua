@@ -19,6 +19,7 @@ function GameState:goToShmup()
 end
 
 function GameState:goToRepair()
+  self.timeRemaining = 60
   Music.setIntensity(1)
   self.mode = "repair"
 end

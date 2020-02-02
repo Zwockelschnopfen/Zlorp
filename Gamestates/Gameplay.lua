@@ -111,18 +111,24 @@ function Gameplay:draw()
     
     Shmup:draw()
 
-    if self.cameraTween > 0.5 then
+    if self.cameraTween > 0 then
 
       love.graphics.push()
-
+        local canvas = love.graphics.newCanvas()
+        love.graphics.setCanvas(canvas)
+      
         -- fit "repair screen" into space trip
 
         love.graphics.translate(shipPos.x, shipPos.y)
         love.graphics.translate(-140, -25)
         love.graphics.scale(0.10)
-
+        
         Repair:draw()
-
+        
+        love.graphics.setCanvas()
+        love.graphics.setColor(1, 1, 1, self.cameraTween)
+        love.graphics.draw(canvas)
+        
       love.graphics.pop()
     end
 

@@ -29,3 +29,4 @@
 - Waffensounds verändern sobald das Waffensystem repariert wurde
 - Hintergrundsounds rund um Engine/Waffensystem/Schild
 - Ende: Landen auf Schrottplanet?
+- Audiosystem: Nicht nur Übergänge alle 8 Takte, sondern vielleicht bei jedem Takt oder sogar Beat erlauben und dafür mit Stinger-Effekten kaschieren (ein Takt lang mit Riser/Percussions etc. übertünchen)

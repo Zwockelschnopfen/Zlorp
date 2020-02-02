@@ -5,6 +5,7 @@ local Repair = require "Gamestates.Repair"
 
 local HUD = require "Gamestates.HUD"
 local GameState = require "Gamestates.GameState"
+local canvas
 
 local Gameplay = {
 }
@@ -16,6 +17,9 @@ local Camera = {
   zoom = 1.0,
 }
 
+
+canvas = love.graphics.newCanvas()
+
 function Gameplay:load()
   Repair:load()
   Shmup:load()
@@ -26,7 +30,7 @@ function Gameplay:enter()
   
   GameState:reset()
   Gameplay.cameraTween = 0.0
-
+  
   Repair:initGame()
   Shmup:initGame()
 
@@ -117,9 +121,8 @@ function Gameplay:draw()
     if self.cameraTween > 0 then
 
       love.graphics.push()
-        local canvas = love.graphics.newCanvas()
         love.graphics.setCanvas(canvas)
-      
+        love.graphics.clear()
         -- fit "repair screen" into space trip
 
         love.graphics.translate(shipPos.x, shipPos.y)

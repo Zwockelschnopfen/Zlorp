@@ -26,4 +26,6 @@
 	- Zerstören von Gegnern
 	- Überleben von Wellen
 	- Reparieren von Systemen
+- Waffensounds verändern sobald das Waffensystem repariert wurde
+- Hintergrundsounds rund um Engine/Waffensystem/Schild
 - Ende: Landen auf Schrottplanet?

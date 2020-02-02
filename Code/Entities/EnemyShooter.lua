@@ -4,6 +4,8 @@ local Shooting = require("Code.Components.Shooting")
 local Sprite = require("Code.Components.Sprite")
 local Projectile = require("Code.Entities.Projectile")
 local Physics = require("Code.Components.Physics")
+local Hittable = require("Code.Components.Hittable")
+
 
 local function move(e, t, dt)
     e.time = e.time + dt
@@ -16,17 +18,21 @@ local function move(e, t, dt)
 end
 
 local function fire(e, t)
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 2500, 0, 2500))
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(180), 2500, 0, 2500))
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 2500, 0, 2500))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 2500, 0, 2500, "bad"))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(180), 2500, 0, 2500, "bad"))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 2500, 0, 2500, "bad"))
 end
 
 return function(img, x0, y0, x1, y1, inTime, stayTime, outTime, interval, projectile)
+    local w, h = img:getDimensions()
     local ent = Concord.entity.new()
     ent
         :give(Transform, x0, y0, 0, 1, 1)
-        :give(Sprite, img)
+        :give(Sprite, img, nil, "ships")
         :give(Shooting, inTime, interval, inTime + stayTime, fire)
         :give(Movement, move)
-    return table.update(ent, {projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})
+        :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h) }})
+        :give(Hittable, 3)
+        
+    return table.update(ent, {collisionCount=0, properties={type="bad", subtype="ship"}, projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})
 end

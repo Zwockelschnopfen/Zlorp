@@ -47,6 +47,13 @@ function PhysicsUpdate:entityAdded(e)
     end
 end
 
+function PhysicsUpdate:entityRemoved(e)
+    local physics = e:get(Physics)
+    if physics then
+        physics.body:destroy()
+    end
+end
+
 function PhysicsUpdate:update(dt)
     local we = self.world.objects[1]
     if we then
@@ -57,6 +64,7 @@ function PhysicsUpdate:update(dt)
             
             physics.body:setX(transform.x)
             physics.body:setY(transform.y)
+            physics.body:setAngle(transform.r)
         end
         
         local world = we[World]
@@ -79,6 +87,12 @@ function PhysicsUpdate:draw()
         return 
     end
 
+    local TYPE_COLORS = {
+        ladder={ 1, 1, 0 },
+        good={ 0, 1, 0 },
+        bad={ 1, 0, 0 },
+    }
+
     local we = self.world.objects[1]
     if we then
         local pw = we:get(World).world
@@ -93,8 +107,9 @@ function PhysicsUpdate:draw()
                         if ccnt > 0 then
                             love.graphics.setColor(0, 0, 1, 0.5)
                         else
-                            if ud.properties.type == "ladder" then
-                                love.graphics.setColor(1, 1, 0, 0.5)
+                            local color = TYPE_COLORS[ud.properties.type]
+                            if color then
+                                love.graphics.setColor(color[1], color[2], color[3], 0.5)
                             else
                                 love.graphics.setColor(0, 1, 0, 0.5)
                             end

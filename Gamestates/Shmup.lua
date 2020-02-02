@@ -6,6 +6,8 @@ local Mover = require("Code.Systems.Mover")
 local Transform = require("Code.Components.Transform")
 local EnemyShooter = require("Code.Entities.EnemyShooter")
 local PhysicsUpdate = require("Code.Systems.PhysicsUpdate")
+local Hittable = require("Code.Components.Hittable")
+local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 
 local Shmup = {
@@ -24,19 +26,40 @@ local Shmup = {
 }
 
 function Shmup:load()
-    self.resources = {
+    ShmupInstance.resources = {
         rocket = love.graphics.newImage("Assets/Sprites/Rocket.png"),
         laser  = love.graphics.newImage("Assets/Sprites/Laser.png"),
+        ship   = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
     }
 end
 
+function Shmup:hit(entity)
+    local h = entity:get(Hittable)
+    if h then 
+        table.dump(h)
+        h.hit = true
+        h.health = h.health - 1
+    end
+end
+
 function Shmup:initGame()
-    self.pu = PhysicsUpdate()
     ShmupInstance:addSystem(ShotTrigger(), "update")
     ShmupInstance:addSystem(Mover(), "update")
+    self.pu = PhysicsUpdate()
     ShmupInstance:addSystem(self.pu, "update")
-    ShmupInstance:addSystem(SpriteRenderer(), "draw")
-    ShmupInstance:addEntity(PhysicsWorldHaver(0))
+    ShmupInstance:addSystem(HitHandler(), "update")
+
+    local sr = SpriteRenderer()
+    sr.layers = {"projectiles", "ships", "damage"}
+    ShmupInstance:addSystem(sr, "draw")
+    
+    ShmupInstance:addEntity(PhysicsWorldHaver(0, function(f0, f1, c)
+        local e0, e1 = f0:getUserData(), f1:getUserData()
+        if e0.properties.type ~= e1.properties.type then
+            self:hit(e0)
+            self:hit(e1)
+        end
+    end))
     self.ship = PlayerShip(200, self.PLAYFIELD_SIZE.y / 2)
     self.laserTimeout = 0
     self.rocketTimeout = 0
@@ -60,7 +83,7 @@ end
 
 function Shmup:wave1(t0)
     for i = 0, 4 do
-        self.waves[t0 + i * 0.3] = EnemyShooter(self.resources.rocket, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, self.resources.rocket)
+        self.waves[t0 + i * 0.3] = EnemyShooter(ShmupInstance.resources.rocket, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, ShmupInstance.resources.rocket)
     end
 end
 
@@ -81,6 +104,10 @@ function Shmup:updateWaves(dt)
 end
 
 function Shmup:globalUpdate(dt)
+    if love.keyboard.isDown("g") then
+        return
+    end
+
     self:updateWaves(dt)
     
     ShmupInstance:emit("update", dt)
@@ -102,12 +129,12 @@ function Shmup:update(dt)
     if Input:down("action") then
         if self.rocketTimeout == 0 then
             local spawn = self.ROCKET_SPAWNS[1+self.rocketSpawnPoint]
-            ShmupInstance:addEntity(Projectile(self.resources.rocket, t.x + spawn.x, t.y + spawn.y, 0, -300, 3500, 10000))
+            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.rocket, t.x + spawn.x, t.y + spawn.y, 0, -300, 3500, 10000, "good"))
             self.rocketSpawnPoint = (self.rocketSpawnPoint + 1) % #self.ROCKET_SPAWNS
             self.rocketTimeout = self.ROCKET_RATE
         end
         if self.laserTimeout == 0 then
-            ShmupInstance:addEntity(Projectile(self.resources.laser, t.x, t.y, 0, self.LASER_SPEED, 0, self.LASER_SPEED))
+            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x, t.y, 0, self.LASER_SPEED, 0, self.LASER_SPEED, "good"))
             self.laserTimeout = self.LASER_RATE
         end
     end
@@ -116,6 +143,8 @@ end
 function Shmup:draw()
     ShmupInstance:emit("draw")
     love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 10)
+    love.graphics.print(#self.waves .. " ships left in waves", 10, 30)
+    love.graphics.print(self.ship:get(Hittable).health .. " health left", 10, 50)
     self.pu:draw()
 end
 

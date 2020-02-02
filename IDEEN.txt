@@ -1,5 +1,6 @@
 # Neue Ideen
 
+- Raumschiff schlingert zu Beginn in den Screen
 - Nach Reparatur bildschirm-flash für "nice!"
 - Health-Balken in *repair* über den Gegenständen anzeigen
 - Physikalische Partikel die aus einem beschädigten Gegenstand sprühen
@@ -25,3 +26,4 @@
 	- Zerstören von Gegnern
 	- Überleben von Wellen
 	- Reparieren von Systemen
+- Ende: Landen auf Schrottplanet?

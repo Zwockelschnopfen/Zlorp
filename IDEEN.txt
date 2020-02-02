@@ -1,0 +1,5 @@
+# Neue Ideen
+
+- Nach Reparatur bildschirm-flash für "nice!"
+- Health-Balken in *repair* über den Gegenständen anzeigen
+- 

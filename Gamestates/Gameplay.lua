@@ -3,8 +3,10 @@ local Transform = require("Code.Components.Transform")
 local Shmup = require "Gamestates.Shmup"
 local Repair = require "Gamestates.Repair"
 
+local HUD = require "Gamestates.HUD"
+local GameState = require "Gamestates.GameState"
+
 local Gameplay = {
-  cameraTween = 0.0
 }
 
 local Camera = {
@@ -21,15 +23,21 @@ end
 
 function Gameplay:enter()
   
+  GameState:reset()
+  Gameplay.cameraTween = 0.0
+
   Repair:initGame()
   Shmup:initGame()
 
-  Shmup:enter()
-  self.mode = "shmup"
+  self.currentMode = GameState.mode
+  if GameState.mode == "shmup" then
+    Shmup:enter()
+  else
+    Repair:enter()
+  end
   
   Music.setTrack("game")
   Music.setIntensity(1)
-
 end
 
 function Gameplay:leave()
@@ -39,33 +47,28 @@ function Gameplay:leave()
 
 end
 
-function Gameplay:goToShmup()
-  if self.mode == "shmup" then
-    return
-  end
-  Repair:leave()
-  Shmup:enter()
-  self.mode = "shmup"
-end
-
-function Gameplay:goToRepair()
-  if self.mode == "repair" then
-    return
-  end
-  Shmup:leave()
-  Repair:enter()
-  self.mode = "repair"
-end
-
 function Gameplay:update(_, dt)
 
   if love.keyboard.isDown("f1") then
-    self:goToShmup()
+    GameState:goToShmup()
   elseif love.keyboard.isDown("f2") then
-    self:goToRepair()
+    GameState:goToRepair()
   end
 
-  if self.mode == "shmup" then
+  if GameState.mode ~= self.currentMode then
+
+    if GameState.mode == "shmup" then
+      Repair:leave()
+      Shmup:enter()
+    else
+      Shmup:leave()
+      Repair:enter()
+    end
+
+    self.currentMode = GameState.mode
+  end
+
+  if self.currentMode == "shmup" then
     Shmup:update(dt)
   else
     Repair:update(dt)
@@ -80,7 +83,7 @@ function Gameplay:draw()
   local shipPos = Shmup.ship[Transform]
 
   do -- camera tweening between zoomed in/out
-    if self.mode == "shmup" then
+    if self.currentMode == "shmup" then
       self.cameraTween = math.min(1.0, self.cameraTween - dt)
     else
       self.cameraTween = math.max(0.0, self.cameraTween + dt)

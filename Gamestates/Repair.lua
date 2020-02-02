@@ -12,6 +12,9 @@ local SpriteRenderer = require "Code.Systems.SpriteRenderer"
 local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
 local AnimUpdate     = require "Code.Systems.AnimUpdate"
 
+local GameState      = require "Gamestates.GameState"
+
+
 local PHYSICS_SCALING = 128
 local SEARCH_TIME = 2.5
 local REPAIR_TIME = 2.5
@@ -312,8 +315,7 @@ function Repair:playerUpdate(dt)
 
       if hotspot then
         if hotspot == "cockpit" then
-          local Gameplay = require "Gamestates.Gameplay"
-          Gameplay:goToShmup()
+          GameState:goToShmup()
         elseif hotspot == "junk" then
           self.player[AnimationSM]:setValue("isPickingUp", true)
           self.isSearching = 0.0

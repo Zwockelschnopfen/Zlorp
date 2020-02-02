@@ -1,12 +1,8 @@
-local HUDState
+local GameState = require "Gamestates.GameState"
 
-function HUDState:enter(previous, wasSwitched, ...)
-    
-end
-
-function HUDState:leave()
-
-end
+local HUDState = {
+  visible = false
+}
 
 function HUDState:update(dt)
     

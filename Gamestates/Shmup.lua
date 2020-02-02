@@ -11,6 +11,7 @@ local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 local GameState = require("Gamestates.GameState")
 
+
 local Shmup = {
     SHIP_SPEED = { x=500, y=700 },
     PLAYFIELD_SIZE = { x=1920, y=1080 },
@@ -35,6 +36,36 @@ function Shmup:load()
         croissant = love.graphics.newImage("Assets/Sprites/croissant1.png"),
         ship      = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
     }
+end
+
+function Shmup:hit(entity)
+    local h = entity:get(Hittable)
+    if h then 
+        h.hit = true
+        h.health = h.health - 1
+    end
+end
+
+function Shmup.shipHit(dmg)
+    dmg = dmg * 10
+    local hit = love.math.random(3)
+    if hit == 1 then
+        GameState.health.engines = GameState.health.engines - dmg
+    elseif hit == 2 then
+        GameState.health.weapons = GameState.health.weapons - dmg
+    elseif hit == 3 then
+        if GameState.health.shields > 0 then
+            if GameState.health.shields < dmg then
+                local tmpDmg = dmg - GameState.health.shields
+                GameState.health.shields = 0
+                GameState.health.overall = GameState.health.overall - tmpDmg
+            else
+                GameState.health.shields = GameState.health.shields - dmg 
+            end
+        else
+            GameState.health.overall = GameState.health.shields - dmg
+        end
+    end
 end
 
 function Shmup:initGame()

@@ -10,16 +10,16 @@ local function move(e, t, dt)
     t.y = t.y + dt * e.dy * e.v
 end
 
-return function(img, x, y, r, v0, accel, vmax, type)
+return function(img, x, y, r, s, v0, accel, vmax, type)
     local dx = math.cos(r)
     local dy = math.sin(r)
     local ent = Concord.entity.new()
     local w, h = img:getDimensions()
     ent
-        :give(Transform, x, y, r, 1, 1)
+        :give(Transform, x, y, r, s, s)
         :give(Sprite, img, nil, "projectiles")
         :give(Movement, move)
-        :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h) }})
+        :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h)*s/2 }})
         :give(Hittable, 1)
     return table.update(ent, {collisionCount=0, properties={type=type, subtype="projectile"}, dx=dx, dy=dy, v=v0, accel=accel, vmax=vmax})
 end

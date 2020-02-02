@@ -73,7 +73,6 @@ function Gameplay:update(_, dt)
 
   Repair:globalUpdate(dt)
   Shmup:globalUpdate(dt)
-
 end
 
 function Gameplay:draw()

@@ -10,7 +10,7 @@
 		junkWalk   = { 17, 24, 1 }, -- to be fixed
 		climb      = { 33, 34, 1 },
 		junkClimb  = { 33, 34, 1 },
-		junkPickup = { 57, 58, 1 },
-		repair     = { 57, 58, 1 }
+		junkPickup = { 57, 58, 1 }, -- to be fixed
+		repair     = { 57, 58, 0.5 }
     }
 }

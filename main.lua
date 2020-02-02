@@ -58,6 +58,8 @@ end)
 
 GS.loader:addCallback(Music.load)
 
+local defaultFont = love.graphics.newFont(80)
+
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
@@ -82,6 +84,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setFont(defaultFont)
     love.graphics.origin()
     BackgroundInstance:emit("draw")
     

@@ -28,7 +28,7 @@ function AnimUpdate:draw()
         asm = e:get(ASM)
         
         if asm and asm.isDirty then
-            asm:update(anim)
+            asm:update(anim, dt)
         end
 
         anim.t = anim.t + dt

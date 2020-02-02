@@ -162,12 +162,25 @@ function Repair:globalUpdate(dt)
   RepairInstance:emit("update", dt)
 end
 
-function Repair:update(dt)
+function Repair:playerUpdate(dt)
 
   local anyLadder = false
   local hotspot
   local world = self.world[PhysicsWorld].world
 
+  if self.isRepairing ~= nil then
+    self.isRepairing = self.isRepairing + dt
+    if Input:down "action" then
+      if self.isRepairing > 2.5 then
+        self.player[AnimationSM]:setValue("isRepairing", false)
+        self.isRepairing = nil
+      end
+      return
+    else
+      self.player[AnimationSM]:setValue("isRepairing", false)
+      self.isRepairing = nil
+    end
+  end
 
   local body = self.player[Physics].body
   for _, contact in ipairs(body:getContacts()) do
@@ -224,9 +237,17 @@ function Repair:update(dt)
       self.player[AnimationSM]:setValue("isPickingUp", false)
     
       if Input:pressed "action" then
-        body:setGravityScale(1)
-        self.player[AnimationSM]:setValue("hasJunk", false)
-        self.currentTrash[Trash].isHeld = false
+
+        if self.hotspot and self.hotspot ~= "cockpit" and self.hotspot ~= "junk" then
+          self.player[AnimationSM]:setValue("isRepairing", true)
+          self.isRepairing = 0
+          
+          self.currentTrash:destroy()
+        else
+          body:setGravityScale(1)
+          self.player[AnimationSM]:setValue("hasJunk", false)
+          self.currentTrash[Trash].isHeld = false
+        end
         self.currentTrash = nil
       end
     else
@@ -315,6 +336,11 @@ function Repair:update(dt)
 
   self.player[AnimationSM]:setValue("isClimbing", isClimbing)
   self.player[AnimationSM]:setValue("isMoving", moving)
+end
+
+function Repair:update(dt)
+
+  Repair:playerUpdate(dt)
 
 end
 
@@ -322,6 +348,38 @@ function Repair:draw()
   RepairInstance:emit("draw")
 
   love.graphics.print("Current Hotspot: " .. tostring(self.hotspot), 10, 10)
+
+  local trafo = self.player[Transform]
+
+  if self.isRepairing ~= nil then
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.rectangle(
+      "fill",
+      trafo.x - 200,
+      trafo.y - 150,
+      400,
+      25
+    )
+
+    love.graphics.setColor(0, 1, 0)
+    love.graphics.rectangle(
+      "fill",
+      trafo.x - 200 + 1,
+      trafo.y - 150 + 1,
+      math.floor((400-2) * self.isRepairing / 2.5),
+      25 - 2
+    )
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle(
+      "line",
+      trafo.x - 200,
+      trafo.y - 150,
+      400,
+      25
+    )
+  end
+
 end
 
 return Repair

@@ -47,6 +47,9 @@ function Music.load()
       { -- alarm
         love.sound.newDecoder('Assets/Music/calmdown-01.flac', 2048),
         love.sound.newDecoder('Assets/Music/calmdown-02.flac', 2048),
+      },
+      { -- game over
+        love.sound.newDecoder('Assets/Music/gameover.flac', 2048),
       }
     },
   }

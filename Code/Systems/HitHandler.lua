@@ -2,11 +2,14 @@ local Transform = require("Code.Components.Transform")
 local Movement = require("Code.Components.Movement")
 local Hittable = require("Code.Components.Hittable")
 local Sprite = require("Code.Components.Sprite")
+local HitEffect = require("Code.Entities.HitEffect")
 
 local HitHandler = Concord.system({
     Transform,
     Hittable,
 })
+
+
 
 function HitHandler:update(dt)
     self.enemies = 0
@@ -19,6 +22,9 @@ function HitHandler:update(dt)
         if h.hit then
             if h.health <= 0 then
                 e:destroy()
+                ShmupInstance:addEntity(HitEffect(0.2, h.hit[1], h.hit[2]))
+            else
+                ShmupInstance:addEntity(HitEffect(0.2, h.hit[1], h.hit[2]))
             end
         end
     end

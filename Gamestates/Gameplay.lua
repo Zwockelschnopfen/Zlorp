@@ -116,9 +116,9 @@ function Gameplay:draw()
     end
 
     local tween = math.smoothstep(self.cameraTween, 0.0, 1.0)
-    Camera.x = math.lerp(0, shipPos.x + 90 - VirtualScreen.width / 2, tween)
-    Camera.y = math.lerp(0, shipPos.y + 103 - VirtualScreen.height / 2, tween)
-    Camera.zoom = math.lerp(1.0, 4.15, tween)
+    Camera.x = math.lerp(0, shipPos.x + 28 - VirtualScreen.width / 2, tween)
+    Camera.y = math.lerp(0, shipPos.y + 29 - VirtualScreen.height / 2, tween)
+    Camera.zoom = math.lerp(1.0, 12.5, tween)
   end
 
   love.graphics.origin()

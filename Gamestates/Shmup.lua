@@ -9,6 +9,8 @@ local PhysicsUpdate = require("Code.Systems.PhysicsUpdate")
 local Hittable = require("Code.Components.Hittable")
 local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
+local GameState = require("Gamestates.GameState")
+
 
 local Shmup = {
     SHIP_SPEED = { x=500, y=700 },
@@ -16,7 +18,7 @@ local Shmup = {
     ROCKET_SPEED = 1000,
     LASER_SPEED = 5000,
     ROCKET_RATE = 1,
-    LASER_RATE  = 0.25,
+    LASER_RATE  = 4,
     ROCKET_SPAWNS = {
         { x=0, y=100 },
         { x=0, y=-100 },
@@ -24,6 +26,7 @@ local Shmup = {
     waves = {},
     waveTime = 0,
     active = false,
+    time = 0,
 }
 
 function Shmup:load()
@@ -43,6 +46,28 @@ function Shmup:hit(entity)
     end
 end
 
+function Shmup.shipHit(dmg)
+    dmg = dmg * 10
+    local hit = love.math.random(3)
+    if hit == 1 then
+        GameState.health.engines = GameState.health.engines - dmg
+    elseif hit == 2 then
+        GameState.health.weapons = GameState.health.weapons - dmg
+    elseif hit == 3 then
+        if GameState.health.shields > 0 then
+            if GameState.health.shields < dmg then
+                local tmpDmg = dmg - GameState.health.shields
+                GameState.health.shields = 0
+                GameState.health.overall = GameState.health.overall - tmpDmg
+            else
+                GameState.health.shields = GameState.health.shields - dmg 
+            end
+        else
+            GameState.health.overall = GameState.health.shields - dmg
+        end
+    end
+end
+
 function Shmup:initGame()
     ShmupInstance:addSystem(ShotTrigger(), "update")
     ShmupInstance:addSystem(Mover(), "update")
@@ -59,8 +84,24 @@ function Shmup:initGame()
     ShmupInstance:addEntity(PhysicsWorldHaver(0, function(f0, f1, c)
         local e0, e1 = f0:getUserData(), f1:getUserData()
         if e0.properties.type ~= e1.properties.type then
-            self:hit(e0)
-            self:hit(e1)
+            local h0, h1 = e0:get(Hittable), e1:get(Hittable)
+
+            local h0h = h0.health
+            local h1h = h1.health
+            h0.hit = true
+            h1.hit = true
+
+            if e0 == self.ship then
+                if self.shipHit then self.shipHit(h1.health) end
+            else
+                h0.health = h0.health - h1.health
+            end
+
+            if e1 == self.ship then
+                if self.shipHit then self.shipHit(h0.health) end
+            else
+                h1.health = h1.health - h0h
+            end
         end
     end))
     self.ship = PlayerShip(200, self.PLAYFIELD_SIZE.y / 2)
@@ -119,6 +160,8 @@ function Shmup:globalUpdate(dt)
     self:updateWaves(dt)
     
     ShmupInstance:emit("update", dt)
+
+    self.time = self.time + dt
 end
 
 function Shmup:update(dt)
@@ -142,8 +185,10 @@ function Shmup:update(dt)
             self.rocketTimeout = self.ROCKET_RATE
         end
         if self.laserTimeout == 0 then
-            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x, t.y, 0, 0.3, self.LASER_SPEED, 0, self.LASER_SPEED, "good"))
-            self.laserTimeout = self.LASER_RATE
+            local laserWobble = 10 * (100 - GameState.health.weapons)/100
+            local laserDir = math.rad(math.sin(self.time / 2) * laserWobble)
+            ShmupInstance:addEntity(Projectile(ShmupInstance.resources.laser, t.x, t.y, laserDir, 0.3, self.LASER_SPEED, 0, self.LASER_SPEED, "good"))
+            self.laserTimeout = 1 / self.LASER_RATE
         end
     end
 end

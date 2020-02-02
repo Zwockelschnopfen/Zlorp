@@ -17,7 +17,7 @@ function HitHandler:update(dt)
             self.enemies = self.enemies + 1
         end
         if h.hit then
-            if h.health == 0 then
+            if h.health <= 0 then
                 e:destroy()
             end
         end

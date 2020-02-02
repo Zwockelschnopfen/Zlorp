@@ -18,20 +18,21 @@ local function move(e, t, dt)
 end
 
 local function fire(e, t)
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 2500, 0, 2500, "bad"))
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(180), 2500, 0, 2500, "bad"))
-    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 2500, 0, 2500, "bad"))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(170), 0.1, 2500, 0, 2500, "bad"))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(180), 0.1, 2500, 0, 2500, "bad"))
+    ShmupInstance:addEntity(Projectile(e.projectile, t.x, t.y, math.rad(190), 0.1, 2500, 0, 2500, "bad"))
 end
 
 return function(img, x0, y0, x1, y1, inTime, stayTime, outTime, interval, projectile)
     local w, h = img:getDimensions()
     local ent = Concord.entity.new()
+    local scale = 0.2
     ent
-        :give(Transform, x0, y0, 0, 1, 1)
+        :give(Transform, x0, y0, 0, scale, scale)
         :give(Sprite, img, nil, "ships")
         :give(Shooting, inTime, interval, inTime + stayTime, fire)
         :give(Movement, move)
-        :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h) }})
+        :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h) * scale / 2 }})
         :give(Hittable, 3)
         
     return table.update(ent, {collisionCount=0, properties={type="bad", subtype="ship"}, projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})

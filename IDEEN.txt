@@ -2,4 +2,26 @@
 
 - Nach Reparatur bildschirm-flash für "nice!"
 - Health-Balken in *repair* über den Gegenständen anzeigen
-- 
+- Physikalische Partikel die aus einem beschädigten Gegenstand sprühen
+- Eigene Kollision statt Box2D für mehr Präzision im shmup
+- Help-Menü
+- bugfix: Sprachansagen im Menü dürfen nicht passieren
+- glow-tutorial:
+	- highlighting eines objekts, mit dem man in *repair* grade interagieren kann
+	- ohne junk
+		- junkyard
+		- ship controls
+		- junk parts
+	- mit junk
+		- weapons
+		- engines
+		- shields
+- Ingame-Pause-Menü
+- Highscore-Liste
+- Explosionseffekte mit Sprites für Gegner:
+	- Wenn Gegner zerstört, treiben 3-4 Bruchstücke des gegnerischen Schiffs
+      mit schönem Schwebeeffekt in einen Fadeout
+- Punkte für
+	- Zerstören von Gegnern
+	- Überleben von Wellen
+	- Reparieren von Systemen

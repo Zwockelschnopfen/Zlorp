@@ -7,6 +7,7 @@ local Particles = Concord.component(
                 if not c.layers[particleData.layer] then
                     c.layers[particleData.layer] = {}
                     c.layers[particleData.layer].systems = {}
+                    c.layers[particleData.layer].offset = {x = particleData.ox or 0, y = particleData.oy or 0}
                 end
                 table.insert( c.layers[particleData.layer].systems, 1, love.graphics.newParticleSystem(particleData.img) )
                 for setting, vals in pairs(particleData.particleConfig) do
@@ -36,10 +37,12 @@ particleDatas = {
 ]]
 
 function Particles:draw(layerIndex, x, y)
+    x = x or 0
+    y = y or 0
     if self.layers[layerIndex] then
         for k, ps in ipairs(self.layers[layerIndex].systems) do
             ps:update(love.timer.getDelta())
-            ps:setPosition(x, y)
+            ps:setPosition(x + self.layers[layerIndex].offset.x, y + self.layers[layerIndex].offset.y)
             love.graphics.draw(ps)
         end
     end

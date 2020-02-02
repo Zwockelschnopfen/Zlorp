@@ -91,6 +91,21 @@ function HUDState:draw()
       200,
       "center")
   end
+
+  local t = {
+    "currentTrack: " .. tostring(Music.currentTrack),
+    "currentStage: " .. tostring(Music.currentStage),
+    "wantedStage:  " .. tostring(Music.wantedStage),
+  }
+
+  love.graphics.setColor(1,0,1)
+  love.graphics.setFont(defaultFont)
+  local f = love.graphics.getFont()
+  for i,v in ipairs(t) do
+    love.graphics.print(v, 10, VirtualScreen.height - i * f:getHeight())
+  end
+    
+
 end
 
 return HUDState

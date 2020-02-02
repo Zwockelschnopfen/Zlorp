@@ -76,8 +76,6 @@ end
 
 function Shmup:enter(previous, wasSwitched, ...)
 
-    self:initWaves()
-
 end
 
 function Shmup:leave()

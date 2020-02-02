@@ -48,6 +48,7 @@ function Menu:enter(previous, wasSwitched, ...)
     creditsLine = -10.5, -- [0..#] Schiebt die Credits um "x" Zeilen nach oben
     creditsSpeed = 1.0,
   }
+  Music.setTrack("menu")
 end
 
 function Menu:leave()

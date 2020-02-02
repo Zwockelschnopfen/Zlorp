@@ -42,12 +42,31 @@ function Gameplay:enter()
   end
   
   Music.setTrack("game")
+
+  -- Wenn die ruhige Phase vorbei ist,
+  -- neue Angriffsphase starten
+  Music.onStageChange = function(stage)
+    if stage == 1 then
+      Shmup:initWaves()
+    elseif stage == 2 then
+      GameState.timeRemaining = 60
+    end
+  end
+
+  Shmup.battleDoneCallback = function()
+    Music.endBattleStage()
+  end
+
+  -- TODO: Nach dem Intro erste angriffswelle starten
+  Shmup:initWaves()
 end
 
 function Gameplay:leave()
 
   Repair:exitGame()
   Shmup:exitGame()
+
+  Music.onCalmPhaseDoneCallback = nil
 
 end
 
@@ -58,6 +77,8 @@ function Gameplay:update(_, dt)
   elseif love.keyboard.isDown("f2") then
     GameState:goToRepair()
   end
+
+  GameState.timeRemaining = GameState.timeRemaining - dt
 
   if GameState.mode ~= self.currentMode then
 

@@ -11,7 +11,9 @@ local Music = {
   isLoaded = false,
   currentTrack = "menu", -- starts with menu as soon as we update our loading loop
   currentStage = 1,
+  wantedStage = 1,
   onCalmPhaseDoneCallback = nil, -- callback
+  onStageChange = nil, -- callback(stage)
 }
 
 function Music.getStage() -- 1 … 5
@@ -19,13 +21,14 @@ function Music.getStage() -- 1 … 5
 end
 
 function Music.endBattleStage()
-  Music.currentStage = 2
+  Music.wantedStage = 2
 end
 
 function Music.load()
   Music.tracks = {
     menu = love.audio.newSource("Assets/Music/menu.flac", "stream"),
     ingame = {
+      intro = love.sound.newDecoder('Assets/Music/battle-intro-01.flac', 2048),
       { -- battle
         love.sound.newDecoder('Assets/Music/battle-01.flac', 2048),
         love.sound.newDecoder('Assets/Music/battle-02.flac', 2048),
@@ -70,7 +73,7 @@ function Music.load()
     8
   )
 
-  Music.currentDecoder = Music.stagePools:getForStage(1)
+  Music.currentDecoder = Music.tracks.ingame.intro
 
   Music.tracks.menu:setVolume(0)
   Music.gameTrackPlayer:setVolume(0)
@@ -99,6 +102,14 @@ function Music.update(dt)
   while Music.gameTrackPlayer:getFreeBufferCount() > 0 do
     local buf = Music.currentDecoder:decode()
     if not buf then
+      if Music.currentStage ~= Music.wantedStage then
+        if Music.onStageChange then
+          Music.onStageChange(Music.wantedStage, Music.currentStage)
+        end
+      end
+
+      Music.currentStage = Music.wantedStage
+
       Music.currentDecoder:seek(0)
       Music.currentDecoder = Music.stagePools:getForStage(Music.currentStage)
       assert(Music.currentDecoder, tostring(Music.gameIntensity))
@@ -106,9 +117,9 @@ function Music.update(dt)
       assert(buf)
 
       if Music.currentStage > 1 then
-        Music.currentStage = Music.currentStage + 1
-        if Music.currentStage > 5 then
-          Music.currentStage = 1
+        Music.wantedStage = Music.currentStage + 1
+        if Music.wantedStage > 5 then
+          Music.wantedStage = 1
           
           if Music.onCalmPhaseDoneCallback then
             Music.onCalmPhaseDoneCallback()

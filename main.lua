@@ -43,6 +43,8 @@ GS = {
     gameplay = require("Gamestates.Gameplay"),
 }
 
+defaultFont = love.graphics.newFont(40)
+
 GlobalGuard.enableGuard()
 
 GS.loader:addCallback(function()
@@ -57,8 +59,6 @@ GS.loader:addCallback(function()
 end)
 
 GS.loader:addCallback(Music.load)
-
-local defaultFont = love.graphics.newFont(80)
 
 function love.load()
     love.mouse.setVisible(false)

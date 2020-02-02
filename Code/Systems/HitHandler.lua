@@ -3,15 +3,19 @@ local Movement = require("Code.Components.Movement")
 local Hittable = require("Code.Components.Hittable")
 local Sprite = require("Code.Components.Sprite")
 
-local Mover = Concord.system({
+local HitHandler = Concord.system({
     Transform,
     Hittable,
 })
 
-function Mover:update(dt)
+function HitHandler:update(dt)
+    self.enemies = 0
     for _, e in ipairs(self.pool.objects) do
         local t = e:get(Transform)
         local h = e:get(Hittable)
+        if h.enemy then
+            self.enemies = self.enemies + 1
+        end
         if h.hit then
             if h.health == 0 then
                 e:destroy()
@@ -20,4 +24,4 @@ function Mover:update(dt)
     end
 end
 
-return Mover
+return HitHandler

@@ -14,12 +14,10 @@ function GameState:reset()
 end
 
 function GameState:goToShmup()
-  Music.setIntensity(5)
   self.mode = "shmup"
 end
 
 function GameState:goToRepair()
-  Music.setIntensity(1)
   self.mode = "repair"
 end
 

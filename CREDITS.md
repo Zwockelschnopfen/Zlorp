@@ -2,7 +2,7 @@
 
 ## Fonts
 - [Earth Orbiter Font](http://www.iconian.com/e.html)
-- [DS-Digital](https://www.dafont.com/de/ds-digital.font)
+- [Digital Dismay von Chequered Ink](https://www.dafont.com/de/digital-dismay.font)
 
 ## Libraries
 - [STI](https://github.com/karai17/Simple-Tiled-Implementation) (MIT Licence)

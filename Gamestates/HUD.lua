@@ -6,22 +6,15 @@ local HUDState = {
 
 function HUDState:load()
   self.resources = {
-    icons = {
-      health = love.graphics.newImage("Assets/Images/IconHealth.png"),
-      engines = love.graphics.newImage("Assets/Images/IconEngines.png"),
-      weapons = love.graphics.newImage("Assets/Images/IconWeapons.png"),
-      shields = love.graphics.newImage("Assets/Images/IconShields.png"),
-    },
+    panelLeft = love.graphics.newImage("Assets/Images/HudLeft.png"),
     timerFont = love.graphics.newFont("Assets/Fonts/Digital Dismay.otf", 80),
   }
 end
 
-local function Bar(x, y, w, h, val, r,g,b, bg, icon)
+local function Bar(x, y, w, h, val, r,g,b, bg)
 
   bg = bg or 0
 
-  love.graphics.setColor(1,1,1)
-  love.graphics.draw(icon, x, y)
 
   x = x + 40
 
@@ -57,17 +50,17 @@ function HUDState:draw()
     end
   end
 
-  love.graphics.setColor(0.2,0.2,0.2)
-  love.graphics.rectangle("fill", 0, 0, 310, 180)
-
-  Bar(10,  10, 250, 30, GameState.health.overall / 100.0, 1, 1, 1, warnBlinker(GameState.health.overall), self.resources.icons.health)
+  Bar(10,  10, 250, 30, GameState.health.overall / 100.0, 1, 1, 1, warnBlinker(GameState.health.overall))
 
   love.graphics.setColor(1,1,1)
   love.graphics.line(10, 50, 300, 50)
 
-  Bar(10,  60, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines), self.resources.icons.engines)
-  Bar(10, 100, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields), self.resources.icons.shields)
-  Bar(10, 140, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons), self.resources.icons.weapons)
+  Bar(10,  60, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines))
+  Bar(10, 100, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields))
+  Bar(10, 140, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons))
+
+  love.graphics.setColor(1,1,1)
+  love.graphics.draw(self.resources.panelLeft, 0, 0)
 
   if GameState.mode == "repair" then 
     local timerPos = VirtualScreen.width - 200

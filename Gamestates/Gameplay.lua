@@ -18,9 +18,9 @@ local Camera = {
 }
 
 
-canvas = love.graphics.newCanvas()
 
 function Gameplay:load()
+  canvas = love.graphics.newCanvas()
   Repair:load()
   Shmup:load()
   HUD:load()
@@ -42,7 +42,6 @@ function Gameplay:enter()
   end
   
   Music.setTrack("game")
-  Music.setIntensity(1)
 end
 
 function Gameplay:leave()
@@ -53,15 +52,6 @@ function Gameplay:leave()
 end
 
 function Gameplay:update(_, dt)
-
-  local wasNonWaveBefore = (GameState.timeRemaining > 0)
-  GameState.timeRemaining = GameState.timeRemaining - dt
-
-  if wasNonWaveBefore and GameState.timeRemaining <= 0.0 then
-    
-    print("RELEASE THE HYPRONDRONES")
-
-  end
 
   if love.keyboard.isDown("f1") then
     GameState:goToShmup()

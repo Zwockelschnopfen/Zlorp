@@ -1,35 +1,68 @@
+-- Concept:
+-- 
+-- init--.
+--       |------------------------------------------.
+--       v                                          |
+--                                                  |
+--  |    1    |    2    |   3   |   4   |   5   |   |
+--  | Battle  | Calmdown| calm  | calm  | alarm | --'
+
 local Music = {
   isLoaded = false,
   currentTrack = "menu", -- starts with menu as soon as we update our loading loop
-  gameIntensity = 1,
+  currentStage = 1,
+  onCalmPhaseDoneCallback = nil, -- callback
 }
 
-function Music.setIntensity(intens) -- 1 … 5
-  Music.gameIntensity = math.floor(intens or 1) or 1
-  if Music.gameIntensity < 1 then
-    Music.gameIntensity = 1
-  elseif Music.gameIntensity > 5 then
-    Music.gameIntensity = 5
-  end
+function Music.getStage() -- 1 … 5
+  return Music.currentStage
+end
+
+function Music.endBattleStage()
+  Music.currentStage = 2
 end
 
 function Music.load()
   Music.tracks = {
     menu = love.audio.newSource("Assets/Music/menu.flac", "stream"),
     ingame = {
-      love.sound.newDecoder('Assets/Music/_1.flac', 2048),
-      love.sound.newDecoder('Assets/Music/_2.flac', 2048),
-      love.sound.newDecoder('Assets/Music/_3.flac', 2048),
-      love.sound.newDecoder('Assets/Music/_4.flac', 2048),
-      love.sound.newDecoder('Assets/Music/_5.flac', 2048),
+      { -- battle
+        love.sound.newDecoder('Assets/Music/battle-01.flac', 2048),
+        love.sound.newDecoder('Assets/Music/battle-02.flac', 2048),
+        love.sound.newDecoder('Assets/Music/battle-03.flac', 2048),
+        love.sound.newDecoder('Assets/Music/battle-04.flac', 2048),
+      },
+      { -- calmdown
+        love.sound.newDecoder('Assets/Music/calmdown-01.flac', 2048),
+        love.sound.newDecoder('Assets/Music/calmdown-02.flac', 2048),
+      },
+      { -- calm
+        love.sound.newDecoder('Assets/Music/calm-01.flac', 2048),
+        love.sound.newDecoder('Assets/Music/calm-02.flac', 2048),
+        love.sound.newDecoder('Assets/Music/calm-03.flac', 2048),
+      },
+      { -- alarm
+        love.sound.newDecoder('Assets/Music/calmdown-01.flac', 2048),
+        love.sound.newDecoder('Assets/Music/calmdown-02.flac', 2048),
+      }
     },
   }
+  Music.stagePools = {
+    1, 2, 3, 3, 4
+  }
+  function Music.stagePools:getForStage(stage)
+    local poolidx = Music.stagePools[stage]
+    local pool = Music.tracks.ingame[poolidx]
+    local idx = math.random(#pool)
+    -- print(poolidx, pool, idx)
+    return pool[idx]
+  end
   Music.volume = {
     menu = 1.0,
     game = 0.0,
   }
 
-  local decoder = Music.tracks.ingame[1]
+  local decoder = Music.stagePools:getForStage(1) -- sample one random file
   Music.gameTrackPlayer = love.audio.newQueueableSource(
     decoder:getSampleRate(), 
     decoder:getBitDepth(), 
@@ -37,7 +70,7 @@ function Music.load()
     8
   )
 
-  Music.currentDecoder = Music.tracks.ingame[1]
+  Music.currentDecoder = Music.stagePools:getForStage(1)
 
   Music.tracks.menu:setVolume(0)
   Music.gameTrackPlayer:setVolume(0)
@@ -52,7 +85,7 @@ function Music.setTrack(track) -- none, menu, game
 
   Music.currentTrack = track or "none"
   if Music.currentTrack == "game" then
-    Music.gameIntensity = 5 -- we start in battle mode
+    Music.currentStage = 1 -- we start in battle mode
   end
 
 end
@@ -62,38 +95,27 @@ function Music.update(dt)
   if not Music.isLoaded then
     return 
   end
-
-  if love.keyboard.isDown("1") then
-    Music.gameIntensity = 1
-  elseif love.keyboard.isDown("2") then
-    Music.gameIntensity = 2
-  elseif love.keyboard.isDown("3") then
-    Music.gameIntensity = 3
-  elseif love.keyboard.isDown("4") then
-    Music.gameIntensity = 4
-  elseif love.keyboard.isDown("5") then
-    Music.gameIntensity = 5
-  end
-
-  if love.keyboard.isDown("i") then
-    Music.setTrack("none")
-  elseif love.keyboard.isDown("o") then
-    Music.setTrack("menu")
-  elseif love.keyboard.isDown("p") then
-    Music.setTrack("game")
-  end
     
   while Music.gameTrackPlayer:getFreeBufferCount() > 0 do
     local buf = Music.currentDecoder:decode()
     if not buf then
       Music.currentDecoder:seek(0)
-      Music.currentDecoder = Music.tracks.ingame[Music.gameIntensity]
+      Music.currentDecoder = Music.stagePools:getForStage(Music.currentStage)
       assert(Music.currentDecoder, tostring(Music.gameIntensity))
       buf = Music.currentDecoder:decode()
       assert(buf)
 
-      if Music.gameIntensity < 4 then
-        Music.gameIntensity = Music.gameIntensity + 1
+      if Music.currentStage > 1 then
+        Music.currentStage = Music.currentStage + 1
+        if Music.currentStage > 5 then
+          Music.currentStage = 1
+          
+          if Music.onCalmPhaseDoneCallback then
+            Music.onCalmPhaseDoneCallback()
+          else
+            print("GO TO BATTLE MODE!")
+          end
+        end
       end
     end
     Music.gameTrackPlayer:queue(buf)

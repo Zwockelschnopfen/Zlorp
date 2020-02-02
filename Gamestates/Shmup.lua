@@ -36,9 +36,13 @@ function Shmup:load()
     ShmupInstance.resources = {
         rocket    = love.graphics.newImage("Assets/Sprites/Rocket.png"),
         laser     = love.graphics.newImage("Assets/Sprites/Laser.png"),
+        plasma    = love.graphics.newImage("Assets/Sprites/Plasma_Middle.png"),
         croissant = love.graphics.newImage("Assets/Sprites/croissant1.png"),
+        asteroid  = love.graphics.newImage("Assets/Sprites/asteroid2.png"),
+        sausage   = love.graphics.newImage("Assets/Sprites/Enemy_Rocket.png"),
+        burger    = love.graphics.newImage("Assets/Sprites/burger1.png"),
         ship      = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
-        hitSprite = love.graphics.newImage("Assets/Images/HitSprite.png")
+        hitSprite = love.graphics.newImage("Assets/Images/HitSprite.png"),
     }
     ShmupInstance.sounds = {
         laser = SoundFX("Assets/Sounds/laser", 4),
@@ -57,7 +61,7 @@ function Shmup:hit(entity)
 end
 
 function Shmup.shipHit(dmg)
-    dmg = dmg * 10
+    dmg = dmg * 3
     local hit = love.math.random(3)
     if hit == 1 then
         GameState.health:change("engines", -dmg)
@@ -136,9 +140,15 @@ function Shmup:leave()
 
 end
 
-function Shmup:wave1(t0)
+function Shmup:wave2(t0)
     for i = 0, 4 do
-        self.waves[t0 + i * 0.3] = EnemyShooter(ShmupInstance.resources.croissant, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, ShmupInstance.resources.rocket)
+        self.waves[t0 + i * 0.3] = EnemyShooter(ShmupInstance.resources.croissant, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, ShmupInstance.resources.sausage)
+    end
+end
+
+function Shmup:wave1(t0)
+    for i = 0, 10 do
+        self.waves[t0 + i * 1] = Projectile(ShmupInstance.resources.asteroid, 2020, 540 + math.random(-500, 500), math.rad(180), 0.5, 500, 0, 500, 0, "bad")
     end
 end
 
@@ -146,7 +156,11 @@ function Shmup:initWaves()
     self.waves = {}
     self.waveTime = 0
     self.active = true
-    self:wave1(2)
+    if GameState.level % 2 >= 1 then
+        self:wave1(2)
+    else
+        self:wave2(2)
+    end
 end
 
 function Shmup:updateWaves(dt)
@@ -191,9 +205,10 @@ function Shmup:update(dt)
     local x, y = Input:get("move")
     local t = self.ship:get(Transform)
 
-    if x ~= 0 or y ~= 0 then
-        t.x = math.clamp(t.x + x * dt * self.SHIP_SPEED.x, 100, self.PLAYFIELD_SIZE.x - 100)
-        t.y = math.clamp(t.y + y * dt * self.SHIP_SPEED.y, 100, self.PLAYFIELD_SIZE.y - 100)
+    if (x ~= 0 or y ~= 0) and GameState.health.engines > 0 then
+        local speed = math.max(50, GameState.health.engines) / 100
+        t.x = math.clamp(t.x + x * dt * speed * self.SHIP_SPEED.x, 100, self.PLAYFIELD_SIZE.x - 100)
+        t.y = math.clamp(t.y + y * dt * speed * self.SHIP_SPEED.y, 100, self.PLAYFIELD_SIZE.y - 100)
     end
 
     self.laserTimeout = math.max(0, self.laserTimeout - dt)
@@ -220,11 +235,11 @@ end
 
 function Shmup:draw()
     ShmupInstance:emit("draw")
-    love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 100)
-    love.graphics.print(#self.waves .. " ships left in waves", 10, 140)
-    love.graphics.print(self.ship:get(Hittable).health .. " health left", 10, 180)
-    love.graphics.print(self.hits.enemies .. " -> " .. (next(self.waves) and "WAEV!!!1" or "bored") .. " -> " .. (self.active and "active" or "passive"), 10, 220)
-    self.pu:draw()
+    --love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 100)
+    --love.graphics.print(#self.waves .. " ships left in waves", 10, 140)
+    --love.graphics.print(self.ship:get(Hittable).health .. " health left", 10, 180)
+    --love.graphics.print(self.hits.enemies .. " -> " .. (next(self.waves) and "WAEV!!!1" or "bored") .. " -> " .. (self.active and "active" or "passive"), 10, 220)
+    --self.pu:draw()
 end
 
 return Shmup

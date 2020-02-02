@@ -72,7 +72,7 @@ function HUDState:draw()
   end
 
   if self.timerVisible > 0.0 then
-    local tt = math.smoothstep(self.timerVisible)
+    local tt = 2.0 * math.smoothstep(self.timerVisible)
     local y = 0.5 * ( tt - (tt-1.0) * (tt-1.0) + 1.0 )
 
     local timerPos = VirtualScreen.width - 280

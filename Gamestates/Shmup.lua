@@ -23,6 +23,7 @@ local Shmup = {
     },
     waves = {},
     waveTime = 0,
+    active = false,
 }
 
 function Shmup:load()
@@ -47,7 +48,9 @@ function Shmup:initGame()
     ShmupInstance:addSystem(Mover(), "update")
     self.pu = PhysicsUpdate()
     ShmupInstance:addSystem(self.pu, "update")
-    ShmupInstance:addSystem(HitHandler(), "update")
+    self.hits = HitHandler()
+    self.hits.enemies = 0
+    ShmupInstance:addSystem(self.hits, "update")
 
     local sr = SpriteRenderer()
     sr.layers = {"projectiles", "ships", "damage"}
@@ -90,6 +93,7 @@ end
 function Shmup:initWaves()
     self.waves = {}
     self.waveTime = 0
+    self.active = true
     self:wave1(2)
 end
 
@@ -99,6 +103,12 @@ function Shmup:updateWaves(dt)
         if self.waveTime >= t then
             ShmupInstance:addEntity(entity)
             self.waves[t] = nil
+        end
+    end
+    if self.active and not next(self.waves) and (self.hits.enemies == 0) then
+        self.active = false
+        if self.battleDoneCallback then
+            self.battleDoneCallback()
         end
     end
 end
@@ -142,9 +152,10 @@ end
 
 function Shmup:draw()
     ShmupInstance:emit("draw")
-    love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 10)
-    love.graphics.print(#self.waves .. " ships left in waves", 10, 30)
-    love.graphics.print(self.ship:get(Hittable).health .. " health left", 10, 50)
+    love.graphics.print(#ShmupInstance.entities.objects .. " entities", 10, 100)
+    love.graphics.print(#self.waves .. " ships left in waves", 10, 140)
+    love.graphics.print(self.ship:get(Hittable).health .. " health left", 10, 180)
+    love.graphics.print(self.hits.enemies .. " -> " .. (next(self.waves) and "WAEV!!!1" or "bored") .. " -> " .. (self.active and "active" or "passive"), 10, 220)
     self.pu:draw()
 end
 

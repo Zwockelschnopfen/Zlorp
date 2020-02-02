@@ -33,7 +33,7 @@ return function(img, x0, y0, x1, y1, inTime, stayTime, outTime, interval, projec
         :give(Shooting, inTime, interval, inTime + stayTime, fire)
         :give(Movement, move)
         :give(Physics, {x=5, y=5, type="dynamic", userData=ent, sensor=true}, {{ type="circle", radius=math.min(w, h) * scale / 2 }})
-        :give(Hittable, 3)
+        :give(Hittable, 3, true)
         
     return table.update(ent, {collisionCount=0, properties={type="bad", subtype="ship"}, projectile=projectile, time=0, x0=x0, y0=y0, x1=x1, y1=y1, inTime=inTime, stayTime=stayTime, outTime=outTime})
 end

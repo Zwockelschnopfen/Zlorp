@@ -354,10 +354,12 @@ function Repair:playerUpdate(dt)
     body:setLinearVelocity(-forceX, vy)
     moving = true
     self.player.walkDir = "left"
+    self.player[Transform].sx = -1
   elseif inputEnabled and Input:down "right" then
     body:setLinearVelocity(forceX, vy)
     moving = true
     self.player.walkDir = "right"
+    self.player[Transform].sx = 1
   else
     vx = vx * 0.9
     body:setLinearVelocity(vx, vy)

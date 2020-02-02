@@ -65,14 +65,14 @@ GS.loader:addCallback(Music.load)
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
-    GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
+    -- GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 
 function love.keypressed( key, scancode, isrepeat )
-    if key == "escape" then
-        love.event.quit( 0 )
-    end
+    -- if key == "escape" then
+    --     love.event.quit( 0 )
+    -- end
 
     Gamestate:keypressed(key, scancode, isrepeat)
 end

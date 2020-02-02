@@ -78,6 +78,11 @@ end
 
 function Gameplay:update(_, dt)
 
+  if love.keyboard.isDown("escape") then
+    Gamestate.switch(GS.menu)
+    return
+  end 
+
   if love.keyboard.isDown("f1") then
     GameState:goToShmup()
   elseif love.keyboard.isDown("f2") then

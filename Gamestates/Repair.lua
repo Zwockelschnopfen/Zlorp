@@ -178,6 +178,11 @@ function Repair:playerUpdate(dt)
     self.isRepairing = self.isRepairing + dt
     if Input:down "action" then
       if self.isRepairing > REPAIR_TIME then
+        local hpup = math.random(15, 40) 
+
+        print(self.repairTarget, hpup)
+        GameState.health[self.repairTarget] = math.min(100, GameState.health[self.repairTarget] + hpup)
+
         self.player[AnimationSM]:setValue("isRepairing", false)
         self.player[AnimationSM]:setValue("hasJunk", false)
         self.isRepairing = nil
@@ -293,9 +298,10 @@ function Repair:playerUpdate(dt)
     
       if inputEnabled and Input:pressed "action" then
 
-        if self.hotspot and self.hotspot ~= "cockpit" and self.hotspot ~= "junk" then
+        if self.hotspot == "engines" or self.hotspot == "shields" or self.hotspot == "weapons" then
           self.player[AnimationSM]:setValue("isRepairing", true)
           self.isRepairing = 0
+          self.repairTarget = self.hotspot
           
           self.currentTrash:destroy()
         else

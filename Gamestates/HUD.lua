@@ -53,9 +53,9 @@ function HUDState:draw()
   love.graphics.setColor(1,1,1)
   love.graphics.line(10, 50, 300, 50)
 
-  Bar(10,  60, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines))
-  Bar(10, 100, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields))
-  Bar(10, 140, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons))
+  Bar(10,  60, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields))
+  Bar(10, 100, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons))
+  Bar(10, 140, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines))
 
   love.graphics.setColor(1,1,1)
   love.graphics.draw(self.resources.panelLeft, 0, 0)
@@ -71,7 +71,7 @@ function HUDState:draw()
     local y = 0.5 * ( tt - (tt-1.0) * (tt-1.0) + 1.0 )
 
     local timerPos = VirtualScreen.width - 280
-    local timerY = math.floor(180 * y - 200)
+    local timerY = math.floor(170 * y - 200)
 
     love.graphics.draw(
       self.resources.panelRight,

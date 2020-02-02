@@ -13,6 +13,8 @@ local PhysicsUpdate  = require "Code.Systems.PhysicsUpdate"
 local AnimUpdate     = require "Code.Systems.AnimUpdate"
 
 local PHYSICS_SCALING = 128
+local SEARCH_TIME = 2.5
+local REPAIR_TIME = 2.5
 
 local Trash = Concord.component(function(c)
   c.isHeld = true
@@ -168,17 +170,68 @@ function Repair:playerUpdate(dt)
   local hotspot
   local world = self.world[PhysicsWorld].world
 
+  local inputEnabled = true
+
   if self.isRepairing ~= nil then
     self.isRepairing = self.isRepairing + dt
     if Input:down "action" then
-      if self.isRepairing > 2.5 then
+      if self.isRepairing > REPAIR_TIME then
         self.player[AnimationSM]:setValue("isRepairing", false)
+        self.player[AnimationSM]:setValue("hasJunk", false)
         self.isRepairing = nil
       end
-      return
+      inputEnabled = false
     else
       self.player[AnimationSM]:setValue("isRepairing", false)
+      self.player[AnimationSM]:setValue("hasJunk", false)
       self.isRepairing = nil
+    end
+  end
+
+  if self.isSearching ~= nil then
+    self.isSearching = self.isSearching + dt
+    if Input:down "action" then
+      if self.isSearching > SEARCH_TIME then
+        self.player[AnimationSM]:setValue("isPickingUp", false)
+        self.isSearching = nil
+
+        do
+          local playerPos = self.player[Transform]
+            
+          local idx = math.random(#self.resources.trashgraphics)
+
+          local sprite = self.resources.trashgraphics[idx]
+          local tx, ty = sprite:getDimensions()
+
+          local trash = Concord.entity.new()
+          trash:give(Transform, playerPos.x + 40, playerPos.y + 40)
+          trash:give(Sprite, sprite)
+          trash:give(Trash)
+          trash:give(
+            Physics, 
+            {
+              type = "dynamic",
+            },
+            { { type = "polygon", 
+                verts = adjustCollider({
+                  1.48,9.13,
+                  15.65,1.22,
+                  30.09,9.09,
+                  30.35,28.22,
+                  14.74,34.78,
+                  1.48,27.00,
+                }, tx/2, ty/2)
+              }
+            }
+          )
+          RepairInstance:addEntity(trash)
+          self.currentTrash = trash
+        end
+      end
+      inputEnabled = false
+    else
+      self.player[AnimationSM]:setValue("isPickingUp", false)
+      self.isSearching = nil
     end
   end
 
@@ -236,7 +289,7 @@ function Repair:playerUpdate(dt)
       end
       self.player[AnimationSM]:setValue("isPickingUp", false)
     
-      if Input:pressed "action" then
+      if inputEnabled and Input:pressed "action" then
 
         if self.hotspot and self.hotspot ~= "cockpit" and self.hotspot ~= "junk" then
           self.player[AnimationSM]:setValue("isRepairing", true)
@@ -251,49 +304,19 @@ function Repair:playerUpdate(dt)
         self.currentTrash = nil
       end
     else
-      print(dx*dx+dy*dy)
+      -- print(dx*dx+dy*dy)
     end
 
   else
-    if Input:pressed "action" then
+    if inputEnabled and Input:pressed "action" then
 
       if hotspot then
         if hotspot == "cockpit" then
           local Gameplay = require "Gamestates.Gameplay"
           Gameplay:goToShmup()
         elseif hotspot == "junk" then
-          local playerPos = self.player[Transform]
-          
-          local idx = math.random(#self.resources.trashgraphics)
-
-          local sprite = self.resources.trashgraphics[idx]
-          local tx, ty = sprite:getDimensions()
-
-          local trash = Concord.entity.new()
-          trash:give(Transform, playerPos.x + 40, playerPos.y + 40)
-          trash:give(Sprite, sprite)
-          trash:give(Trash)
-          trash:give(
-            Physics, 
-            {
-              type = "dynamic",
-            },
-            { { type = "polygon", 
-                verts = adjustCollider({
-                  1.48,9.13,
-                  15.65,1.22,
-                  30.09,9.09,
-                  30.35,28.22,
-                  14.74,34.78,
-                  1.48,27.00,
-                }, tx/2, ty/2)
-              }
-            }
-          )
-          RepairInstance:addEntity(trash)
-
           self.player[AnimationSM]:setValue("isPickingUp", true)
-          self.currentTrash = trash
+          self.isSearching = 0.0
         end
       else
         body:applyLinearImpulse(0, -forceZ)
@@ -306,11 +329,11 @@ function Repair:playerUpdate(dt)
   local isClimbing = false
   if anyLadder then
     isClimbing = true
-    if Input:down "up" then
+    if inputEnabled and Input:down "up" then
       if vy > -forceY then
         vy = -forceY
       end
-    elseif Input:down "down" then
+    elseif inputEnabled and Input:down "down" then
       if vy <= forceY then
         vy = forceY
       end
@@ -320,11 +343,11 @@ function Repair:playerUpdate(dt)
   end
 
   local moving
-  if Input:down "left" then
+  if inputEnabled and Input:down "left" then
     body:setLinearVelocity(-forceX, vy)
     moving = true
     self.player.walkDir = "left"
-  elseif Input:down "right" then
+  elseif inputEnabled and Input:down "right" then
     body:setLinearVelocity(forceX, vy)
     moving = true
     self.player.walkDir = "right"
@@ -351,7 +374,16 @@ function Repair:draw()
 
   local trafo = self.player[Transform]
 
-  if self.isRepairing ~= nil then
+  if self.isRepairing ~= nil or self.isSearching ~= nil then
+    local progress
+    if self.isRepairing then
+      progress = self.isRepairing / REPAIR_TIME
+    elseif self.isSearching then
+      progress = self.isSearching / SEARCH_TIME
+    else
+      error("Whaaagh!")
+    end
+
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
       "fill",
@@ -366,7 +398,7 @@ function Repair:draw()
       "fill",
       trafo.x - 200 + 1,
       trafo.y - 150 + 1,
-      math.floor((400-2) * self.isRepairing / 2.5),
+      math.floor((400-2) * progress),
       25 - 2
     )
 

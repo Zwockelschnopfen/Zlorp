@@ -75,11 +75,21 @@ function HUDState:draw()
     love.graphics.setColor(0.325,0.722,0.481)
     love.graphics.rectangle("fill", timerPos, 0, 200, 100)
 
+    love.graphics.setColor(0.05,0.05,0.05)
+
     local totalSeconds = math.floor(GameState.timeRemaining)
     local minutes = math.floor(totalSeconds / 60)
     local seconds = math.floor(totalSeconds % 60)
+    if totalSeconds < 0 then
+      minutes = 0
+      seconds = 0
+      if (love.timer.getTime() % 1.0) > 0.5 then
+        love.graphics.setColor(0.8, 0.0, 0.0)
+      end
+    end
+  
+    
 
-    love.graphics.setColor(0.05,0.05,0.05)
     love.graphics.setFont(self.resources.timerFont)
     love.graphics.printf(
       string.format("%02d:%02d", minutes, seconds),

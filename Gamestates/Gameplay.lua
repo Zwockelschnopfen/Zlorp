@@ -50,7 +50,14 @@ end
 
 function Gameplay:update(_, dt)
 
-  GameState.timeRemaining = GameState.timeRemaining + dt
+  local wasNonWaveBefore = (GameState.timeRemaining > 0)
+  GameState.timeRemaining = GameState.timeRemaining - dt
+
+  if wasNonWaveBefore and GameState.timeRemaining <= 0.0 then
+    
+    print("RELEASE THE HYPRONDRONES")
+
+  end
 
   if love.keyboard.isDown("f1") then
     GameState:goToShmup()

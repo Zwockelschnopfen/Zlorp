@@ -45,6 +45,8 @@ GS = {
 
 defaultFont = love.graphics.newFont(40)
 
+DebugVars = {}
+
 GlobalGuard.enableGuard()
 
 GS.loader:addCallback(function()

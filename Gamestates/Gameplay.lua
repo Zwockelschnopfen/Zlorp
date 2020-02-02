@@ -49,6 +49,7 @@ function Gameplay:enter()
     if stage == 1 then
       Shmup:initWaves()
     elseif stage == 2 then
+      GameState:goToRepair()
       GameState.timeRemaining = 60
     end
   end

@@ -7,8 +7,10 @@ local HUDState = {
 function HUDState:load()
   self.resources = {
     panelLeft = love.graphics.newImage("Assets/Images/HudLeft.png"),
-    timerFont = love.graphics.newFont("Assets/Fonts/Digital Dismay.otf", 80),
+    panelRight = love.graphics.newImage("Assets/Images/HudRight.png"),
+    timerFont = love.graphics.newFont("Assets/Fonts/Digital Dismay.otf", 60),
   }
+  self.timerVisible = 0
 end
 
 local function Bar(x, y, w, h, val, r,g,b, bg)
@@ -41,6 +43,7 @@ end
 function HUDState:draw()
   
   local t = love.timer.getTime()
+  local dt = love.timer.getDelta()
 
   local function warnBlinker(val)
     if val < 25 then
@@ -63,12 +66,27 @@ function HUDState:draw()
   love.graphics.draw(self.resources.panelLeft, 0, 0)
 
   if GameState.mode == "repair" then 
-    local timerPos = VirtualScreen.width - 200
+    self.timerVisible = math.min(1, self.timerVisible + dt)
+  else
+    self.timerVisible = math.max(0, self.timerVisible - dt)
+  end
 
-    love.graphics.setColor(0.325,0.722,0.481)
-    love.graphics.rectangle("fill", timerPos, 0, 200, 100)
+  if self.timerVisible > 0.0 then
+    local tt = math.smoothstep(self.timerVisible)
+    local y = 0.5 * ( tt - (tt-1.0) * (tt-1.0) + 1.0 )
 
-    love.graphics.setColor(0.05,0.05,0.05)
+    local timerPos = VirtualScreen.width - 280
+    local timerY = math.floor(180 * y - 200)
+
+    DebugVars.y = y
+    DebugVars.timerY = timerY
+
+    love.graphics.draw(
+      self.resources.panelRight,
+      timerPos,
+      timerY)
+
+      love.graphics.setColor(0.7,0.74,0.94)
 
     local totalSeconds = math.floor(GameState.timeRemaining)
     local minutes = math.floor(totalSeconds / 60)
@@ -81,28 +99,28 @@ function HUDState:draw()
       end
     end
   
-    
 
     love.graphics.setFont(self.resources.timerFont)
     love.graphics.printf(
       string.format("%02d:%02d", minutes, seconds),
-      timerPos,
-      10,
-      200,
+      timerPos + 13,
+      timerY + 123,
+      180,
       "center")
   end
 
-  local t = {
-    "currentTrack: " .. tostring(Music.currentTrack),
-    "currentStage: " .. tostring(Music.currentStage),
-    "wantedStage:  " .. tostring(Music.wantedStage),
-  }
+  DebugVars.currentTrack = Music.currentTrack
+  DebugVars.currentStage = Music.currentStage
+  DebugVars.wantedStage = Music.wantedStage
+  DebugVars.timerVisible = self.timerVisible
 
   love.graphics.setColor(1,0,1)
   love.graphics.setFont(defaultFont)
   local f = love.graphics.getFont()
-  for i,v in ipairs(t) do
-    love.graphics.print(v, 10, VirtualScreen.height - i * f:getHeight())
+  local y = 1
+  for i,v in pairs(DebugVars) do
+    love.graphics.print(tostring(i) .. ": " .. tostring(v), 10, VirtualScreen.height - y * f:getHeight())
+    y = y +1
   end
     
 

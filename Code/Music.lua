@@ -96,7 +96,7 @@ end
 function Music.update(dt)
 
   if not Music.isLoaded then
-    return 
+    return
   end
     
   while Music.gameTrackPlayer:getFreeBufferCount() > 0 do

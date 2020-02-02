@@ -1,15 +1,22 @@
-1 Hallo
+Graphics
 --
-3 ich
-4 bin ein Credits
-5 Text 
-6 und ich bin ziemlich cool!
+Runa "kaomau" Marold
+Céline Perauer
+Lóng Zhang
+ 
+ 
+Programming
 --
-8 Hast du das gehört?!
-9 ich kann sogar geile
+Felix "xq" Queißner
+Timo "Erasio" Müssig
+Joachim "dojoe" Fenkes
+ 
+ 
+Audio
 --
-10 horizontale lininen
-11 rendern
-12 ?!
+Johannes "Saga Musix" Schultz
+ 
+ 
+Game Design
 --
-13 ENDE
+Lóng Zhang

@@ -145,8 +145,8 @@ function Gameplay:draw()
         -- fit "repair screen" into space trip
 
         love.graphics.translate(shipPos.x, shipPos.y)
-        love.graphics.translate(-140, -25)
-        love.graphics.scale(0.10)
+        love.graphics.translate(-46, -12)
+        love.graphics.scale(0.032)
         
         Repair:draw()
         

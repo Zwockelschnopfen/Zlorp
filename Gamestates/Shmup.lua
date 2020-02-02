@@ -50,20 +50,20 @@ function Shmup.shipHit(dmg)
     dmg = dmg * 10
     local hit = love.math.random(3)
     if hit == 1 then
-        GameState.health.engines = GameState.health.engines - dmg
+        GameState.health:change("engines", -dmg)
     elseif hit == 2 then
-        GameState.health.weapons = GameState.health.weapons - dmg
+        GameState.health:change("weapons", -dmg)
     elseif hit == 3 then
         if GameState.health.shields > 0 then
             if GameState.health.shields < dmg then
                 local tmpDmg = dmg - GameState.health.shields
                 GameState.health.shields = 0
-                GameState.health.overall = GameState.health.overall - tmpDmg
+                GameState.health:change("overall", -tmpDmg)
             else
                 GameState.health.shields = GameState.health.shields - dmg 
             end
         else
-            GameState.health.overall = GameState.health.shields - dmg
+            GameState.health:change("overall", -dmg)
         end
     end
 end

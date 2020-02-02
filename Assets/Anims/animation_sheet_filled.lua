@@ -4,7 +4,7 @@
     numRow= 8,
     numCol= 8,
     anim= {    
-        idle       = {  1,  8, 1 },
+        idle       = {  1,  8, 3 },
 		junkIdle   = {  9, 16, 1 },
         walk       = { 17, 24, 1 },
 		junkWalk   = { 17, 24, 1 }, -- to be fixed

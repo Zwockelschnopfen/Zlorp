@@ -7,8 +7,11 @@ function GameState:reset()
     overall = 100,
     engines = 40,
     shields = 50,
-    weapons = 20
+    weapons = 20,
   }
+  function self.health:change(what, val)
+    self[what] = math.clamp(self[what] + val, 0, 100)
+  end
   self.mode = "shmup"
   self.timeRemaining = 0
 end

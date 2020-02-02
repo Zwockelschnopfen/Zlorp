@@ -2,6 +2,7 @@ local Sprite = require("Code.Components.Sprite")
 local Transform = require("Code.Components.Transform")
 local Anim = require("Code.Components.Anim")
 local Particles = require("Code.Components.Particles")
+local KillAfter = require("Code.Components.KillAfter")
 
 local SpriteRenderer = Concord.system({
     Sprite, 
@@ -20,8 +21,10 @@ function SpriteRenderer:draw()
         for _, e in ipairs(self.pool.objects) do
             local t = e:get(Transform)
             local s = e:get(Sprite)
+            local ka = e:get(KillAfter)
             local w, h = s.img:getDimensions()
-
+            
+            
             if s.layer == layer then
                 if s.quad then
                     local _, __, w, h = s.quad:getViewport()

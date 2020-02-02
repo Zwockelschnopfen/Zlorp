@@ -37,6 +37,7 @@ function Shmup:load()
         laser     = love.graphics.newImage("Assets/Sprites/Laser.png"),
         croissant = love.graphics.newImage("Assets/Sprites/croissant1.png"),
         ship      = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
+        hitSprite = love.graphics.newImage("Assets/Images/HitSprite.png")
     }
 end
 
@@ -78,6 +79,7 @@ function Shmup:initGame()
     self.hits = HitHandler()
     self.hits.enemies = 0
     ShmupInstance:addSystem(self.hits, "update")
+    ShmupInstance:addSystem(require("Code.Systems.KillAfterUpdate")(), "update")
 
     local sr = SpriteRenderer()
     sr.layers = {"projectiles", "ships", "damage"}
@@ -87,11 +89,11 @@ function Shmup:initGame()
         local e0, e1 = f0:getUserData(), f1:getUserData()
         if e0.properties.type ~= e1.properties.type then
             local h0, h1 = e0:get(Hittable), e1:get(Hittable)
-
+            local t0, t1 = e0:get(Transform), e1:get(Transform)
             local h0h = h0.health
             local h1h = h1.health
-            h0.hit = true
-            h1.hit = true
+            h0.hit = {t0.x + t0.x - t1.x, t0.y + t0.y - t1.y}
+            h1.hit = {t0.x + t0.x - t1.x, t0.y + t0.y - t1.y}
 
             if e0 == self.ship then
                 if self.shipHit then self.shipHit(h1.health) end

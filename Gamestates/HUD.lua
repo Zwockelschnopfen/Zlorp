@@ -16,8 +16,6 @@ end
 local function Bar(x, y, w, h, val, r,g,b, bg)
 
   bg = bg or 0
-
-
   x = x + 40
 
   love.graphics.setColor(
@@ -34,9 +32,6 @@ local function Bar(x, y, w, h, val, r,g,b, bg)
     math.floor((w-2) * val),
     h-2
   )
-  
-  -- love.graphics.setColor(0.9, 0.9, 0.9)
-  -- love.graphics.rectangle("line", x, y, w, h)
 
 end
 
@@ -78,9 +73,6 @@ function HUDState:draw()
     local timerPos = VirtualScreen.width - 280
     local timerY = math.floor(180 * y - 200)
 
-    DebugVars.y = y
-    DebugVars.timerY = timerY
-
     love.graphics.draw(
       self.resources.panelRight,
       timerPos,
@@ -112,7 +104,6 @@ function HUDState:draw()
   DebugVars.currentTrack = Music.currentTrack
   DebugVars.currentStage = Music.currentStage
   DebugVars.wantedStage = Music.wantedStage
-  DebugVars.timerVisible = self.timerVisible
 
   love.graphics.setColor(1,0,1)
   love.graphics.setFont(defaultFont)

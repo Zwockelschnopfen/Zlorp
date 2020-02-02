@@ -1,15 +1,22 @@
 local Sprite = require("Code.Components.Sprite")
 local Transform = require("Code.Components.Transform")
 local Anim = require("Code.Components.Anim")
+local Particles = require("Code.Components.Particles")
 
 local SpriteRenderer = Concord.system({
     Sprite, 
     Transform,
-})
+}, {"particles", Particles})
 
 function SpriteRenderer:draw()
     local layers = self.layers or {"default"}
     for _, layer in ipairs(layers) do
+        for _, e in ipairs(self.particles.objects) do
+            local p = e:get(Particles)
+            local t = e:get(Transform)
+            p:draw(layer, t.x, t.y)
+        end
+        
         for _, e in ipairs(self.pool.objects) do
             local t = e:get(Transform)
             local s = e:get(Sprite)

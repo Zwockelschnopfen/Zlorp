@@ -21,9 +21,9 @@ local function Bar(x, y, w, h, val, r,g,b, bg)
   x = x + 40
 
   love.graphics.setColor(
-    math.lerp(0.3, 0.7, bg),
-    math.lerp(0.3, 0.0, bg),
-    math.lerp(0.3, 0.0, bg)
+    math.lerp(0.00, 0.7, bg),
+    math.lerp(0.07, 0.0, bg),
+    math.lerp(0.15, 0.0, bg)
   )
   love.graphics.rectangle("fill", x, y, w, h)
 
@@ -35,8 +35,8 @@ local function Bar(x, y, w, h, val, r,g,b, bg)
     h-2
   )
   
-  love.graphics.setColor(0.9, 0.9, 0.9)
-  love.graphics.rectangle("line", x, y, w, h)
+  -- love.graphics.setColor(0.9, 0.9, 0.9)
+  -- love.graphics.rectangle("line", x, y, w, h)
 
 end
 

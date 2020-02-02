@@ -236,7 +236,7 @@
    <polygon points="0,0 0,256 1152,256 1152,0 1024,128 888,32 582,-34 428,-30 138,132"/>
   </object>
  </objectgroup>
- <objectgroup id="12" name="Objects" visible="0">
+ <objectgroup id="12" name="Objects">
   <object id="39" x="256" y="1152" width="640" height="384">
    <properties>
     <property name="collidable" type="bool" value="true"/>
@@ -251,14 +251,14 @@
     <property name="type" value="shields"/>
    </properties>
   </object>
-  <object id="48" x="3584" y="384" width="256" height="512">
+  <object id="48" x="3450" y="384" width="390" height="512">
    <properties>
     <property name="collidable" type="bool" value="true"/>
     <property name="sensor" type="bool" value="true"/>
     <property name="type" value="weapons"/>
    </properties>
   </object>
-  <object id="49" x="4096" y="1280" width="256" height="256">
+  <object id="49" x="3918" y="1332" width="434" height="204">
    <properties>
     <property name="collidable" type="bool" value="true"/>
     <property name="sensor" type="bool" value="true"/>

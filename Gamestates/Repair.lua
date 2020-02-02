@@ -100,6 +100,8 @@ function Repair:initGame()
 
   self.player = Concord.entity.new()
   self.player.walkDir = "left"
+  self.player.isClimbing = false
+  self.player.cockpitLocked = false
   self.player:give(Transform, 10 * PHYSICS_SCALING, 14 * PHYSICS_SCALING)
   self.player:give(AnimationSM)
   self.player:give(
@@ -317,36 +319,41 @@ function Repair:playerUpdate(dt)
 
   else
     if inputEnabled and Input:pressed "action" then
-
-      if hotspot then
-        if hotspot == "cockpit" then
+      if hotspot == "cockpit" then
+        if not self.player.cockpitLocked then
           GameState:goToShmup()
-        elseif hotspot == "junk" then
-          self.player[AnimationSM]:setValue("isPickingUp", true)
-          self.isSearching = 0.0
         end
+        self.player.cockpitLocked = true
+      elseif hotspot == "junk" then
+        self.player[AnimationSM]:setValue("isPickingUp", true)
+        self.isSearching = 0.0
       else
         body:applyLinearImpulse(0, -forceZ)
       end
+    end
+    if hotspot ~= "cockpit" then
+      self.player.cockpitLocked = false
     end
   end
 
   local vx, vy = body:getLinearVelocity()
 
-  local isClimbing = false
   if anyLadder then
-    isClimbing = true
     if inputEnabled and Input:down "up" then
       if vy > -forceY then
         vy = -forceY
       end
+      self.player.isClimbing = true
     elseif inputEnabled and Input:down "down" then
       if vy <= forceY then
         vy = forceY
       end
+      self.player.isClimbing = true
     else
       vy = vy * 0.9
     end
+  else
+    self.player.isClimbing = false
   end
 
   local moving
@@ -366,7 +373,7 @@ function Repair:playerUpdate(dt)
     moving = false
   end
 
-  self.player[AnimationSM]:setValue("isClimbing", isClimbing)
+  self.player[AnimationSM]:setValue("isClimbing", self.player.isClimbing)
   self.player[AnimationSM]:setValue("isMoving", moving)
 end
 

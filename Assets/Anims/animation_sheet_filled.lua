@@ -8,9 +8,9 @@
 		junkIdle   = {  9, 16, 1 },
         walk       = { 17, 24, 1 },
 		junkWalk   = { 17, 24, 1 }, -- to be fixed
-		climb      = { 33, 34, 1 },
-		junkClimb  = { 33, 34, 1 },
-		junkPickup = { 57, 58, 1 }, -- to be fixed
-		repair     = { 57, 58, 0.5 }
+		climb      = { 25, 26, 1 },
+		junkClimb  = { 25, 26, 1 },
+		junkPickup = { 33, 40, 2.5 },
+		repair     = { 41, 42, 0.5 }
     }
 }

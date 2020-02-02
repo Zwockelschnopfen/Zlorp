@@ -14,7 +14,6 @@ local AnimUpdate     = require "Code.Systems.AnimUpdate"
 
 local GameState      = require "Gamestates.GameState"
 
-
 local PHYSICS_SCALING = 128
 local SEARCH_TIME = 2.5
 local REPAIR_TIME = 2.5

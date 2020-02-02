@@ -51,6 +51,9 @@ end
 function Music.setTrack(track) -- none, menu, game
 
   Music.currentTrack = track or "none"
+  if Music.currentTrack == "game" then
+    Music.gameIntensity = 5 -- we start in battle mode
+  end
 
 end
 
@@ -88,6 +91,10 @@ function Music.update(dt)
       assert(Music.currentDecoder, tostring(Music.gameIntensity))
       buf = Music.currentDecoder:decode()
       assert(buf)
+
+      if Music.gameIntensity < 4 then
+        Music.gameIntensity = Music.gameIntensity + 1
+      end
     end
     Music.gameTrackPlayer:queue(buf)
 

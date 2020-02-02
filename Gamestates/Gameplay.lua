@@ -19,6 +19,7 @@ local Camera = {
 function Gameplay:load()
   Repair:load()
   Shmup:load()
+  HUD:load()
 end
 
 function Gameplay:enter()
@@ -48,6 +49,8 @@ function Gameplay:leave()
 end
 
 function Gameplay:update(_, dt)
+
+  GameState.timeRemaining = GameState.timeRemaining + dt
 
   if love.keyboard.isDown("f1") then
     GameState:goToShmup()
@@ -131,7 +134,7 @@ function Gameplay:draw()
   love.graphics.push()
   love.graphics.origin()
 
-  -- DRAW HUD HERE
+  HUD:draw()
 
   love.graphics.pop()
 

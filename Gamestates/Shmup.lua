@@ -27,16 +27,16 @@ local Shmup = {
 
 function Shmup:load()
     ShmupInstance.resources = {
-        rocket = love.graphics.newImage("Assets/Sprites/Rocket.png"),
-        laser  = love.graphics.newImage("Assets/Sprites/Laser.png"),
-        ship   = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
+        rocket    = love.graphics.newImage("Assets/Sprites/Rocket.png"),
+        laser     = love.graphics.newImage("Assets/Sprites/Laser.png"),
+        croissant = love.graphics.newImage("Assets/Sprites/croissant1.png"),
+        ship      = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
     }
 end
 
 function Shmup:hit(entity)
     local h = entity:get(Hittable)
     if h then 
-        table.dump(h)
         h.hit = true
         h.health = h.health - 1
     end
@@ -83,7 +83,7 @@ end
 
 function Shmup:wave1(t0)
     for i = 0, 4 do
-        self.waves[t0 + i * 0.3] = EnemyShooter(ShmupInstance.resources.rocket, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, ShmupInstance.resources.rocket)
+        self.waves[t0 + i * 0.3] = EnemyShooter(ShmupInstance.resources.croissant, 2020, 300 + 100*i, 1600 - 100*i, 100 + 200*i, 0.5, 2, 0.5, 0.5, ShmupInstance.resources.rocket)
     end
 end
 

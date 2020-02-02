@@ -12,6 +12,7 @@ function GameState:reset()
   function self.health:change(what, val)
     self[what] = math.clamp(self[what] + val, 0, 100)
   end
+  self.level = 1
   self.mode = "shmup"
   self.timeRemaining = 0
 end
@@ -22,6 +23,7 @@ end
 
 function GameState:goToRepair()
   self.mode = "repair"
+  self.level = self.level + 1
 end
 
 return GameState

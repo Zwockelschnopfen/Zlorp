@@ -1,5 +1,6 @@
 local Transform = require("Code.Components.Transform")
 
+local SoundFX = require "Code.SoundFX"
 local Shmup = require "Gamestates.Shmup"
 local Repair = require "Gamestates.Repair"
 
@@ -28,6 +29,7 @@ function Gameplay:load()
   self.sounds = {
     zoomIn = love.audio.newSource("Assets/Sounds/zoom_in.flac", "static"),
     zoomOut = love.audio.newSource("Assets/Sounds/zoom_out.flac", "static"),
+    ai = SoundFX("Assets/Sounds/AI/ai", 6),
   }
 end
 
@@ -56,6 +58,8 @@ function Gameplay:enter()
     elseif stage == 2 then
       GameState:goToRepair()
       GameState.timeRemaining = 60
+    elseif stage == 5 then
+      self.sounds.ai:play()
     end
   end
 

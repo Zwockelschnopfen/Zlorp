@@ -37,12 +37,13 @@ function PhysicsUpdate:entityAdded(e)
                 fix:setFriction(physics.bodyData.friction)
             end
             fix:setUserData(physics.bodyData.userData or {
+                entity = e,
                 collisionCount = 0,
                 properties = {
-                    type = "body",
+                    type = physics.bodyData.fixtureType or "body",
                 },
             })
-            fix:setSensor(physics.bodyData.sensor or false)
+            fix:setSensor(shapeDat.sensor or physics.bodyData.sensor or false)
         end
     end
 end

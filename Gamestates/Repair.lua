@@ -48,6 +48,7 @@ function TrashCleaner:update(dt)
                 local ud = fixture:getUserData()
                 
                 if ud.properties.type == "junkkill" then
+                  trash.isDestroyed = true
                   e:destroy()
                   return
                 end
@@ -172,6 +173,7 @@ function Repair:playerUpdate(dt)
 
   local anyLadder = false
   local hotspot
+  local localJunk
   local world = self.world[PhysicsWorld].world
 
   local inputEnabled = true
@@ -182,7 +184,6 @@ function Repair:playerUpdate(dt)
       if self.isRepairing > REPAIR_TIME then
         local hpup = math.random(15, 40) 
 
-        print(self.repairTarget, hpup)
         GameState.health[self.repairTarget] = math.min(100, GameState.health[self.repairTarget] + hpup)
 
         self.player[AnimationSM]:setValue("isRepairing", false)
@@ -230,6 +231,11 @@ function Repair:playerUpdate(dt)
                   14.74,34.78,
                   1.48,27.00,
                 }, tx/2, ty/2)
+              },
+              {
+                type = "circle",
+                radius = 50,
+                sensor = true,
               }
             }
           )
@@ -254,6 +260,10 @@ function Repair:playerUpdate(dt)
 
       if fixture:isSensor() then
         local ud = fixture:getUserData()
+
+        if ud.entity and ud.entity[Trash] then
+          localJunk = ud.entity
+        end
         
         anyLadder = anyLadder or (ud.properties.type == "ladder")
 
@@ -272,6 +282,10 @@ function Repair:playerUpdate(dt)
 
   if not anyLadder then
     body:applyForce(0, 9.81 * PHYSICS_SCALING)
+  end
+
+  if self.currentTrash and self.currentTrash[Trash].isDestroyed then
+    self.currentTrash = nil
   end
 
   if self.currentTrash then
@@ -327,6 +341,8 @@ function Repair:playerUpdate(dt)
       elseif hotspot == "junk" then
         self.player[AnimationSM]:setValue("isPickingUp", true)
         self.isSearching = 0.0
+      elseif localJunk then
+        self.currentTrash = localJunk
       else
         body:applyLinearImpulse(0, -forceZ)
       end

@@ -3,7 +3,12 @@
 - Raumschiff schlingert zu Beginn in den Screen
 - Nach Reparatur bildschirm-flash für "nice!"
   - oder direkt Text einblenden, zoom+fade
+- Erfolgreiche Reparatur => "Schadenszahl", die in einem Bogen wegfliegt
+- Fehlgeschlagene Reparatur mit Negativ-Sound anzeigen (wenn Spieler zu früh loslässt)
 - Health-Balken in *repair* über den Gegenständen anzeigen
+- Health-Balken mit Delta-Anzeige machen
+	- Bei Heilung den Balken in kurzer Zeit auf den neuen Wert auffüllen
+	- Bei Treffern sofort abziehen und den genommenen Schaden als "Ghost" anzeigen, der auf den neuen Wert schrumpft 
 - Physikalische Partikel die aus einem beschädigten Gegenstand sprühen
 - Eigene Kollision statt Box2D für mehr Präzision im shmup
 - Help-Menü
@@ -20,6 +25,9 @@
 		- shields
 - Ingame-Pause-Menü
 - Highscore-Liste
+	- Im Hauptmenü anzeigen
+	- Auf neuen Highscore im *Game Over*-Screen hinweisen + Eingabe von Spielername
+	- Liegt als Datei in `%APPDATA%` oder ähnlichem
 - Explosionseffekte mit Sprites für Gegner:
 	- Wenn Gegner zerstört, treiben 3-4 Bruchstücke des gegnerischen Schiffs
       mit schönem Schwebeeffekt in einen Fadeout
@@ -38,6 +46,7 @@
   - beim Start bevor das Schiff reinfliegt
   - beim ersten Mal Reparieren
   - Flag irgendwo wegspeichern, dass das einmal gelesen/weggeklickt wurde?
+  - *comment xq: * finde ich nicht gut, das passt nicht wirklich ins spiel und ist eher disruptiv, lieber nur einen kurzen Text einblenden a'la "survive enemy attacks" oder "repair ship" und Spielerführung in Repair mit Highlights/Glows machen. Stört vorallem schon erfahrene Spieler nicht mehr
 - Burger-Schiffe nochmal perspektivisch korrekt neu zeichnen?
 - Game-Over-Bildschirm
 - Gegner (bzw. deren Munition) haben unterschiedliche Wahrscheinlichkeiten, eins der drei Systeme zu erwischen

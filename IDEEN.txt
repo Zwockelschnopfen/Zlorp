@@ -2,6 +2,7 @@
 
 - Raumschiff schlingert zu Beginn in den Screen
 - Nach Reparatur bildschirm-flash für "nice!"
+  - oder direkt Text einblenden, zoom+fade
 - Health-Balken in *repair* über den Gegenständen anzeigen
 - Physikalische Partikel die aus einem beschädigten Gegenstand sprühen
 - Eigene Kollision statt Box2D für mehr Präzision im shmup
@@ -22,6 +23,7 @@
 - Explosionseffekte mit Sprites für Gegner:
 	- Wenn Gegner zerstört, treiben 3-4 Bruchstücke des gegnerischen Schiffs
       mit schönem Schwebeeffekt in einen Fadeout
+	- Bruchstücke prallen physikalisch korrekt(-ish) an unserem Schiff ab
 - Punkte für
 	- Zerstören von Gegnern
 	- Überleben von Wellen
@@ -30,3 +32,19 @@
 - Hintergrundsounds rund um Engine/Waffensystem/Schild
 - Ende: Landen auf Schrottplanet?
 - Audiosystem: Nicht nur Übergänge alle 8 Takte, sondern vielleicht bei jedem Takt oder sogar Beat erlauben und dafür mit Stinger-Effekten kaschieren (ein Takt lang mit Riser/Percussions etc. übertünchen)
+- Asteroiden rotieren, zufällige Auswahl aus Sprite-Varianten
+- Gegner wechseln alle paar Levels die Sprite-Variation
+- Hilfebildschirme
+  - beim Start bevor das Schiff reinfliegt
+  - beim ersten Mal Reparieren
+  - Flag irgendwo wegspeichern, dass das einmal gelesen/weggeklickt wurde?
+- Burger-Schiffe nochmal perspektivisch korrekt neu zeichnen?
+- Game-Over-Bildschirm
+- Gegner (bzw. deren Munition) haben unterschiedliche Wahrscheinlichkeiten, eins der drei Systeme zu erwischen
+- Schrott repariert die drei Systeme unterschiedlich gut
+  - Mögliches Upgrade wird als grün pulsierender Zusatzbalken angezeigt
+- Health-Balken transparent
+- Level als Inpainting im Schiff statt Tilemap, Tilemap nur noch für Collider und Zonen
+- Steuerung: Captain läuft etwas schneller und rutscht schräge Flächen nicht runter
+- Kamera im Repair-Modus weiter eingezoomt, Bewegung proportional mit Spieler
+- Anpassung an andere Seitenverhältnisse als 16:9

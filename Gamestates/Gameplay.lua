@@ -31,6 +31,9 @@ function Gameplay:load()
     zoomOut = love.audio.newSource("Assets/Sounds/zoom_out.flac", "static"),
     ai = SoundFX("Assets/Sounds/AI/ai", 6),
   }
+
+  Repair:initSystems()
+  Shmup:initSystems()
 end
 
 function Gameplay:enter()

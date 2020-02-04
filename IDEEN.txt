@@ -62,5 +62,4 @@
 - Anpassung an andere Seitenverhältnisse als 16:9
 - Fullscreen vs. Windowed, Umschalten mit Alt-Enter
 - Einstellungen für Audiolautstärke
-- Bugfix: Crash nach Neustart
 - TODOs im Code fixen ;)

@@ -141,9 +141,10 @@ function Repair:initGame()
   self.player:give(Anim, "animation_sheet_filled", "idle")
   self.player:give(Gravity)
   RepairInstance:addEntity(self.player)
+end
 
+function Repair:initSystems()
   RepairInstance:addSystem(TrashCleaner(), "update")
-
 
   -- RepairInstance:addSystem(GravityUpdater())
   RepairInstance:addSystem(TMR(), "draw")

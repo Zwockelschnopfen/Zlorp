@@ -52,14 +52,6 @@ function Shmup:load()
     }
 end
 
-function Shmup:hit(entity)
-    local h = entity:get(Hittable)
-    if h then 
-        h.hit = true
-        h.health = h.health - 1
-    end
-end
-
 function Shmup.shipHit(dmg)
     dmg = dmg * 3
     local hit = love.math.random(3)
@@ -82,7 +74,7 @@ function Shmup.shipHit(dmg)
     end
 end
 
-function Shmup:initGame()
+function Shmup:initSystems()
     ShmupInstance:addSystem(ShotTrigger(), "update")
     ShmupInstance:addSystem(Mover(), "update")
     self.pu = PhysicsUpdate()
@@ -91,7 +83,9 @@ function Shmup:initGame()
     self.hits.enemies = 0
     ShmupInstance:addSystem(self.hits, "update")
     ShmupInstance:addSystem(require("Code.Systems.KillAfterUpdate")(), "update")
+end
 
+function Shmup:initGame()
     local sr = SpriteRenderer()
     sr.layers = {"projectiles", "ships", "damage"}
     ShmupInstance:addSystem(sr, "draw")

@@ -1,6 +1,7 @@
 # Neue Ideen
 
-- Raumschiff schlingert zu Beginn in den Screen
+- Raumschiff schlingert zu Beginn in den Screen.
+- Ursprüngliche Gamejam-Idee: Beim ersten Zoom ins Raumschifft bricht die Außenwand ab, was den Einblick ins Schiff ermöglicht.
 - Nach Reparatur bildschirm-flash für "nice!"
   - oder direkt Text einblenden, zoom+fade
 - Erfolgreiche Reparatur => "Schadenszahl", die in einem Bogen wegfliegt

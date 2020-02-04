@@ -6,6 +6,7 @@
   - oder direkt Text einblenden, zoom+fade
 - Erfolgreiche Reparatur => "Schadenszahl", die in einem Bogen wegfliegt
 - Fehlgeschlagene Reparatur mit Negativ-Sound anzeigen (wenn Spieler zu früh loslässt)
+  - Und Schrott behalten, wenn man zu früh loslässt. Wenn man nur mal blöd auf der Taste wackelt, ist "Hol halt neu" imho zu harte Strafe.
 - Health-Balken in *repair* über den Gegenständen anzeigen
 - Health-Balken mit Delta-Anzeige machen
 	- Bei Heilung den Balken in kurzer Zeit auf den neuen Wert auffüllen
@@ -48,6 +49,7 @@
   - beim ersten Mal Reparieren
   - Flag irgendwo wegspeichern, dass das einmal gelesen/weggeklickt wurde?
   - *comment xq: * finde ich nicht gut, das passt nicht wirklich ins spiel und ist eher disruptiv, lieber nur einen kurzen Text einblenden a'la "survive enemy attacks" oder "repair ship" und Spielerführung in Repair mit Highlights/Glows machen. Stört vorallem schon erfahrene Spieler nicht mehr
+    - Geht auch, wenn man die ersten Waves leicht genug macht, ja. Nur die Tasten sollten wir dann im Hauptmenü unter "Help" anzeigen oder so :)
 - Burger-Schiffe nochmal perspektivisch korrekt neu zeichnen?
 - Game-Over-Bildschirm
 - Gegner (bzw. deren Munition) haben unterschiedliche Wahrscheinlichkeiten, eins der drei Systeme zu erwischen
@@ -58,3 +60,7 @@
 - Steuerung: Captain läuft etwas schneller und rutscht schräge Flächen nicht runter
 - Kamera im Repair-Modus weiter eingezoomt, Bewegung proportional mit Spieler
 - Anpassung an andere Seitenverhältnisse als 16:9
+- Fullscreen vs. Windowed, Umschalten mit Alt-Enter
+- Einstellungen für Audiolautstärke
+- Bugfix: Crash nach Neustart
+- TODOs im Code fixen ;)

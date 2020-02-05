@@ -63,3 +63,4 @@
 - Fullscreen vs. Windowed, Umschalten mit Alt-Enter
 - Einstellungen für Audiolautstärke
 - TODOs im Code fixen ;)
+- Loopende Schrittsamples durch einzelne Samples pro Schritt (randomisiert) ersetzen

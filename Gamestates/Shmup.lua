@@ -46,9 +46,12 @@ function Shmup:load()
     }
     ShmupInstance.sounds = {
         laser = SoundFX("Assets/Sounds/laser", 4),
+        laser_weak = SoundFX("Assets/Sounds/laser_weak", 4),
         rocket = SoundFX("Assets/Sounds/rocket", 1),
-        explosion = SoundFX("Assets/Sounds/explosion", 1),
+        rocket_weak = SoundFX("Assets/Sounds/rocket_weak" 1),
+        explosion = SoundFX("Assets/Sounds/explosion", 3),
         plasmaShot = SoundFX("Assets/Sounds/plasma", 1),
+        plasmaShot_weak = SoundFX("Assets/Sounds/plasma_weak", 1),
     }
 end
 

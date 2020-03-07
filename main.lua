@@ -50,22 +50,22 @@ DebugVars = {}
 function debugPrint(val)
     local cache = { }  
   
-    local function printItem(x)
+    local function printItem(indent,x)
       if cache[x] then
         io.write("<backreference>")
       else
         local t = type(x)
         if t == "table" then
           cache[t] = true
-          io.write("{ ")
+          io.write("{\n")
           for k,v in pairs(x) do
-            io.write('[')
-            printItem(k)
+            io.write(indent.."\t", '[')
+            printItem("", k)
             io.write('] = ')
-            printItem(v)
-            io.write(', ')
+            printItem(indent.."\t", v)
+            io.write(',\n')
           end
-          io.write(" }")
+          io.write(indent, "}")
         elseif t == "string" then
           io.write('"', x, '"')
         else
@@ -74,7 +74,7 @@ function debugPrint(val)
       end
     end
   
-    printItem(val)
+    printItem("", val)
     io.write("\n")
   
   end

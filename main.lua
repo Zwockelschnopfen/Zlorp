@@ -47,6 +47,38 @@ defaultFont = love.graphics.newFont(40)
 
 DebugVars = {}
 
+function debugPrint(val)
+    local cache = { }  
+  
+    local function printItem(x)
+      if cache[x] then
+        io.write("<backreference>")
+      else
+        local t = type(x)
+        if t == "table" then
+          cache[t] = true
+          io.write("{ ")
+          for k,v in pairs(x) do
+            io.write('[')
+            printItem(k)
+            io.write('] = ')
+            printItem(v)
+            io.write(', ')
+          end
+          io.write(" }")
+        elseif t == "string" then
+          io.write('"', x, '"')
+        else
+          io.write(tostring(x))
+        end
+      end
+    end
+  
+    printItem(val)
+    io.write("\n")
+  
+  end
+
 GlobalGuard.enableGuard()
 
 GS.loader:addCallback(function()

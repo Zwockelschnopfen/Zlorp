@@ -120,8 +120,8 @@ function Repair:initGame()
   self.camera = {
     x = 0,
     y = 0,
-    width = 1600,
-    height = 1600 / VirtualScreen.aspect,
+    width = 2400,
+    height = 2400 / VirtualScreen.aspect,
     bounds = {
       left = 0,
       top = 0,
@@ -132,10 +132,10 @@ function Repair:initGame()
     horizontalHardZone = 100,
     
     verticalSoftZone = 150,
-    horizontalSoftZone = 300,
+    horizontalSoftZone = 500,
 
     verticalSoftAdjustment = 600,
-    horizontalSoftAdjustment = 400,
+    horizontalSoftAdjustment = 500,
   }
 
   function self.camera:update(cx, cy)
@@ -579,6 +579,16 @@ function Repair:draw()
     self.level.layers[key].image = tex
   end
 
+  love.graphics.push()
+
+  love.graphics.scale(
+    (self.camera.bounds.right - self.camera.bounds.left) / self.camera.width
+  )
+  love.graphics.translate(
+    -(self.camera.x - self.camera.width/2),
+    -(self.camera.y - self.camera.height/2)
+  )
+
   RepairInstance:emit("draw")
 
   local trafo = self.player[Transform]
@@ -621,39 +631,44 @@ function Repair:draw()
     )
   end
 
-  love.graphics.setColor(1, 0, 0)
-  love.graphics.rectangle(
-    "line",
-    self.camera.bounds.left, self.camera.bounds.top,
-    self.camera.bounds.right - self.camera.bounds.left, self.camera.bounds.bottom - self.camera.bounds.top
-  )
+  if love.keyboard.isDown("5") then
 
-  love.graphics.setColor(0, 1, 0)
-  love.graphics.rectangle(
-    "line",
-    self.camera.x - self.camera.width/2,
-    self.camera.y - self.camera.height/2,
-    self.camera.width,
-    self.camera.height
-  )
-  
-  love.graphics.setColor(1, 1, 0)
-  love.graphics.rectangle(
-    "line",
-    self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone,
-    self.camera.y - self.camera.height/2 + self.camera.verticalHardZone,
-    self.camera.width - 2*self.camera.horizontalHardZone,
-    self.camera.height - 2*self.camera.verticalHardZone
-  )
-  
-  love.graphics.setColor(0, 1, 1)
-  love.graphics.rectangle(
-    "line",
-    self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone + self.camera.horizontalSoftZone,
-    self.camera.y - self.camera.height/2 + self.camera.verticalHardZone + self.camera.verticalSoftZone,
-    self.camera.width - 2*self.camera.horizontalHardZone - 2*self.camera.horizontalSoftZone,
-    self.camera.height - 2*self.camera.verticalHardZone - 2*self.camera.verticalSoftZone
-  )
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.rectangle(
+      "line",
+      self.camera.bounds.left, self.camera.bounds.top,
+      self.camera.bounds.right - self.camera.bounds.left, self.camera.bounds.bottom - self.camera.bounds.top
+    )
+
+    love.graphics.setColor(0, 1, 0)
+    love.graphics.rectangle(
+      "line",
+      self.camera.x - self.camera.width/2,
+      self.camera.y - self.camera.height/2,
+      self.camera.width,
+      self.camera.height
+    )
+    
+    love.graphics.setColor(1, 1, 0)
+    love.graphics.rectangle(
+      "line",
+      self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone,
+      self.camera.y - self.camera.height/2 + self.camera.verticalHardZone,
+      self.camera.width - 2*self.camera.horizontalHardZone,
+      self.camera.height - 2*self.camera.verticalHardZone
+    )
+    
+    love.graphics.setColor(0, 1, 1)
+    love.graphics.rectangle(
+      "line",
+      self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone + self.camera.horizontalSoftZone,
+      self.camera.y - self.camera.height/2 + self.camera.verticalHardZone + self.camera.verticalSoftZone,
+      self.camera.width - 2*self.camera.horizontalHardZone - 2*self.camera.horizontalSoftZone,
+      self.camera.height - 2*self.camera.verticalHardZone - 2*self.camera.verticalSoftZone
+    )
+  end
+
+  love.graphics.pop()
 
 end
 

@@ -37,6 +37,8 @@ function Gameplay:load()
 end
 
 function Gameplay:enter()
+
+  self.cameraShake = nil
   
   HUD:reset()
 
@@ -86,8 +88,10 @@ function Gameplay:leave()
 end
 
 
-function Gameplay.keypressed(_, _, key, scancode, isRepeat )
-  if key == "f6" then
+function Gameplay:keypressed(_, key, scancode, isRepeat )
+  if key == "f5" then
+    self:shakeCamera(1.0)
+  elseif key == "f6" then
     for k,v in pairs(Repair.highlights) do
       Repair.highlights[k] = math.random(2) > 1
     end
@@ -145,6 +149,16 @@ function Gameplay:update(_, dt)
   Shmup:globalUpdate(dt)
 end
 
+-- Shakes the camera.
+-- strength = 1.0 is a "medium strength impact"
+function Gameplay:shakeCamera(strength)
+  self.cameraShake = self.cameraShake or {
+    strength = 0,
+    time = 0,
+  }
+  self.cameraShake.strength = self.cameraShake.strength + strength
+end
+
 function Gameplay:draw()
   local dt = love.timer.getDelta()
   local shipPos = Shmup.ship[Transform]
@@ -155,7 +169,6 @@ function Gameplay:draw()
     else
       self.cameraTween = math.min(1.0, self.cameraTween + dt)
     end
-
 
     local tween = math.smoothstep(self.cameraTween)
     Camera.x = math.lerp(0, shipPos.x + 28 - VirtualScreen.width / 2, tween)
@@ -173,6 +186,16 @@ function Gameplay:draw()
 
     love.graphics.translate(VirtualScreen.width/2, VirtualScreen.height/2)
     love.graphics.rotate(Camera.rotation)
+
+    if self.cameraShake then
+
+      love.graphics.rotate(0.025 * self.cameraShake.strength * math.abspow(math.sin(self.cameraShake.time), 2.4))
+
+      self.cameraShake.time = self.cameraShake.time + 30.0 * self.cameraShake.strength * dt
+
+      self.cameraShake.strength = math.lerpTowards(self.cameraShake.strength, 0, 0.85 * dt)
+    end
+
     love.graphics.translate(-VirtualScreen.width/2, -VirtualScreen.height/2)
 
     love.graphics.translate(-Camera.x, -Camera.y)

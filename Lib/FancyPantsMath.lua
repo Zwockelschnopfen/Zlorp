@@ -45,3 +45,8 @@ function math.lerpTowards(actual, target, velocity)
   end 
 
 end
+
+-- Keeps sign, but applies pow 
+function math.abspow(val, exp)
+  return math.sign(val) * math.pow(math.abs(val), exp)
+end

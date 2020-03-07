@@ -81,6 +81,22 @@ function Repair:load()
     trashgraphics = {
        love.graphics.newImage("Assets/Sprites/Trash01.png"),
     },
+    keyElements = {
+      default = {
+        shields = love.graphics.newImage("Assets/Images/Shield_Asset.png"),
+        cockpit = love.graphics.newImage("Assets/Images/Cockpit_Asset.png"),
+        weapons = love.graphics.newImage("Assets/Images/Weapon_Asset.png"),
+        engines = love.graphics.newImage("Assets/Images/Engine_Asset.png"),
+        trash   = love.graphics.newImage("Assets/Images/Trash_Asset.png"),
+      },
+      highlight = {
+        shields = love.graphics.newImage("Assets/Images/Shield_Asset_Glow.png"),
+        cockpit = love.graphics.newImage("Assets/Images/Cockpit_Asset_Glow.png"),
+        weapons = love.graphics.newImage("Assets/Images/Weapon_Asset_Glow.png"),
+        engines = love.graphics.newImage("Assets/Images/Engine_Asset_Glow.png"),
+        trash   = love.graphics.newImage("Assets/Images/Trash_Asset_Glow.png"),
+      },
+    }
   }
   self.sounds = {
     junkGrab = SoundFX("Assets/Sounds/junk_grab", 4),
@@ -96,19 +112,27 @@ end
 
 function Repair:initGame()
 
-  local level = STI("Assets/Levels/Level1.lua", { "box2d" })
-  level.layers["Walls"].visible = false
-  level.layers["Ladders"].visible = false
-  level.layers["Objects"].visible = false
-  
+  self.level = STI("Assets/Levels/Level1.lua", { "box2d" })
+  self.level.layers["Walls"].visible = false
+  self.level.layers["Ladders"].visible = false
+  self.level.layers["Objects"].visible = false
+
+  self.highlights = {
+    engines = false,
+    shields = false,
+    cockpit = false,
+    weapons = false,
+    trash = false,
+  }
+
   self.world = Concord.entity.new()
-  self.world:give(TMG, level)
+  self.world:give(TMG, self.level)
   self.world:give(PhysicsWorld, 9.81 * PHYSICS_SCALING)
 
   RepairInstance:addEntity(self.world)
   
 	-- Prepare collision objects
-  level:box2d_init(self.world[PhysicsWorld].world)
+  self.level:box2d_init(self.world[PhysicsWorld].world)
 
   self.player = Concord.entity.new()
   self.player.walkDir = "left"
@@ -419,6 +443,18 @@ function Repair:update(dt)
 end
 
 function Repair:draw()
+
+  -- Update map layers to correct image if the element is currently highlighted or not.
+  for key, enabled in pairs(self.highlights) do
+    local tex
+    if enabled then
+      tex = self.resources.keyElements.highlight[key]
+    else
+      tex = self.resources.keyElements.default[key]
+    end
+    self.level.layers[key].image = tex
+  end
+
   RepairInstance:emit("draw")
 
   love.graphics.print("Current Hotspot: " .. tostring(self.hotspot), 10, 10)

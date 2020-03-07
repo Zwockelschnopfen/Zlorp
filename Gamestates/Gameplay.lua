@@ -87,8 +87,11 @@ end
 
 
 function Gameplay.keypressed(_, _, key, scancode, isRepeat )
-
-  if key == "f8" then
+  if key == "f6" then
+    for k,v in pairs(Repair.highlights) do
+      Repair.highlights[k] = math.random(2) > 1
+    end
+  elseif key == "f8" then
     GameState.health:change("overall", math.random(0, 40))
     GameState.health:change("shields", math.random(0, 40))
     GameState.health:change("weapons", math.random(0, 40))

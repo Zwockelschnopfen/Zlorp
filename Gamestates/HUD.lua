@@ -65,7 +65,6 @@ local function createBar()
 
     end
 
-
     if self.lastValue ~= val then
       self.delayUntil = t + 0.5 -- Delay until start of transition animation
       self.lastValue = val

@@ -35,6 +35,7 @@ BackgroundInstance = Concord.instance()
 VirtualScreen = {
     width = 1920,
     height = 1080,
+    aspect = 1920.0 / 1080.0
 }
 
 GS = {

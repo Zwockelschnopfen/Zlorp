@@ -257,9 +257,7 @@ function Gameplay:draw()
     self.cameraShake.time = self.cameraShake.time + 30.0 * vel * dt
     self.cameraShake.strength = self.cameraShake.strength * 0.98
     self.cameraShake.strength = math.lerpTowards(self.cameraShake.strength, 0, 0.85 * dt)
-    if self.cameraShake.strength == 0 then
-      
-    end
+  
   end
 
 end

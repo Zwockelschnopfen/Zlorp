@@ -164,9 +164,9 @@ function HUDState:draw()
       "center")
   end
 
-  DebugVars.currentTrack = Music.currentTrack
-  DebugVars.currentStage = Music.currentStage
-  DebugVars.wantedStage = Music.wantedStage
+  -- DebugVars.currentTrack = Music.currentTrack
+  -- DebugVars.currentStage = Music.currentStage
+  -- DebugVars.wantedStage = Music.wantedStage
 
   love.graphics.setColor(1,0,1)
   love.graphics.setFont(defaultFont)
@@ -174,7 +174,7 @@ function HUDState:draw()
   local y = 1
   for i,v in pairs(DebugVars) do
     
-    -- love.graphics.print(tostring(i) .. ": " .. tostring(v), 10, VirtualScreen.height - y * f:getHeight())
+    love.graphics.print(tostring(i) .. ": " .. tostring(v), 10, VirtualScreen.height - y * f:getHeight())
     
     y = y +1
   end

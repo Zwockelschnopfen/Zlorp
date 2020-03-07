@@ -117,6 +117,89 @@ function Repair:initGame()
   self.level.layers["Ladders"].visible = false
   self.level.layers["Objects"].visible = false
 
+  self.camera = {
+    x = 0,
+    y = 0,
+    width = 1600,
+    height = 1600 / VirtualScreen.aspect,
+    bounds = {
+      left = 0,
+      top = 0,
+      right = 4606,
+      bottom = 2558,
+    },
+    verticalHardZone = 150,
+    horizontalHardZone = 100,
+    
+    verticalSoftZone = 150,
+    horizontalSoftZone = 300,
+
+    verticalSoftAdjustment = 600,
+    horizontalSoftAdjustment = 400,
+  }
+
+  function self.camera:update(cx, cy)
+
+    local dt = love.timer.getDelta()
+    
+    local w_hard = (self.width/2 - self.horizontalHardZone)
+    local h_hard = (self.height/2 - self.verticalHardZone)
+    
+    local w_soft = (self.width/2 - self.horizontalHardZone - self.horizontalSoftZone)
+    local h_soft = (self.height/2 - self.verticalHardZone - self.verticalSoftZone)
+
+    do -- soft camera boundaries
+
+      if cx > self.x + w_soft then
+        local p = math.clamp(cx - (self.x + w_soft), 0, self.horizontalSoftZone) / self.horizontalSoftZone
+        self.x = self.x + self.horizontalSoftAdjustment * p * dt
+      end
+      
+      if cx < self.x - w_soft then
+        local p = math.clamp((self.x - w_soft) - cx, 0, self.horizontalSoftZone) / self.horizontalSoftZone
+        self.x = self.x - self.horizontalSoftAdjustment * p * dt
+      end
+
+      if cy > self.y + h_soft then
+        local p = math.clamp(cy - (self.y + h_soft), 0, self.verticalSoftZone) / self.verticalSoftZone
+        self.y = self.y + self.verticalSoftAdjustment * p * dt
+      end
+      
+      if cy < self.y - h_soft then
+        local p = math.clamp((self.y - h_soft) - cy, 0, self.verticalSoftZone) / self.verticalSoftZone
+        self.y = self.y - self.verticalSoftAdjustment * p * dt
+      end
+
+    end
+
+    do -- hard camera boundaries
+
+      if cx > self.x + w_hard then 
+        self.x = cx - w_hard
+      end
+      if cx < self.x - w_hard then 
+        self.x = cx + w_hard
+      end
+      if cy > self.y + h_hard then 
+        self.y = cy - h_hard
+      end
+      if cy < self.y - h_hard then 
+        self.y = cy + h_hard
+      end
+    end
+
+    self.x = math.clamp(self.x,
+      self.bounds.left + self.width/2 + self.horizontalHardZone,
+      self.bounds.right - self.width/2 - self.horizontalHardZone
+    )
+
+    self.y = math.clamp(self.y,
+      self.bounds.top + self.height/2 + self.verticalHardZone,
+      self.bounds.bottom - self.height/2 - self.verticalHardZone
+    )
+
+  end
+
   self.highlights = {
     engines = false,
     shields = false,
@@ -435,7 +518,6 @@ function Repair:playerUpdate(dt)
   self.player[AnimationSM]:setValue("isClimbing", self.player.isClimbing)
   self.player[AnimationSM]:setValue("isMoving", moving)
 
-
   -- Update glow to game state
   if self.isRepairing then
     self.highlights = {
@@ -471,6 +553,11 @@ function Repair:playerUpdate(dt)
       trash = true,
     }
   end
+
+  self.camera:update(
+    self.player[Transform].x,
+    self.player[Transform].y
+  )
 end
 
 function Repair:update(dt)
@@ -493,8 +580,6 @@ function Repair:draw()
   end
 
   RepairInstance:emit("draw")
-
-  love.graphics.print("Current Hotspot: " .. tostring(self.hotspot), 10, 10)
 
   local trafo = self.player[Transform]
 
@@ -535,6 +620,40 @@ function Repair:draw()
       25
     )
   end
+
+  love.graphics.setColor(1, 0, 0)
+  love.graphics.rectangle(
+    "line",
+    self.camera.bounds.left, self.camera.bounds.top,
+    self.camera.bounds.right - self.camera.bounds.left, self.camera.bounds.bottom - self.camera.bounds.top
+  )
+
+  love.graphics.setColor(0, 1, 0)
+  love.graphics.rectangle(
+    "line",
+    self.camera.x - self.camera.width/2,
+    self.camera.y - self.camera.height/2,
+    self.camera.width,
+    self.camera.height
+  )
+  
+  love.graphics.setColor(1, 1, 0)
+  love.graphics.rectangle(
+    "line",
+    self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone,
+    self.camera.y - self.camera.height/2 + self.camera.verticalHardZone,
+    self.camera.width - 2*self.camera.horizontalHardZone,
+    self.camera.height - 2*self.camera.verticalHardZone
+  )
+  
+  love.graphics.setColor(0, 1, 1)
+  love.graphics.rectangle(
+    "line",
+    self.camera.x - self.camera.width/2 + self.camera.horizontalHardZone + self.camera.horizontalSoftZone,
+    self.camera.y - self.camera.height/2 + self.camera.verticalHardZone + self.camera.verticalSoftZone,
+    self.camera.width - 2*self.camera.horizontalHardZone - 2*self.camera.horizontalSoftZone,
+    self.camera.height - 2*self.camera.verticalHardZone - 2*self.camera.verticalSoftZone
+  )
 
 end
 

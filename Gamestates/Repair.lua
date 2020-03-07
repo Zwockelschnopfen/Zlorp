@@ -434,6 +434,43 @@ function Repair:playerUpdate(dt)
 
   self.player[AnimationSM]:setValue("isClimbing", self.player.isClimbing)
   self.player[AnimationSM]:setValue("isMoving", moving)
+
+
+  -- Update glow to game state
+  if self.isRepairing then
+    self.highlights = {
+      engines = false,
+      shields = false,
+      cockpit = false,
+      weapons = false,
+      trash = false,
+    }
+    self.highlights[self.repairTarget] = true
+  elseif self.isSearching then
+    self.highlights = {
+      engines = false,
+      shields = false,
+      cockpit = false,
+      weapons = false,
+      trash = true,
+    }
+  elseif self.currentTrash then
+    self.highlights = {
+      engines = true,
+      shields = true,
+      cockpit = false,
+      weapons = true,
+      trash = false,
+    }
+  else
+    self.highlights = {
+      engines = false,
+      shields = false,
+      cockpit = true,
+      weapons = false,
+      trash = true,
+    }
+  end
 end
 
 function Repair:update(dt)

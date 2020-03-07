@@ -157,6 +157,9 @@ function Gameplay:shakeCamera(strength)
     time = 0,
   }
   self.cameraShake.strength = self.cameraShake.strength + strength
+  if self.cameraShake.strength > 3.0 then
+    self.cameraShake.strength = 3.0
+  end
 end
 
 function Gameplay:draw()
@@ -178,6 +181,18 @@ function Gameplay:draw()
 
   love.graphics.origin()
 
+  if self.cameraShake then
+
+    local str = math.abspow(self.cameraShake.strength / 3.0, 1.4)
+
+    love.graphics.translate(math.floor(
+      15 * str * math.abspow(math.sin(1.3 * self.cameraShake.time), 1.6)
+    ),math.floor(
+      10 * str * math.abspow(math.sin(1.4 * self.cameraShake.time), 1.4)
+    ))
+
+  end
+
   love.graphics.push()
 
     love.graphics.translate(VirtualScreen.width/2, VirtualScreen.height/2)
@@ -189,11 +204,10 @@ function Gameplay:draw()
 
     if self.cameraShake then
 
-      love.graphics.rotate(0.025 * self.cameraShake.strength * math.abspow(math.sin(self.cameraShake.time), 2.4))
+      local str = math.smoothstep(math.pow(math.max(0, self.cameraShake.strength - 0.5), 1.6), 0.0, 2.0)
 
-      self.cameraShake.time = self.cameraShake.time + 30.0 * self.cameraShake.strength * dt
+      love.graphics.rotate(0.025 * math.smoothstep(self.cameraTween) * str * math.abspow(math.sin(self.cameraShake.time), 2.4))
 
-      self.cameraShake.strength = math.lerpTowards(self.cameraShake.strength, 0, 0.85 * dt)
     end
 
     love.graphics.translate(-VirtualScreen.width/2, -VirtualScreen.height/2)
@@ -235,6 +249,18 @@ function Gameplay:draw()
   HUD:draw()
 
   love.graphics.pop()
+
+  if self.cameraShake then
+
+    local vel = 1.6 * math.pow(0.45 * self.cameraShake.strength, 0.6)
+
+    self.cameraShake.time = self.cameraShake.time + 30.0 * vel * dt
+    self.cameraShake.strength = self.cameraShake.strength * 0.98
+    self.cameraShake.strength = math.lerpTowards(self.cameraShake.strength, 0, 0.85 * dt)
+    if self.cameraShake.strength == 0 then
+      
+    end
+  end
 
 end
 

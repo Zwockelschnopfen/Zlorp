@@ -38,6 +38,8 @@ end
 
 function Gameplay:enter()
   
+  HUD:reset()
+
   GameState:reset()
   Gameplay.cameraTween = 0.0
   
@@ -83,6 +85,22 @@ function Gameplay:leave()
 
 end
 
+
+function Gameplay.keypressed(_, _, key, scancode, isRepeat )
+
+  if key == "f8" then
+    GameState.health:change("overall", math.random(0, 40))
+    GameState.health:change("shields", math.random(0, 40))
+    GameState.health:change("weapons", math.random(0, 40))
+    GameState.health:change("engines", math.random(0, 40))
+  elseif key == "f7" then
+    GameState.health:change("overall", -math.random(0, 40))
+    GameState.health:change("shields", -math.random(0, 40))
+    GameState.health:change("weapons", -math.random(0, 40))
+    GameState.health:change("engines", -math.random(0, 40))
+  end
+end
+
 function Gameplay:update(_, dt)
 
   if love.keyboard.isDown("escape") then
@@ -95,6 +113,7 @@ function Gameplay:update(_, dt)
   elseif love.keyboard.isDown("f2") then
     GameState:goToRepair()
   end
+
 
   GameState.timeRemaining = GameState.timeRemaining - dt
 

@@ -1,5 +1,82 @@
 local GameState = require "Gamestates.GameState"
 
+local function createBar()
+  local t = {
+    delayUntil = 0,
+  }
+  
+  function t:draw(x, y, w, h, val, r,g,b, bg)
+    
+    local t = love.timer.getTime()
+    local dt = love.timer.getDelta()
+    
+    if not self.displayedValue then
+      self.displayedValue = val
+    end
+
+    bg = bg or 0
+    x = x + 40
+
+    love.graphics.setColor(
+      math.lerp(0.00, 0.7, bg),
+      math.lerp(0.07, 0.0, bg),
+      math.lerp(0.15, 0.0, bg)
+    )
+    love.graphics.rectangle("fill", x, y, w, h)
+
+    local w_actual  = math.floor((w-2) * val)
+    local w_display = math.floor((w-2) * self.displayedValue)
+
+    if w_display > w_actual then
+      
+      love.graphics.setColor(r, g, b)
+      love.graphics.rectangle(
+        "fill",
+        x+1,y+1,
+        w_actual,
+        h-2
+      )
+      
+      love.graphics.setColor(0.9, 0.1, 0.2)
+      love.graphics.rectangle(
+        "fill",
+        x+1+w_actual,y+1,
+        w_display - w_actual,
+        h-2
+      )
+    
+    else
+      
+      love.graphics.setColor(r, g, b)
+      love.graphics.rectangle(
+        "fill",
+        x+1,y+1,
+        w_display,
+        h-2
+      )
+
+      love.graphics.setColor(0.3, 0.9, 0.2)
+      love.graphics.rectangle(
+        "fill",
+        x+1+w_display,y+1,
+        w_actual - w_display,
+        h-2
+      )
+
+    end
+
+
+    if self.lastValue ~= val then
+      self.delayUntil = t + 0.5 -- Delay until start of transition animation
+      self.lastValue = val
+    elseif t > self.delayUntil then
+      self.displayedValue = math.lerpTowards(self.displayedValue, val, 1.0 * dt)
+    end
+  end
+
+  return t
+end
+
 local HUDState = {
   visible = false
 }
@@ -13,26 +90,13 @@ function HUDState:load()
   self.timerVisible = 0
 end
 
-local function Bar(x, y, w, h, val, r,g,b, bg)
-
-  bg = bg or 0
-  x = x + 40
-
-  love.graphics.setColor(
-    math.lerp(0.00, 0.7, bg),
-    math.lerp(0.07, 0.0, bg),
-    math.lerp(0.15, 0.0, bg)
-  )
-  love.graphics.rectangle("fill", x, y, w, h)
-
-  love.graphics.setColor(r, g, b)
-  love.graphics.rectangle(
-    "fill",
-    x+1,y+1,
-    math.floor((w-2) * val),
-    h-2
-  )
-
+function HUDState:reset()
+  self.bars = {
+    overall = createBar(),
+    shields = createBar(),
+    weapons = createBar(),
+    engines = createBar()
+  }
 end
 
 function HUDState:draw()
@@ -48,14 +112,14 @@ function HUDState:draw()
     end
   end
 
-  Bar(10,  10, 250, 30, GameState.health.overall / 100.0, 1, 1, 1, warnBlinker(GameState.health.overall))
+  self.bars.overall:draw(10,  10, 250, 30, GameState.health.overall / 100.0, 1, 1, 1, warnBlinker(GameState.health.overall), dt)
 
   love.graphics.setColor(1,1,1)
   love.graphics.line(10, 50, 300, 50)
 
-  Bar(10,  60, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields))
-  Bar(10, 100, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons))
-  Bar(10, 140, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines))
+  self.bars.shields:draw(10,  60, 250, 30, GameState.health.shields / 100.0, 1, 1, 1, warnBlinker(GameState.health.shields), dt)
+  self.bars.weapons:draw(10, 100, 250, 30, GameState.health.weapons / 100.0, 1, 1, 1, warnBlinker(GameState.health.weapons), dt)
+  self.bars.engines:draw(10, 140, 250, 30, GameState.health.engines / 100.0, 1, 1, 1, warnBlinker(GameState.health.engines), dt)
 
   love.graphics.setColor(1,1,1)
   love.graphics.draw(self.resources.panelLeft, 0, 0)

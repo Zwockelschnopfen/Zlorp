@@ -32,3 +32,16 @@ end
 function math.lerp(l, r, f)
   return l * (1-f) + f * r
 end
+
+function math.lerpTowards(actual, target, velocity)
+
+  local d = target - actual
+  local s = math.sign(d)
+
+  if velocity < math.abs(d) then
+    return actual + s * velocity
+  else
+    return target
+  end 
+
+end

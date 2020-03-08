@@ -2,7 +2,7 @@
 
 ## Fonts
 - [Earth Orbiter Font](http://www.iconian.com/e.html)
-- [Digital Dismay von Chequered Ink](https://www.dafont.com/de/digital-dismay.font)
+- [Digital Dismay by Chequered Ink](https://www.dafont.com/de/digital-dismay.font)
 - [Gobold](https://www.dafont.com/de/gobold.font) (by Situjuh Nazara)
 
 ## Libraries
@@ -14,7 +14,7 @@
 - [Löve2D](https://love2d.org/)
 
 ## Sound effects
-- ["sqeaky valve 2" by FreqMan CC-BY](https://freesound.org/people/FreqMan/sounds/31379/)
+- ["sqeaky valve 2" by FreqMan, CC-BY](https://freesound.org/people/FreqMan/sounds/31379/)
 - ["Valve_1(air, release).wav" by o_ciz, CC0](https://freesound.org/people/o_ciz/sounds/475427/)
 - ["grotelue_valve-edit.wav" by stib, CC0](https://freesound.org/people/stib/sounds/494918/)
 - ["Messing around with garbage container containing metal.wav" by jakobhandersen, CC0](https://freesound.org/people/jakobhandersen/sounds/482209/)
@@ -28,3 +28,8 @@
 - ["Artillery Explosion (Close) (Mixed)" by EFlexMusic, CC-BY-NC](https://freesound.org/people/EFlexMusic/sounds/388528/)
 - ["Hammer.aif" by olliehahn12, CC0](https://freesound.org/people/olliehahn12/sounds/262000/)
 - ["hammer hit" by friedrich123123, CC0](https://freesound.org/people/friedrich123123/sounds/348757/)
+- ["Jack Hammer breaking up concrete (short burst)" by thomaspettigrew, CC0](https://freesound.org/people/thomaspettigrew/sounds/273697/)
+- ["patching of the road - jackhammer near.wav" by Zabuhailo, CC-BY](https://freesound.org/people/Zabuhailo/sounds/165775/)
+- ["VIC 32 engine room" by BBELR, CC-BY](https://freesound.org/people/BBELR/sounds/360684/)
+- ["Real explosions Real gunshots.wav" by Ramston, CC0](https://freesound.org/people/Ramston/sounds/262436/)
+- ["Rocket stereo.wav" by sophiehall3535, CC0](https://freesound.org/people/sophiehall3535/sounds/245949/)

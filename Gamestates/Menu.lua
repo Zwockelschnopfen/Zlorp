@@ -107,7 +107,7 @@ function Menu:update(_, dt)
   
   if state.current == "help" then
     
-    if Input:pressed "action" then
+    if Input:pressed "action" or Input:pressed "back" then
       state.current = "main"
       love.audio.play(self.resources.acceptSound)
     end
@@ -132,8 +132,8 @@ function Menu:update(_, dt)
     end
     state.creditsLine = state.creditsLine + state.creditsSpeed * dt
 
-    if state.creditsLine > #self.resources.credits or Input:pressed "action" then
-      if Input:pressed "action" then
+    if state.creditsLine > #self.resources.credits or Input:pressed "action" or Input:pressed "back"  then
+      if Input:pressed "action" or Input:pressed "back" then
         love.audio.play(self.resources.acceptSound)
       end
       state.current = "main"

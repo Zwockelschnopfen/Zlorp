@@ -26,8 +26,6 @@ function TransformComponent:getAbsoluteTransform()
         sy = sy * tmpE.sy
         tmpE = tmpE.parent
     end
-    
-    print(sx, sy)
 
     return x, y, r, sx, sy
 end

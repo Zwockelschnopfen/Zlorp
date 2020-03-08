@@ -1,6 +1,7 @@
 local Transform = require("Code.Components.Transform")
 local Physics = require("Code.Components.Physics")
 local World = require("Code.Components.PhysicsWorld")
+local PhysicsConfig = require("Assets.Physics.PhysicsConfig")
 
 local PhysicsUpdate = Concord.system({Physics, Transform}, {"world", World})
 
@@ -29,6 +30,15 @@ function PhysicsUpdate:entityAdded(e)
         physics.body = love.physics.newBody(world, physics.bodyData.x, physics.bodyData.y, physics.bodyData.type)
         physics.body:setFixedRotation(physics.bodyData.fixedRotation or false)
         physics.body:setGravityScale(physics.bodyData.gravityScale or 1.0)
+        
+        if physics.bodyData.group then
+            physics.bodyData.group = PhysicsConfig.shmup.group[physics.bodyData.group]
+        end
+        if physics.bodyData.category then
+            physics.categories = PhysicsConfig.shmup.categories[physics.bodyData.category]
+            physics.masks = PhysicsConfig.shmup.masks[physics.bodyData.category]
+        end
+        
         local newShape
         for _, shapeDat in ipairs(physics.shapeDataTable) do
             newShape = PhysicsUpdate:createShape(shapeDat)
@@ -50,6 +60,14 @@ function PhysicsUpdate:entityAdded(e)
                 end
                 if physics.bodyData.mask then
                     fix:setMask(unpack(physics.bodyData.mask))
+                end
+            end
+
+            if physics.group and physics.categories then
+                fix:setGroupIndex(physics.group)
+                fix:setCategory( unpack(physics.categories) )
+                if physics.masks then
+                    fix:setMask( unpack(physics.masks) )
                 end
             end
         end

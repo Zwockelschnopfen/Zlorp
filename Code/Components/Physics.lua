@@ -20,6 +20,16 @@ return Concord.component(
 
 --[[
     example data:
-        bodyData = { x = 5, y = 5, type = "dynamic" }
+        bodyData = { x = 5, y = 5, type = "dynamic", group = "player", category = "ship" }
         shapeDataTable = { { type = "circle", radius = 10 }, { type = "polygon", verts = {0, 0, 0, 1, 1, 1, 1, 0 } } }
+        
+    collision groups:
+        player
+        enemies
+        neutral
+    
+    collision categories:
+        ship
+        projectile
+        
 ]]

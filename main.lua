@@ -42,6 +42,7 @@ GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
     gameplay = require("Gamestates.Gameplay"),
+    gameover = require("Gamestates.GameOver"),
 }
 
 defaultFont = love.graphics.newFont(40)

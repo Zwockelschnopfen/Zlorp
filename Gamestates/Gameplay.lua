@@ -68,9 +68,14 @@ function Gameplay:enter()
     if stage == 1 then
       Shmup:initWaves()
     elseif stage == 2 then
-      Highscore:add(Balancing.scores.surviveWave)
-      GameState:goToRepair()
-      GameState.timeRemaining = 60
+      if GameState.health.overall <= 0 then
+        Music.endEverything()
+        Gamestate.switch(GS.gameover)
+      else
+        Highscore:add(Balancing.scores.surviveWave)
+        GameState:goToRepair()
+        GameState.timeRemaining = 60
+      end
     elseif stage == 5 then
       self.sounds.ai:play()
     end
@@ -88,7 +93,7 @@ function Gameplay:leave()
 
   Repair:exitGame()
   Shmup:exitGame()
-
+  Music.onStageChange = nil
   Music.onCalmPhaseDoneCallback = nil
 
 end

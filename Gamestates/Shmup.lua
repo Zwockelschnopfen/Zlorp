@@ -6,6 +6,7 @@ local Mover = require("Code.Systems.Mover")
 local Transform = require("Code.Components.Transform")
 local EnemyShooter = require("Code.Entities.EnemyShooter")
 local PhysicsUpdate = require("Code.Systems.PhysicsUpdate")
+local AnimUpdate = require("Code.Systems.AnimUpdate")
 local Hittable = require("Code.Components.Hittable")
 local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
@@ -89,8 +90,9 @@ function Shmup:initSystems()
 end
 
 function Shmup:initGame()
+    ShmupInstance:addSystem(AnimUpdate(), "draw")
     local sr = SpriteRenderer()
-    sr.layers = {"projectiles", "ships", "damage"}
+    sr.layers = {"default", "projectiles", "ships", "damage"}
     ShmupInstance:addSystem(sr, "draw")
     
     ShmupInstance:addEntity(PhysicsWorldHaver(0, function(f0, f1, c)
@@ -123,6 +125,16 @@ function Shmup:initGame()
     self.rocketTimeout = 0
     self.rocketSpawnPoint = 0
     ShmupInstance:addEntity(self.ship)
+    
+    local Anim = require("Code.Components.Anim")
+    local Color = require("Code.Components.Color")
+    local booster = Concord.entity.new()
+    booster:give(Transform, -195, -5, 0, 1.5, 1.5, self.ship)
+    local boosterImg = love.graphics.newImage("Assets/Anims/particle_shmup_sprites.png")
+    --booster:give(Sprite, boosterImg, love.graphics.newQuad(0, 256 * 5, 256, 256, boosterImg:getDimensions()))
+    booster:give(Anim, "particle_shmup_sprites", "boost")
+    booster:give(Color, 0.7, 0.7, 1, 1)
+    ShmupInstance:addEntity(booster)
 end
   
 function Shmup:exitGame()

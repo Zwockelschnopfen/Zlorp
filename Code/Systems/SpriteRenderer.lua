@@ -1,6 +1,6 @@
 local Sprite = require("Code.Components.Sprite")
 local Transform = require("Code.Components.Transform")
-local Anim = require("Code.Components.Anim")
+local Color = require("Code.Components.Color")
 local Particles = require("Code.Components.Particles")
 local KillAfter = require("Code.Components.KillAfter")
 
@@ -23,16 +23,22 @@ function SpriteRenderer:draw()
             local s = e:get(Sprite)
             local ka = e:get(KillAfter)
             local w, h = s.img:getDimensions()
-            
+            local x, y, r, sx, sy = t:getAbsoluteTransform()
+            if e:get(Color) then
+                love.graphics.setColor(e:get(Color).rgba)
+            end
             
             if s.layer == layer then
                 if s.quad then
                     local _, __, w, h = s.quad:getViewport()
-                    love.graphics.draw(s.img, s.quad, t.x, t.y, t.r, t.sx, t.sy, w/2, h/2)
+                    
+                    love.graphics.draw(s.img, s.quad, x, y, r, sx, sy, w/2, h/2)
                 else
-                    love.graphics.draw(s.img, t.x, t.y, t.r, t.sx, t.sy, w/2, h/2)
+                    love.graphics.draw(s.img, x, y, r, sx, sy, w/2, h/2)
                 end
             end
+            
+            love.graphics.setColor(1, 1, 1, 1)
         end
     end
 end

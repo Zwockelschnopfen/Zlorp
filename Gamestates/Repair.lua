@@ -15,6 +15,9 @@ local AnimUpdate     = require "Code.Systems.AnimUpdate"
 local GameState      = require "Gamestates.GameState"
 local SoundFX        = require "Code.SoundFX"
 
+local Highscore = require "Code.Highscore"
+local Balancing = require "Code.Balancing"
+
 local PHYSICS_SCALING = 128
 local SEARCH_TIME = 2.5
 local REPAIR_TIME = 2.5
@@ -309,6 +312,14 @@ function Repair:playerUpdate(dt)
         self.player[AnimationSM]:setValue("hasJunk", false)
         self.isRepairing = nil
 
+        if self.repairTarget == "engines" then
+          Highscore:add(Balancing.scores.repairEngines)
+        elseif self.repairTarget == "weapons" then
+          Highscore:add(Balancing.scores.repairWeapons)
+        elseif self.repairTarget == "shields" then
+          Highscore:add(Balancing.scores.repairShields)
+        end
+
         self.sounds.repairDone:play()
       end
       inputEnabled = false
@@ -325,6 +336,8 @@ function Repair:playerUpdate(dt)
       if self.isSearching > SEARCH_TIME then
         self.player[AnimationSM]:setValue("isPickingUp", false)
         self.isSearching = nil
+        
+        Highscore:add(Balancing.scores.gatherTrash)
 
         do
           local playerPos = self.player[Transform]

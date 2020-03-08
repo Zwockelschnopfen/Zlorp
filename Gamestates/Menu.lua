@@ -1,4 +1,5 @@
 local Menu = {}
+local Highscore = require "Code.Highscore"
 
 local main = {
   {
@@ -23,6 +24,8 @@ function Menu:load()
   self.resources = {
     buttonFont = love.graphics.newFont("Assets/Fonts/earthorbiter.ttf", 77),
     titleFont = love.graphics.newFont("Assets/Fonts/earthorbiterhalf.ttf", 180),
+    highscoreFont = love.graphics.newFont("Assets/Fonts/Gobold Light.otf", 40),
+    highscoreFontBold = love.graphics.newFont("Assets/Fonts/Gobold Regular.otf", 40),
     ship = love.graphics.newImage("Assets/Images/ShipInMenu.png"),
     acceptSound = love.audio.newSource("Assets/Sounds/select.flac", "static"),
     navigateSound = love.audio.newSource("Assets/Sounds/cursor.flac", "static"),
@@ -178,6 +181,51 @@ function Menu:draw()
       btn.text, 
       10 + math.smoothstep(btn.dx, 0, 1) * (40 + 5 * math.sin(3 * t + 2.2 * i)) - 350 * math.pow(self.state.mainHidden, 2.0),
       1080 + 80 * (i - #main - 1))
+  end
+
+  if self.state.current == "main" and #Highscore.list > 0 then
+
+    local hswidth = 600
+    local hspadding = 20
+    local hstop = VirtualScreen.height - hspadding - 50 * #Highscore.list
+
+    love.graphics.setFont(self.resources.highscoreFontBold)
+
+    love.graphics.setColor(0.7, 0.7, 0.7)
+    love.graphics.printf(
+      "Highscore:",
+      VirtualScreen.width - hswidth - hspadding, 
+      hstop - 50,
+      hswidth,
+      "left"
+    )
+
+    love.graphics.setColor(1, 1, 1)
+    for i=1,#Highscore.list do
+      local e = Highscore.list[i]
+      
+      local gray = 1 / (0.4*i)
+      love.graphics.setColor(gray, gray, gray)
+
+      love.graphics.printf(
+        e.name or "noname",
+        VirtualScreen.width - hswidth - hspadding, 
+        hstop + (50 * (i - 1)),
+        hswidth,
+        "right"
+      )
+
+      love.graphics.printf(
+        tostring(e.score),
+        VirtualScreen.width - hswidth - hspadding, 
+        hstop + (50 * (i - 1)),
+        hswidth,
+        "left"
+      )
+        
+      love.graphics.setFont(self.resources.highscoreFont)
+
+    end
   end
 
   do

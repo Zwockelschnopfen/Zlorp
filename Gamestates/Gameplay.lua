@@ -4,6 +4,9 @@ local SoundFX = require "Code.SoundFX"
 local Shmup = require "Gamestates.Shmup"
 local Repair = require "Gamestates.Repair"
 
+local Highscore = require "Code.Highscore"
+local Balancing = require "Code.Balancing"
+
 local HUD = require "Gamestates.HUD"
 local GameState = require "Gamestates.GameState"
 local canvas
@@ -40,6 +43,8 @@ function Gameplay:enter()
 
   self.cameraShake = nil
   
+  Highscore:reset()
+
   HUD:reset()
 
   GameState:reset()
@@ -63,6 +68,7 @@ function Gameplay:enter()
     if stage == 1 then
       Shmup:initWaves()
     elseif stage == 2 then
+      Highscore:add(Balancing.scores.surviveWave)
       GameState:goToRepair()
       GameState.timeRemaining = 60
     elseif stage == 5 then
@@ -147,6 +153,8 @@ function Gameplay:update(_, dt)
 
   Repair:globalUpdate(dt)
   Shmup:globalUpdate(dt)
+
+  DebugVars.highscore = Highscore.currentScore or "failure"
 end
 
 -- Shakes the camera.
@@ -175,7 +183,7 @@ function Gameplay:draw()
     end
 
     local repairWidth = 150 -- Width of the full "object"
-    
+
     local repairX, repairY = shipPos.x + 28, shipPos.y + 29
     repairX = repairX + repairWidth * (Repair.camera.x / (Repair.camera.bounds.right - Repair.camera.bounds.left) - 0.5)
     repairY = repairY + repairWidth * (Repair.camera.y / (Repair.camera.bounds.bottom - Repair.camera.bounds.top) - 0.5) / VirtualScreen.aspect

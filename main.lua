@@ -95,6 +95,11 @@ end)
 
 GS.loader:addCallback(Music.load)
 
+GS.loader:addCallback(function()
+    local Highscore = require "Code.Highscore"
+    Highscore:loadDataset()
+end)
+
 function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()

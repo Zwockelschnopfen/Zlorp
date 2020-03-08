@@ -3,6 +3,7 @@
 ## Fonts
 - [Earth Orbiter Font](http://www.iconian.com/e.html)
 - [Digital Dismay von Chequered Ink](https://www.dafont.com/de/digital-dismay.font)
+- [Gobold](https://www.dafont.com/de/gobold.font) (by Situjuh Nazara)
 
 ## Libraries
 - [STI](https://github.com/karai17/Simple-Tiled-Implementation) (MIT Licence)

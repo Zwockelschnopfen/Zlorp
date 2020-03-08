@@ -12,6 +12,8 @@ local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 local GameState = require("Gamestates.GameState")
 local SoundFX        = require "Code.SoundFX"
 
+local Highscore = require "Code.Highscore"
+local Balancing = require "Code.Balancing"
 
 local Shmup = {
     SHIP_SPEED = { x=500, y=700 },

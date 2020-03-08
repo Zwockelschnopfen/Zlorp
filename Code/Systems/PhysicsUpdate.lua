@@ -44,6 +44,14 @@ function PhysicsUpdate:entityAdded(e)
                 },
             })
             fix:setSensor(shapeDat.sensor or physics.bodyData.sensor or false)
+            if not fix:isSensor() then
+                if physics.bodyData.category then
+                    fix:setCategory(unpack(physics.bodyData.category))
+                end
+                if physics.bodyData.mask then
+                    fix:setMask(unpack(physics.bodyData.mask))
+                end
+            end
         end
     end
 end

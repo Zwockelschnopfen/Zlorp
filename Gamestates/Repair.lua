@@ -233,6 +233,8 @@ function Repair:initGame()
       fixedRotation = true,
       gravityScale = 0,
       friction = 0,
+      category = {1},
+      mask = {2},
     },
     { { type = "polygon", 
         verts = adjustCollider({
@@ -355,6 +357,8 @@ function Repair:playerUpdate(dt)
             Physics, 
             {
               type = "dynamic",
+              category = {2},
+              -- mask = {1},
             },
             { { type = "polygon", 
                 verts = adjustCollider({
@@ -430,7 +434,7 @@ function Repair:playerUpdate(dt)
     
     local body = self.currentTrash[Physics].body
 
-    local tx = playerPos.x + ((self.player.walkDir == "left") and (-20) or -5)
+    local tx = playerPos.x + ((self.player.walkDir == "left") and (-60) or 60)
     local ty = playerPos.y - 33
 
     body:setGravityScale(0)
@@ -460,6 +464,7 @@ function Repair:playerUpdate(dt)
           self.player[AnimationSM]:setValue("hasJunk", false)
           self.currentTrash[Trash].isHeld = false
           self.sounds.junkDrop:play()
+          self.currentTrash[Physics].body:setAwake(true)
         end
         self.currentTrash = nil
       end

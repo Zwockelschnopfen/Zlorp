@@ -93,6 +93,7 @@ function Gameplay:leave()
 
   Repair:exitGame()
   Shmup:exitGame()
+
   Music.onStageChange = nil
   Music.onCalmPhaseDoneCallback = nil
 

@@ -31,6 +31,7 @@ HUDInstance = Concord.instance()
 RepairInstance = Concord.instance()
 ShmupInstance = Concord.instance()
 BackgroundInstance = Concord.instance()
+GameOverInstance = Concord.instance()
 
 -- Virtual screen size
 VirtualScreen = {
@@ -106,6 +107,7 @@ function love.load()
     love.mouse.setVisible(false)
     GS.loader:load()
     -- GS.loader.targetState = "gameplay" -- uncomment to make default behaviour
+    -- GS.loader.targetState = "gameover" -- uncomment to make default behaviour
     Gamestate.switch(GS.loader)
 end
 

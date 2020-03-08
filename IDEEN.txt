@@ -64,3 +64,4 @@
 - Einstellungen für Audiolautstärke
 - TODOs im Code fixen ;)
 - Loopende Schrittsamples durch einzelne Samples pro Schritt (randomisiert) ersetzen
+- An Bildschirmauflösung korrekt anpassen (momentan sieht man z.B. bei einem 1920x1200-Bildschirm unterhalb der 1080. Pixelreihe noch den Desktop)

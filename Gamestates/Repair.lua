@@ -470,7 +470,8 @@ function Repair:playerUpdate(dt)
         self.currentTrash = localJunk
         self.sounds.junkPickup:play()
       else
-        body:applyLinearImpulse(0, -forceZ)
+        -- Enable/Disable jump here
+        -- body:applyLinearImpulse(0, -forceZ)
       end
     end
     if hotspot ~= "cockpit" then

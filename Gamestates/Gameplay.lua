@@ -162,7 +162,6 @@ function Gameplay:shakeCamera(strength)
   end
 end
 
-local repairWidth = 150
 
 function Gameplay:draw()
   local dt = love.timer.getDelta()
@@ -175,6 +174,8 @@ function Gameplay:draw()
       self.cameraTween = math.min(1.0, self.cameraTween + dt)
     end
 
+    local repairWidth = 150 -- Width of the full "object"
+    
     local repairX, repairY = shipPos.x + 28, shipPos.y + 29
     repairX = repairX + repairWidth * (Repair.camera.x / (Repair.camera.bounds.right - Repair.camera.bounds.left) - 0.5)
     repairY = repairY + repairWidth * (Repair.camera.y / (Repair.camera.bounds.bottom - Repair.camera.bounds.top) - 0.5) / VirtualScreen.aspect

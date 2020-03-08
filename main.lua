@@ -15,7 +15,8 @@ Input = Baton.new {
         right = {'key:right', 'key:d', 'axis:leftx+', 'button:dpright'},
         up = {'key:up', 'key:w', 'axis:lefty-', 'button:dpup'},
         down = {'key:down', 'key:s', 'axis:lefty+', 'button:dpdown'},
-        action = {'key:x', 'button:a', 'key:return'},
+        action = { 'key:space', 'key:lctrl', 'key:x', 'button:a', 'key:return'},
+        back = { 'key:escape', 'button:b' }
     },
     pairs = {
         move = {'left', 'right', 'up', 'down'}
@@ -42,6 +43,7 @@ GS = {
     menu = require("Gamestates.Menu"),
     loader = require("Gamestates.Loader"),
     gameplay = require("Gamestates.Gameplay"),
+    gameover = require("Gamestates.GameOver"),
 }
 
 defaultFont = love.graphics.newFont(40)
@@ -94,6 +96,11 @@ GS.loader:addCallback(function()
 end)
 
 GS.loader:addCallback(Music.load)
+
+GS.loader:addCallback(function()
+    local Highscore = require "Code.Highscore"
+    Highscore:loadDataset()
+end)
 
 function love.load()
     love.mouse.setVisible(false)

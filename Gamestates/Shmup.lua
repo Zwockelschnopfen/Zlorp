@@ -12,7 +12,8 @@ local HitHandler = require("Code.Systems.HitHandler")
 local PhysicsWorldHaver = require("Code.Entities.PhysicsWorldHaver")
 local GameState = require("Gamestates.GameState")
 local SoundFX        = require "Code.SoundFX"
-
+local Highscore = require "Code.Highscore"
+local Balancing = require "Code.Balancing"
 
 local Shmup = {
     SHIP_SPEED = { x=500, y=700 },
@@ -57,6 +58,9 @@ function Shmup:load()
 end
 
 function Shmup.shipHit(dmg)
+
+    Highscore:add(Balancing.scores.hitEnemy)
+
     dmg = dmg * 3
     local hit = love.math.random(3)
     if hit == 1 then

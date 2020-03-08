@@ -24,6 +24,10 @@ function Music.endBattleStage()
   Music.wantedStage = 2
 end
 
+function Music.endEverything()
+  Music.wantedStage = 6
+end
+
 function Music.load()
   Music.tracks = {
     menu = love.audio.newSource("Assets/Music/menu.flac", "stream"),
@@ -54,7 +58,7 @@ function Music.load()
     },
   }
   Music.stagePools = {
-    1, 2, 3, 3, 4
+    1, 2, 3, 3, 4, 5
   }
   function Music.stagePools:getForStage(stage)
     local poolidx = Music.stagePools[stage]
@@ -92,6 +96,8 @@ function Music.setTrack(track) -- none, menu, game
   Music.currentTrack = track or "none"
   if Music.currentTrack == "game" then
     Music.currentStage = 1 -- we start in battle mode
+    Music.currentDecoder = Music.tracks.ingame.intro
+    Music.currentDecoder:seek(0)
   end
 
 end
@@ -111,28 +117,42 @@ function Music.update(dt)
         end
       end
 
-      Music.currentStage = Music.wantedStage
+      if Music.currentStage == 6 then
+        -- Game over has now follow up
+        Music.setTrack("none")
 
-      Music.currentDecoder:seek(0)
-      Music.currentDecoder = Music.stagePools:getForStage(Music.currentStage)
-      assert(Music.currentDecoder, tostring(Music.gameIntensity))
-      buf = Music.currentDecoder:decode()
-      assert(buf)
+      else
 
-      if Music.currentStage > 1 then
-        Music.wantedStage = Music.currentStage + 1
-        if Music.wantedStage > 5 then
-          Music.wantedStage = 1
-          
-          if Music.onCalmPhaseDoneCallback then
-            Music.onCalmPhaseDoneCallback()
+        Music.currentStage = Music.wantedStage
+
+        Music.currentDecoder:seek(0)
+        Music.currentDecoder = Music.stagePools:getForStage(Music.currentStage)
+        assert(Music.currentDecoder, tostring(Music.gameIntensity))
+        buf = Music.currentDecoder:decode()
+        assert(buf)
+
+        if Music.currentStage > 1 then
+          local nextState = Music.currentStage + 1
+          if nextState > 5 then
+            Music.wantedStage = 1
+            
+            if Music.onCalmPhaseDoneCallback then
+              Music.onCalmPhaseDoneCallback()
+            else
+              -- print("GO TO BATTLE MODE!")
+            end
           else
-            print("GO TO BATTLE MODE!")
+            Music.wantedStage = nextState
           end
         end
       end
     end
-    Music.gameTrackPlayer:queue(buf)
+
+    if buf then
+      Music.gameTrackPlayer:queue(buf)
+    else
+      break
+    end
 
     if not Music.gameTrackPlayer:isPlaying() then
       love.audio.play(Music.gameTrackPlayer)

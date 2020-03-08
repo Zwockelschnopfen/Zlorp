@@ -4,6 +4,7 @@
     numRow= 8,
     numCol= 8,
     anim= {    
-        boost      = { 41, 42, 0.2 }
+        boost      = { 41, 42, 0.2 },
+        boom 	   = {  9, 15, 3 }
     }
 }

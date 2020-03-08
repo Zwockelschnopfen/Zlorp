@@ -162,6 +162,8 @@ function Gameplay:shakeCamera(strength)
   end
 end
 
+local repairWidth = 150
+
 function Gameplay:draw()
   local dt = love.timer.getDelta()
   local shipPos = Shmup.ship[Transform]
@@ -173,10 +175,16 @@ function Gameplay:draw()
       self.cameraTween = math.min(1.0, self.cameraTween + dt)
     end
 
+    local repairX, repairY = shipPos.x + 28, shipPos.y + 29
+    repairX = repairX + repairWidth * (Repair.camera.x / (Repair.camera.bounds.right - Repair.camera.bounds.left) - 0.5)
+    repairY = repairY + repairWidth * (Repair.camera.y / (Repair.camera.bounds.bottom - Repair.camera.bounds.top) - 0.5) / VirtualScreen.aspect
+
+    local targetZoom = 20.0 -- 12.5
+
     local tween = math.smoothstep(self.cameraTween)
-    Camera.x = math.lerp(0, shipPos.x + 28 - VirtualScreen.width / 2, tween)
-    Camera.y = math.lerp(0, shipPos.y + 29 - VirtualScreen.height / 2, tween)
-    Camera.zoom = math.lerp(1.0, 12.5, math.smoothstep(math.pow(self.cameraTween, 4)))
+    Camera.x = math.lerp(0, repairX - VirtualScreen.width / 2, tween)
+    Camera.y = math.lerp(0, repairY - VirtualScreen.height / 2, tween)
+    Camera.zoom = math.lerp(1.0, targetZoom, math.smoothstep(math.pow(self.cameraTween, 4)))
   end
 
   love.graphics.origin()

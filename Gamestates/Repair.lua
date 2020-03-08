@@ -120,23 +120,23 @@ function Repair:initGame()
   self.camera = {
     x = 0,
     y = 0,
-    width = 2400,
-    height = 2400 / VirtualScreen.aspect,
+    width = 3000,
     bounds = {
       left = 0,
       top = 0,
       right = 4606,
       bottom = 2558,
     },
-    verticalHardZone = 150,
-    horizontalHardZone = 100,
+    verticalHardZone = 350,
+    horizontalHardZone = 250,
     
-    verticalSoftZone = 150,
-    horizontalSoftZone = 500,
+    verticalSoftZone = 250,
+    horizontalSoftZone = 750,
 
-    verticalSoftAdjustment = 600,
-    horizontalSoftAdjustment = 500,
+    verticalSoftAdjustment = 800,
+    horizontalSoftAdjustment = 650,
   }
+  self.camera.height = self.camera.width / VirtualScreen.aspect
 
   function self.camera:update(cx, cy)
 
@@ -581,13 +581,13 @@ function Repair:draw()
 
   love.graphics.push()
 
-  love.graphics.scale(
-    (self.camera.bounds.right - self.camera.bounds.left) / self.camera.width
-  )
-  love.graphics.translate(
-    -(self.camera.x - self.camera.width/2),
-    -(self.camera.y - self.camera.height/2)
-  )
+  -- love.graphics.scale(
+  --   (self.camera.bounds.right - self.camera.bounds.left) / self.camera.width
+  -- )
+  -- love.graphics.translate(
+  --   -(self.camera.x - self.camera.width/2),
+  --   -(self.camera.y - self.camera.height/2)
+  -- )
 
   RepairInstance:emit("draw")
 

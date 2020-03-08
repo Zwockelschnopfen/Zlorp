@@ -11,6 +11,7 @@ local AnimComponent =  Concord.component(
             c.t = 0
             c.activeAnim = activeAnim
             c.quads = {}
+            c.eventsActive = false
             for i = 1, config.numRow do
                 for j = 1, config.numCol do
                     local x = config.px * (j - 1)
@@ -57,6 +58,46 @@ function AnimComponent:setActiveAnim(newAnim)
     self.t = 0
     self.activeAnim = newAnim
     self.duration = self.anims[newAnim].duration
+    if self.events and self.events[newAnim] then
+        self.eventsActive = true
+    else
+        self.eventsActive = false
+    end
+end
+
+function AnimComponent:update(dt)
+    self.t = self.t + dt
+    
+    if self.t >= self.duration then
+        self.t = self.t - self.duration
+        
+        if self.eventsActive then
+            for i, event in ipairs(self.events[self.activeAnim]) do
+                if self.t - dt < event.t and self.t > event.t then
+                    event.f()
+                end
+            end
+        end
+    elseif self.eventsActive then
+        for i, event in ipairs(self.events[self.activeAnim]) do
+            if self.t + self.duration - dt < event.t and self.t + self.duration > event.t then
+                event.f()
+            end
+        end
+    end
+end
+
+function AnimComponent:addEvent(anim, t, func)
+    if not self.events       then self.events = {}       end
+    if not self.events[anim] then 
+        self.events[anim] = {}
+
+        if self.activeAnim == anim then
+            self.eventsActive = true
+        end
+    end
+
+    table.insert( self.events[anim], {t = t, f = func} )
 end
 
 return AnimComponent

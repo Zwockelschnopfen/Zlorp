@@ -30,11 +30,7 @@ function AnimUpdate:draw()
         if asm and asm.isDirty then
             asm:update(anim, dt)
         end
-
-        anim.t = anim.t + dt
-        if anim.t >= anim.duration then
-            anim.t = anim.t - anim.duration
-        end
+        anim:update(dt)
         local animQuads = anim.anims[anim.activeAnim]
         local quadNum = math.floor(anim.t / anim.duration * #animQuads) + 1
         sprite.quad = animQuads[quadNum]

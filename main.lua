@@ -15,7 +15,8 @@ Input = Baton.new {
         right = {'key:right', 'key:d', 'axis:leftx+', 'button:dpright'},
         up = {'key:up', 'key:w', 'axis:lefty-', 'button:dpup'},
         down = {'key:down', 'key:s', 'axis:lefty+', 'button:dpdown'},
-        action = {'key:x', 'button:a', 'key:return'},
+        action = { 'key:space', 'key:lctrl', 'key:x', 'button:a', 'key:return'},
+        back = { 'key:escape', 'button:b' }
     },
     pairs = {
         move = {'left', 'right', 'up', 'down'}

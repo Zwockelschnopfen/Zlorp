@@ -121,7 +121,7 @@ end
 
 function Gameplay:update(_, dt)
 
-  if love.keyboard.isDown("escape") then
+  if Input:pressed "back" then
     Gamestate.switch(GS.menu)
     return
   end 

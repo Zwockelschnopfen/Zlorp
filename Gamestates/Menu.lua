@@ -85,6 +85,11 @@ function Menu:update(_, dt)
       state.current = main[main.selected].target
       love.audio.play(self.resources.acceptSound)
     end
+
+    if Input:pressed "back" then
+      state.current = "exit"
+    end
+
     return
   else
     state.mainHidden = math.min(1.0, state.mainHidden + 3.0 * dt)
